@@ -1,0 +1,10 @@
+
+import "../../base/base.model.zmodel";
+
+model User extends Base {
+    id String @id @default(uuid())
+    email String @unique
+    name String
+    password String @password()
+}
+

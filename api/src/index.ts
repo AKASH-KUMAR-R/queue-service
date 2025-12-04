@@ -1,5 +1,6 @@
 import { configDotenv } from "dotenv";
 import Express from "express";
+import cors from "cors";
 
 const NODE_ENV = process.env.NODE_ENV || "development";
 const envPath = NODE_ENV === "production" ? ".prod.env" : ".dev.env";
@@ -9,6 +10,12 @@ configDotenv({
 });
 
 const app = Express();
+
+app.use(
+	cors({
+		origin: "*",
+	})
+);
 
 app.listen(process.env.PORT, () => {
 	console.log(

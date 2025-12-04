@@ -1,8 +1,7 @@
-// This is a sample model to get you started.
+import "./src/models/user/dbmodel/user.model.zmodel";
 
-/// A sample data source using local sqlite db.
 datasource db {
-    provider = 'sqlite'
+    provider = 'postgresql'
     url = env('DATABASE_URL')
 }
 
