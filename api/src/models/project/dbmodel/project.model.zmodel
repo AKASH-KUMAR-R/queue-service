@@ -1,0 +1,17 @@
+
+import "../../base/base.model.zmodel";
+import "../../user/dbmodel/user.model.zmodel";
+import "../../queue/dbmodel/queue.model.zmodel";
+
+model Project extends Base {
+
+    id String @id @default(uuid())
+    label String
+    description  String?
+    user User @relation( "UserProjects", fields: [user_id], references: [id])
+    user_id String
+    // order Int @default(0)
+    
+    // Relations 
+    queues Queue[] @relation("ProjectQueues")
+}

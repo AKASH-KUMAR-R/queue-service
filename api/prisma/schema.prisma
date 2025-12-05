@@ -12,6 +12,13 @@ generator client {
     provider = "prisma-client-js"
 }
 
+enum QueueStatus {
+    QUEUED
+    IN_PROGRESS
+    COMPLETED
+    FAILED
+}
+
 model User {
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt()
@@ -19,4 +26,25 @@ model User {
     email String @unique()
     name String
     password String
+    project Project[] @relation("UserProjects")
+}
+
+model Project {
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt()
+    id String @id() @default(uuid())
+    label String
+    description String?
+    user User @relation("UserProjects", fields: [user_id], references: [id])
+    user_id String
+    queues Queue[] @relation("ProjectQueues")
+}
+
+model Queue {
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt()
+    id String @id() @default(uuid())
+    project Project @relation("ProjectQueues", fields: [project_id], references: [id])
+    project_id String
+    status QueueStatus @default(QUEUED)
 }

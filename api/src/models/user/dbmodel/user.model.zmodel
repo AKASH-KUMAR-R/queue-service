@@ -1,10 +1,14 @@
 
 import "../../base/base.model.zmodel";
+import "../../project/dbmodel/project.model.zmodel";
 
 model User extends Base {
+    
     id String @id @default(uuid())
     email String @unique
     name String
     password String @password()
+    project Project[] @relation("UserProjects")
+
 }
 
