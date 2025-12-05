@@ -2,6 +2,8 @@ import { configDotenv } from "dotenv";
 import Express from "express";
 import cors from "cors";
 
+import queueRouter from "./routes/queue/queue.router";
+
 const NODE_ENV = process.env.NODE_ENV || "development";
 const envPath = NODE_ENV === "production" ? ".prod.env" : ".dev.env";
 
@@ -16,6 +18,10 @@ app.use(
 		origin: "*",
 	})
 );
+
+app.use(Express.json());
+
+app.use("/queue", queueRouter);
 
 app.listen(process.env.PORT, () => {
 	console.log(
