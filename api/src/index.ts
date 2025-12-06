@@ -50,15 +50,15 @@ app.use("/queue", queueRouter);
 app.use("/user", userRouter);
 app.use("/project", projectRouter);
 
+app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
+	console.error(err.message);
+	handleError(res, err);
+});
+
 app.listen(process.env.PORT, () => {
 	console.log(
 		"Server listening at port ",
 		process.env.PORT,
 		process.env.DATABASE_URL
 	);
-});
-
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-	console.error(err.stack);
-	handleError(res, err);
 });
