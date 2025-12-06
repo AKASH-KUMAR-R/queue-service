@@ -1,11 +1,19 @@
 import { configDotenv } from "dotenv";
-import Express from "express";
+import Express, {
+	type NextFunction,
+	type Request,
+	type Response,
+} from "express";
 import cors from "cors";
+import pinoHttp from "pino-http";
+
+import { logger } from "./utils/logger.util";
 
 import queueRouter from "./routes/queue/queue.routes";
 import userRouter from "./routes/user/user.routes";
 import projectRouter from "./routes/project/project.routes";
 import { prismaMiddleware } from "./common/middleware/prisma.middleware";
+import { handleError } from "./utils/error.util";
 
 const NODE_ENV = process.env.NODE_ENV || "development";
 const envPath = NODE_ENV === "production" ? ".prod.env" : ".dev.env";
@@ -19,6 +27,13 @@ const app = Express();
 app.use(
 	cors({
 		origin: "*",
+	})
+);
+
+app.use(
+	pinoHttp({
+		logger,
+		autoLogging: true,
 	})
 );
 
@@ -41,4 +56,9 @@ app.listen(process.env.PORT, () => {
 		process.env.PORT,
 		process.env.DATABASE_URL
 	);
+});
+
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+	console.error(err.stack);
+	handleError(res, err);
 });
