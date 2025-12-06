@@ -1,3 +1,3 @@
 import { PrismaClient } from "@prisma/client";
 
-export const prisma = new PrismaClient(); // for non auth
+export const getPrisma = () => new PrismaClient(); // for non auth
