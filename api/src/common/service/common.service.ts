@@ -12,7 +12,7 @@ const create = async <M extends ModelName>(
 const updateById = async <M extends ModelName>(
 	model: M,
 	db: PrismaClient,
-	id: number,
+	id: string,
 	data: Prisma.Args<PrismaClient[M], "update">["data"]
 ) => {
 	return await (db[model] as any).update({
@@ -24,7 +24,7 @@ const updateById = async <M extends ModelName>(
 const deleteById = async <M extends ModelName>(
 	model: M,
 	db: PrismaClient,
-	id: number
+	id: string
 ) => {
 	return await (db[model] as any).delete({
 		where: { id },
@@ -34,7 +34,7 @@ const deleteById = async <M extends ModelName>(
 const findById = async <M extends ModelName>(
 	model: M,
 	db: PrismaClient,
-	id: number
+	id: string
 ) => {
 	return await (db[model] as any).findUnique({
 		where: { id },

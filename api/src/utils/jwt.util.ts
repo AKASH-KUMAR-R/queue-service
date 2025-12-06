@@ -1,5 +1,5 @@
 import jwt, { type JwtPayload } from "jsonwebtoken";
-import { VERIFY_JWT_STATUS } from "../common/types/jwt";
+import { VERIFY_JWT_STATUS } from "@common/types/jwt";
 
 type VERIFY_JWT_RETURN = {
 	status: VERIFY_JWT_STATUS;

@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
-import { handleError } from "../../utils/error.util";
-import commonService from "../service/common.service";
+import { handleError } from "@utils/error.util";
+import commonService from "@common/service/common.service";
 import type { ModelName } from "../types/model";
 
 const models: Record<string, ModelName> = {
@@ -49,7 +49,7 @@ export const update = async (req: Request, res: Response) => {
 	try {
 		const modelPath = req.originalUrl.split("/")[1];
 
-		const id = parseInt(req.params.id || "", 10);
+		const id = String(req.params.id);
 
 		if (!modelPath || !models[modelPath]) {
 			return res.status(400).json({ error: "Invalid model path" });
@@ -72,7 +72,8 @@ export const update = async (req: Request, res: Response) => {
 export const remove = async (req: Request, res: Response) => {
 	try {
 		const modelPath = req.originalUrl.split("/")[1];
-		const id = parseInt(req.params.id || "", 10);
+		const id = String(req.params.id);
+
 		if (!modelPath || !models[modelPath]) {
 			return res.status(400).json({ error: "Invalid model path" });
 		}
@@ -92,7 +93,8 @@ export const remove = async (req: Request, res: Response) => {
 export const getById = async (req: Request, res: Response) => {
 	try {
 		const modelPath = req.originalUrl.split("/")[1];
-		const id = parseInt(req.params.id || "", 10);
+		const id = String(req.params.id);
+
 		if (!modelPath || !models[modelPath]) {
 			return res.status(400).json({ error: "Invalid model path" });
 		}
