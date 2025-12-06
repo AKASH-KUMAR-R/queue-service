@@ -154,3 +154,12 @@ export const search = async (req: Request, res: Response) => {
 		handleError(res, err, 500);
 	}
 };
+
+export default {
+	upsert,
+	update,
+	remove,
+	getById,
+	list,
+	search,
+};
