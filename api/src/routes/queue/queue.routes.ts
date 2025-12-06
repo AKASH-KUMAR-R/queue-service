@@ -8,7 +8,7 @@ router.get("/search", commonController.search);
 router.get("/:id", commonController.getById);
 
 router.post("/create", commonController.upsert);
-router.put("/:id", commonController.upsert);
+router.put("/:id", commonController.update);
 
 router.delete("/:id", commonController.remove);
 

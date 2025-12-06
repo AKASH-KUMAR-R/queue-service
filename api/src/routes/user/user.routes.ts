@@ -7,7 +7,7 @@ router.get("/list", commonController.list);
 router.get("/search", commonController.search);
 router.get("/:id", commonController.getById);
 
-router.post("/", commonController.upsert);
+router.post("/create", commonController.upsert);
 router.put("/:id", commonController.update);
 router.delete("/:id", commonController.remove);
 
