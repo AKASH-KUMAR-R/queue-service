@@ -18,7 +18,14 @@ const queryFields: Record<string, string[]> = {
 
 export const upsert = async (req: Request, res: Response) => {
 	try {
-		const modelPath = req.path.split("/")[1];
+		const modelPath = req.originalUrl.split("/")[1];
+
+		console.debug(
+			"Model Path:",
+			modelPath,
+			"Request Path:",
+			req.originalUrl
+		);
 
 		if (!modelPath || !models[modelPath]) {
 			return res.status(400).json({ error: "Invalid model path" });
@@ -40,7 +47,7 @@ export const upsert = async (req: Request, res: Response) => {
 
 export const update = async (req: Request, res: Response) => {
 	try {
-		const modelPath = req.path.split("/")[1];
+		const modelPath = req.originalUrl.split("/")[1];
 
 		const id = parseInt(req.params.id || "", 10);
 
@@ -64,7 +71,7 @@ export const update = async (req: Request, res: Response) => {
 
 export const remove = async (req: Request, res: Response) => {
 	try {
-		const modelPath = req.path.split("/")[1];
+		const modelPath = req.originalUrl.split("/")[1];
 		const id = parseInt(req.params.id || "", 10);
 		if (!modelPath || !models[modelPath]) {
 			return res.status(400).json({ error: "Invalid model path" });
@@ -84,7 +91,7 @@ export const remove = async (req: Request, res: Response) => {
 
 export const getById = async (req: Request, res: Response) => {
 	try {
-		const modelPath = req.path.split("/")[1];
+		const modelPath = req.originalUrl.split("/")[1];
 		const id = parseInt(req.params.id || "", 10);
 		if (!modelPath || !models[modelPath]) {
 			return res.status(400).json({ error: "Invalid model path" });
@@ -104,7 +111,13 @@ export const getById = async (req: Request, res: Response) => {
 
 export const list = async (req: Request, res: Response) => {
 	try {
-		const modelPath = req.path.split("/")[1];
+		const modelPath = req.originalUrl.split("/")[1];
+		console.debug(
+			"Model Path:",
+			modelPath,
+			"Request Path:",
+			req.originalUrl
+		);
 		if (!modelPath || !models[modelPath]) {
 			return res.status(400).json({ error: "Invalid model path" });
 		}
@@ -119,7 +132,7 @@ export const list = async (req: Request, res: Response) => {
 
 export const search = async (req: Request, res: Response) => {
 	try {
-		const modelPath = req.path.split("/")[1];
+		const modelPath = req.originalUrl.split("/")[1];
 		if (!modelPath || !models[modelPath]) {
 			return res.status(400).json({ error: "Invalid model path" });
 		}
