@@ -20,12 +20,15 @@
 		"cors": "^2.8.5",
 		"dotenv": "^17.2.3",
 		"express": "^5.2.1",
+		"jsonwebtoken": "^9.0.3",
 		"yup": "^1.7.1"
 	},
 	"devDependencies": {
 		"@types/cors": "^2.8.19",
 		"@types/express": "^5.0.6",
+		"@types/jsonwebtoken": "^9.0.10",
 		"@types/node": "^24.10.1",
+		"crypto": "^1.0.1",
 		"dotenv-cli": "^11.0.0",
 		"nodemon": "^3.1.11",
 		"prisma": "^6.19.0",
