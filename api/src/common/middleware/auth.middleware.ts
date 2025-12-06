@@ -1,8 +1,8 @@
 import type { Request, Response, NextFunction } from "express";
-import { handleError } from "../../utils/error.util";
-import { generateToken, verifyToken } from "../../utils/jwt.util";
-import userService from "../../services/user/user.service";
-import { prisma } from "../../utils/prisma.util";
+import { handleError } from "@utils/error.util";
+import { generateToken, verifyToken } from "@utils/jwt.util";
+import userService from "@services/user/user.service";
+import { prisma } from "@utils/prisma.util";
 import { VERIFY_JWT_STATUS } from "../types/jwt";
 
 export const authMiddleware = async (

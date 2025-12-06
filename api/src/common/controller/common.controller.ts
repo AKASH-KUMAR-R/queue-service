@@ -1,8 +1,7 @@
 import type { Request, Response } from "express";
-import { handleError } from "../../utils/error.util";
-import commonService from "../service/common.service";
+import { handleError } from "@utils/error.util";
+import commonService from "@common/service/common.service";
 import type { ModelName } from "../types/model";
-import { logger } from "../../utils/logger.util";
 
 const models: Record<string, ModelName> = {
 	// Define your models here, e.g., user: "user", post: "post"

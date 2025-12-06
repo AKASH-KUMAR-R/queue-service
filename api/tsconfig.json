@@ -41,7 +41,16 @@
 		"moduleDetection": "force",
 		"moduleResolution": "node",
 		"esModuleInterop": true,
-		"skipLibCheck": true
+		"skipLibCheck": true,
+		"baseUrl": "./src",
+		"paths": {
+			"@common/*": ["common/*"],
+			"@services/*": ["services/*"],
+			"@controllers/*": ["controllers/*"],
+			"@models/*": ["models/*"],
+			"@utils/*": ["utils/*"],
+			"@routes/*": ["routes/*"]
+		}
 	},
 	"include": ["src/**/*"]
 }

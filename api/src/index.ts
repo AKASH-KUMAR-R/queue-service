@@ -7,13 +7,13 @@ import Express, {
 import cors from "cors";
 import pinoHttp from "pino-http";
 
-import { logger } from "./utils/logger.util";
+import { logger } from "@utils/logger.util";
 
-import queueRouter from "./routes/queue/queue.routes";
-import userRouter from "./routes/user/user.routes";
-import projectRouter from "./routes/project/project.routes";
-import { prismaMiddleware } from "./common/middleware/prisma.middleware";
-import { handleError } from "./utils/error.util";
+import queueRouter from "@routes/queue/queue.routes";
+import userRouter from "@routes/user/user.routes";
+import projectRouter from "@routes/project/project.routes";
+import { prismaMiddleware } from "@common/middleware/prisma.middleware";
+import { handleError } from "@utils/error.util";
 
 const NODE_ENV = process.env.NODE_ENV || "development";
 const envPath = NODE_ENV === "production" ? ".prod.env" : ".dev.env";
