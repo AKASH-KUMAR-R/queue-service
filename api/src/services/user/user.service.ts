@@ -1,6 +1,6 @@
-import type { PrismaClient } from "@prisma/client";
+import type { PrismaClient, User } from "@prisma/client";
 
-const createUser = async (db: PrismaClient, data: any) => {
+const createUser = async (db: PrismaClient, data: User) => {
 	const user = await db.user.create({
 		data,
 	});

@@ -33,8 +33,11 @@ export const authMiddleware = async (
 					generateToken({ userId }, { expiresIn: "15m" }),
 					{
 						httpOnly: true,
-						secure: process.env.NODE_ENV === "production",
-						sameSite: "none",
+						secure: true,
+						sameSite:
+							process.env.NODE_ENV === "production"
+								? "lax"
+								: "none",
 					}
 				);
 			} else {

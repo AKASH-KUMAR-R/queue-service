@@ -7,10 +7,6 @@ export const prismaMiddleware = (
 	res: Response,
 	next: NextFunction
 ) => {
-	try {
-		req.db = prisma;
-		next();
-	} catch (err) {
-		handleError(res, err, 500);
-	}
+	req.db = prisma;
+	next();
 };
