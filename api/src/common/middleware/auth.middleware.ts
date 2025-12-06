@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 import { handleError } from "../../utils/error.util";
 import { generateToken, verifyToken } from "../../utils/jwt.util";
 import userService from "../../services/user/user.service";
-import { getPrisma } from "../../utils/prisma.util";
+import { prisma } from "../../utils/prisma.util";
 import { VERIFY_JWT_STATUS } from "../types/jwt";
 
 export const authMiddleware = async (
@@ -48,7 +48,7 @@ export const authMiddleware = async (
 			return res.status(401).json({ error: "Unauthorized" });
 		}
 
-		const user = await userService.findUserById(getPrisma(), userId);
+		const user = await userService.findUserById(prisma, userId);
 
 		if (!user) {
 			return res.status(401).json({ error: "Unauthorized" });

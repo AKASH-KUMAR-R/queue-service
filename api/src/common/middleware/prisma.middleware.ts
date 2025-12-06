@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { handleError } from "../../utils/error.util";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../../utils/prisma.util";
 
 export const prismaMiddleware = (
 	req: Request,
@@ -8,7 +8,7 @@ export const prismaMiddleware = (
 	next: NextFunction
 ) => {
 	try {
-		req.db = new PrismaClient();
+		req.db = prisma;
 		next();
 	} catch (err) {
 		handleError(res, err, 500);
