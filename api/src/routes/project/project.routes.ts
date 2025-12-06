@@ -9,7 +9,6 @@ router.get("/:id", commonController.getById);
 
 router.post("/create", commonController.upsert);
 router.put("/:id", commonController.upsert);
-
 router.delete("/:id", commonController.remove);
 
 export default router;
