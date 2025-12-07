@@ -2,7 +2,7 @@ import type { Job, Prisma, PrismaClient } from "@prisma/client";
 
 const createJob = async (db: PrismaClient, data: Prisma.JobCreateInput) => {
 	return await db.job.create({
-		data: data,
+		data,
 	});
 };
 

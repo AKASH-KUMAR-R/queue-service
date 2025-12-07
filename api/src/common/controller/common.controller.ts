@@ -8,12 +8,14 @@ const models: Record<string, ModelName> = {
 	user: "user",
 	project: "project",
 	queue: "queue",
+	job: "job",
 };
 
 const queryFields: Record<string, string[]> = {
 	user: ["id", "name", "email"],
 	project: ["id", "title", "description"],
 	queue: ["id", "status", "createdAt"],
+	job: ["id", "status", "queue_id"],
 };
 
 export const upsert = async (req: Request, res: Response) => {
