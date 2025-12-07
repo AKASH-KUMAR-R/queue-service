@@ -13,7 +13,13 @@ generator client {
 }
 
 enum QueueStatus {
-    QUEUED
+    ACTIVE
+    PAUSED
+    DELETED
+}
+
+enum JobStatus {
+    PENDING
     IN_PROGRESS
     COMPLETED
     FAILED
@@ -46,5 +52,17 @@ model Queue {
     id String @id() @default(uuid())
     project Project @relation("ProjectQueues", fields: [project_id], references: [id])
     project_id String
-    status QueueStatus @default(QUEUED)
+    status QueueStatus @default(ACTIVE)
+    jobs Job[] @relation("QueueJobs")
+}
+
+model Job {
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt()
+    id String @id() @default(uuid())
+    queue Queue @relation("QueueJobs", fields: [queue_id], references: [id])
+    queue_id String
+    payload Json
+    status JobStatus @default(PENDING)
+    attempts Int @default(0)
 }
