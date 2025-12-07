@@ -8,20 +8,28 @@ import {
 } from "@common/middleware/zod.middleware";
 import JobCreateRequest from "@models/job/requests/JobCreateRequest";
 import JobUpdateRequest from "@models/job/requests/JobUpdateRequest";
+import { workerAuthMiddleware } from "@common/middleware/auth.middleware";
 
 const router = Router();
 
-router.get("/list", commonController.list);
-router.get("/search", commonController.search);
-router.get("/:id", validateId, jobWorkerController.getJobById);
+router.get("/list", workerAuthMiddleware, commonController.list);
+router.get("/search", workerAuthMiddleware, commonController.search);
+router.get(
+	"/:id",
+	workerAuthMiddleware,
+	validateId,
+	jobWorkerController.getJobById
+);
 
 router.post(
 	"/add-job",
+	workerAuthMiddleware,
 	validationMiddleware(JobCreateRequest),
 	jobWorkerController.addJobToQueue
 );
 router.put(
 	"/:id",
+	workerAuthMiddleware,
 	validateId,
 	validationMiddleware(JobUpdateRequest),
 	jobWorkerController.updateJobById
