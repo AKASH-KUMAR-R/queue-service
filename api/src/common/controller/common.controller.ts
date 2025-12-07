@@ -8,17 +8,19 @@ const models: Record<string, ModelName> = {
 	user: "user",
 	project: "project",
 	queue: "queue",
+	job: "job",
 };
 
 const queryFields: Record<string, string[]> = {
 	user: ["id", "name", "email"],
 	project: ["id", "title", "description"],
 	queue: ["id", "status", "createdAt"],
+	job: ["id", "status", "queue_id"],
 };
 
 export const upsert = async (req: Request, res: Response) => {
 	try {
-		const modelPath = req.originalUrl.split("/")[1];
+		const modelPath = req.originalUrl.split("/")[3];
 
 		console.debug(
 			"Model Path:",
@@ -47,7 +49,7 @@ export const upsert = async (req: Request, res: Response) => {
 
 export const update = async (req: Request, res: Response) => {
 	try {
-		const modelPath = req.originalUrl.split("/")[1];
+		const modelPath = req.originalUrl.split("/")[3];
 
 		const id = String(req.params.id);
 
@@ -71,7 +73,7 @@ export const update = async (req: Request, res: Response) => {
 
 export const remove = async (req: Request, res: Response) => {
 	try {
-		const modelPath = req.originalUrl.split("/")[1];
+		const modelPath = req.originalUrl.split("/")[3];
 		const id = String(req.params.id);
 
 		if (!modelPath || !models[modelPath]) {
@@ -92,7 +94,7 @@ export const remove = async (req: Request, res: Response) => {
 
 export const getById = async (req: Request, res: Response) => {
 	try {
-		const modelPath = req.originalUrl.split("/")[1];
+		const modelPath = req.originalUrl.split("/")[3];
 		const id = String(req.params.id);
 
 		if (!modelPath || !models[modelPath]) {
@@ -113,7 +115,7 @@ export const getById = async (req: Request, res: Response) => {
 
 export const list = async (req: Request, res: Response) => {
 	try {
-		const modelPath = req.originalUrl.split("/")[1];
+		const modelPath = req.originalUrl.split("/")[3];
 		console.debug(
 			"Model Path:",
 			modelPath,
@@ -134,7 +136,7 @@ export const list = async (req: Request, res: Response) => {
 
 export const search = async (req: Request, res: Response) => {
 	try {
-		const modelPath = req.originalUrl.split("/")[1];
+		const modelPath = req.originalUrl.split("/")[3];
 		if (!modelPath || !models[modelPath]) {
 			return res.status(400).json({ error: "Invalid model path" });
 		}
