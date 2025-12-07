@@ -46,9 +46,14 @@ app.use((req, res, next) => {
 
 app.use(prismaMiddleware);
 
-app.use("/queue", queueRouter);
-app.use("/user", userRouter);
-app.use("/project", projectRouter);
+// Routes for dashboards and other common UI cases
+app.use("/api/dashboard/queue", queueRouter);
+app.use("/api/dashboard/user", userRouter);
+app.use("/api/dashboard/project", projectRouter);
+
+//  routes for worker sdk
+
+app.use("/api/worker/job", queueRouter);
 
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 	console.error(err.message);
