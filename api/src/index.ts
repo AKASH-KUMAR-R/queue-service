@@ -12,6 +12,9 @@ import { logger } from "@utils/logger.util";
 import queueRouter from "@routes/queue/queue.routes";
 import userRouter from "@routes/user/user.routes";
 import projectRouter from "@routes/project/project.routes";
+
+import jobWorkerRoutes from "@routes/job/job.worker.routes";
+
 import { prismaMiddleware } from "@common/middleware/prisma.middleware";
 import { handleError } from "@utils/error.util";
 
@@ -39,11 +42,6 @@ app.use(
 
 app.use(Express.json());
 
-app.use((req, res, next) => {
-	console.log("Request Path:", req.path, "Method:", req.method);
-	next();
-});
-
 app.use(prismaMiddleware);
 
 // Routes for dashboards and other common UI cases
@@ -53,7 +51,7 @@ app.use("/api/dashboard/project", projectRouter);
 
 //  routes for worker sdk
 
-app.use("/api/worker/job", queueRouter);
+app.use("/api/worker/job", jobWorkerRoutes);
 
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 	console.error(err.message);
