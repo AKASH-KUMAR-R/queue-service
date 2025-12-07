@@ -1,20 +1,22 @@
 
 import "../../base/base.model.zmodel";
 import "../../project/dbmodel/project.model.zmodel";
-
+import "../../job/dbmodel/job.model.zmodel";
 model Queue extends Base {
     
     id String @id @default(uuid())
     project Project @relation( "ProjectQueues", fields: [project_id], references: [id])
     project_id String
-    status QueueStatus @default(QUEUED)
+    status QueueStatus @default(ACTIVE)
     // order_no Int
+
+
+    jobs Job[] @relation("QueueJobs")
 }
 
 
 enum QueueStatus {
-    QUEUED
-    IN_PROGRESS
-    COMPLETED
-    FAILED
+    ACTIVE
+    PAUSED
+    DELETED
 }
