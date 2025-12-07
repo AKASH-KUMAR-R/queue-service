@@ -4,6 +4,8 @@ import { generateToken, verifyToken } from "@utils/jwt.util";
 import userService from "@services/user/user.service";
 import { prisma } from "@utils/prisma.util";
 import { VERIFY_JWT_STATUS } from "../types/jwt";
+import { hashToken } from "@utils/crypto.util";
+import apiKeyService from "@services/api-key/apiKey.service";
 
 export const authMiddleware = async (
 	req: Request,
@@ -58,6 +60,37 @@ export const authMiddleware = async (
 		}
 
 		req.user = user;
+		next();
+	} catch (err) {
+		handleError(res, err, 500);
+	}
+};
+
+export const workerAuthMiddleware = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const apiKey = req.headers["x-api-key"] as string;
+
+		if (!apiKey) {
+			return res.status(401).json({ error: "Unauthorized" });
+		}
+
+		const hashedAPiKey = hashToken(apiKey);
+
+		const result = await apiKeyService.findApiKeyBySecret(
+			prisma,
+			hashedAPiKey
+		);
+
+		if (!result || result.revoked) {
+			return res.status(401).json({ error: "Unauthorized" });
+		}
+
+		req.project = result.project;
+
 		next();
 	} catch (err) {
 		handleError(res, err, 500);
