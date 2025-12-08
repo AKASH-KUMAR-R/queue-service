@@ -44,6 +44,7 @@ model Project {
     user User @relation("UserProjects", fields: [user_id], references: [id])
     user_id String
     queues Queue[] @relation("ProjectQueues")
+    apiKeys ApiKey[] @relation("ProjectApiKeys")
 }
 
 model Queue {
@@ -65,4 +66,15 @@ model Job {
     payload Json
     status JobStatus @default(PENDING)
     attempts Int @default(0)
+}
+
+model ApiKey {
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt()
+    id String @id() @default(cuid())
+    secret String @unique()
+    revoked Boolean @default(false)
+    revoked_at DateTime?
+    project Project @relation("ProjectApiKeys", fields: [project_id], references: [id])
+    project_id String
 }

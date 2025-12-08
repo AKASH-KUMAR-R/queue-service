@@ -12,8 +12,9 @@ import { logger } from "@utils/logger.util";
 import queueRouter from "@routes/queue/queue.routes";
 import userRouter from "@routes/user/user.routes";
 import projectRouter from "@routes/project/project.routes";
+import apiKeyRouter from "@routes/api-key/apiKey.routes";
 
-import jobWorkerRoutes from "@routes/job/job.worker.routes";
+import jobWorkerRouter from "@routes/job/job.worker.routes";
 
 import { prismaMiddleware } from "@common/middleware/prisma.middleware";
 import { handleError } from "@utils/error.util";
@@ -48,10 +49,10 @@ app.use(prismaMiddleware);
 app.use("/api/dashboard/queue", queueRouter);
 app.use("/api/dashboard/user", userRouter);
 app.use("/api/dashboard/project", projectRouter);
+app.use("/api/dashboard/api-key", apiKeyRouter);
 
 //  routes for worker sdk
-
-app.use("/api/worker/job", jobWorkerRoutes);
+app.use("/api/worker/job", jobWorkerRouter);
 
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 	console.error(err.message);
