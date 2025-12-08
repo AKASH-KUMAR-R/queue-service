@@ -78,11 +78,11 @@ export const workerAuthMiddleware = async (
 			return res.status(401).json({ error: "Unauthorized" });
 		}
 
-		const hashedAPiKey = hashToken(apiKey);
+		const hashedApiKey = hashToken(apiKey);
 
 		const result = await apiKeyService.findApiKeyBySecret(
 			prisma,
-			hashedAPiKey
+			hashedApiKey
 		);
 
 		if (!result || result.revoked) {

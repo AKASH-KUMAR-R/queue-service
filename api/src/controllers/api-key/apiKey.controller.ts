@@ -26,7 +26,7 @@ const revoke = async (req: Request, res: Response) => {
 	try {
 		const result = await apiKeyService.updateApiKeyById(
 			req.db,
-			req.body.key,
+			req.params.id as string,
 			{ revoked: true, revoked_at: new Date() }
 		);
 

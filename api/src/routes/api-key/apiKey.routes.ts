@@ -10,8 +10,9 @@ import ApiKeyCreateRequest from "@models/api-key/requests/ApiKeyCreateRequest";
 
 const router = Router();
 
-router.get("/:id", validateId, commonController.getById);
 router.get("/list", commonController.list);
+router.get("/:id", validateId, commonController.getById);
+
 router.put("/revoke/:id", validateId, apiKeyController.revoke);
 
 router.post(
