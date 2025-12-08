@@ -1,8 +1,9 @@
 import zod from "zod";
 
-const JobUpdateRequest = zod.object({
-	queue_id: zod.uuid().optional(),
-	payload: zod.json().optional(),
-});
+const JobUpdateRequest = zod
+	.object({
+		payload: zod.json().optional(),
+	})
+	.strip();
 
 export default JobUpdateRequest;

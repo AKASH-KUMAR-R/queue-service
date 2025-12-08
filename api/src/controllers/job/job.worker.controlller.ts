@@ -2,10 +2,26 @@ import type { Request, Response } from "express";
 
 import jobService from "@services/job/job.service";
 import { handleError } from "@utils/error.util";
+import queueService from "@services/queue/queue.service";
 
 const addJobToQueue = async (req: Request, res: Response) => {
 	try {
-		const result = await jobService.createJob(req.db, req.body);
+		const queue = await queueService.findByLabel(
+			req.db,
+			req.body.queue_label
+		);
+		if (!queue) {
+			return handleError(res, "Queue not found", 404);
+		}
+
+		const result = await jobService.createJob(req.db, {
+			queue: {
+				connect: {
+					id: queue.id,
+				},
+			},
+			payload: req.body.payload,
+		});
 		res.status(201).json(result);
 	} catch (err) {
 		handleError(res, err);

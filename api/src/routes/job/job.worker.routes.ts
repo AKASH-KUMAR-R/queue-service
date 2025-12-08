@@ -22,13 +22,13 @@ router.get(
 );
 
 router.post(
-	"/add-job",
+	"/create",
 	workerAuthMiddleware,
 	validationMiddleware(JobCreateRequest),
 	jobWorkerController.addJobToQueue
 );
 router.put(
-	"/:id",
+	"/update/:id",
 	workerAuthMiddleware,
 	validateId,
 	validationMiddleware(JobUpdateRequest),

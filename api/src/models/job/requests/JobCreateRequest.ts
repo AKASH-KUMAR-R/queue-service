@@ -1,8 +1,10 @@
 import zod from "zod";
 
-const JobCreateRequest = zod.object({
-	queue_id: zod.uuid(),
-	payload: zod.json(),
-});
+const JobCreateRequest = zod
+	.object({
+		queue_label: zod.string(),
+		payload: zod.json(),
+	})
+	.strip();
 
 export default JobCreateRequest;
