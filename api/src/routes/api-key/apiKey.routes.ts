@@ -20,3 +20,5 @@ router.post(
 	validationMiddleware(ApiKeyCreateRequest),
 	apiKeyController.create
 );
+
+export default router;

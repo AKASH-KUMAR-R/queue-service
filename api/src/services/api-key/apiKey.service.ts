@@ -9,10 +9,10 @@ const createApiKey = async (
 	});
 };
 
-const findApiKeyById = async (db: PrismaClient, key: string) => {
+const findApiKeyById = async (db: PrismaClient, id: string) => {
 	return await db.apiKey.findUnique({
 		where: {
-			id: key,
+			id: id,
 		},
 	});
 };
@@ -30,12 +30,12 @@ const findApiKeyBySecret = async (db: PrismaClient, secret: string) => {
 
 const updateApiKeyById = async (
 	db: PrismaClient,
-	key: string,
+	id: string,
 	data: Prisma.ApiKeyUpdateInput
 ) => {
 	return await db.apiKey.update({
 		where: {
-			id: key,
+			id,
 		},
 		data,
 	});
