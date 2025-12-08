@@ -1,6 +1,10 @@
 import type { NextFunction, Request, Response } from "express";
 import zod from "zod";
 
+const idParamSchema = zod.object({
+	id: zod.uuid(),
+});
+
 const validationMiddleware = (schema: zod.ZodType) => {
 	return (req: Request, res: Response, next: NextFunction) => {
 		const result = schema.safeParse(req.body);
@@ -31,12 +35,9 @@ const paramsValidationMiddleware = <T extends zod.ZodType>(schema: T) => {
 };
 
 const validateId = (req: Request, res: Response, next: NextFunction) => {
-	const schema = zod.object({
-		id: zod.uuid(),
-	});
-	const result = schema.safeParse(req.params);
+	const result = idParamSchema.safeParse(req.params);
 
-	if (result.success === false) {
+	if (!result.success) {
 		return res.status(400).json({
 			errors: result.error,
 		});

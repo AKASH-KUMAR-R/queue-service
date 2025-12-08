@@ -7,7 +7,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export const logger = pino(
 	{
 		level: "info",
-		redact: ["password", "token", "authorization"], // later add other fields
+		redact: ["password", "token", "authorization", "x-api-key"], // later add other fields,
 	},
 	pino.transport({
 		targets: [
