@@ -14,6 +14,14 @@ const findById = async (db: PrismaClient, id: string) => {
 	});
 };
 
+const findByLabel = async (db: PrismaClient, label: string) => {
+	return await db.queue.findUnique({
+		where: {
+			label,
+		},
+	});
+};
+
 const updateById = async (
 	db: PrismaClient,
 	id: string,
@@ -38,5 +46,7 @@ const deleteQueue = async (db: PrismaClient, id: string) => {
 export default {
 	createQueue,
 	findById,
+	findByLabel,
+	updateById,
 	deleteQueue,
 };
