@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import zod from "zod";
 
-const validationMiddleware = (schema: zod.ZodTypeAny) => {
+const validationMiddleware = (schema: zod.ZodType) => {
 	return (req: Request, res: Response, next: NextFunction) => {
 		const result = schema.safeParse(req.body);
 		if (!result.success) {
@@ -10,6 +10,22 @@ const validationMiddleware = (schema: zod.ZodTypeAny) => {
 			});
 		}
 		req.body = result.data;
+		next();
+	};
+};
+
+const paramsValidationMiddleware = <T extends zod.ZodType>(schema: T) => {
+	return (req: Request, res: Response, next: NextFunction) => {
+		const result = schema.safeParse(req.query);
+
+		if (!result.success) {
+			return res.status(400).json({
+				errors: result.error,
+			});
+		}
+
+		req.validQuery = result.data;
+
 		next();
 	};
 };
@@ -28,4 +44,4 @@ const validateId = (req: Request, res: Response, next: NextFunction) => {
 	next();
 };
 
-export { validationMiddleware, validateId };
+export { validationMiddleware, validateId, paramsValidationMiddleware };
