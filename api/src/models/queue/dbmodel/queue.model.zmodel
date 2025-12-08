@@ -5,7 +5,7 @@ import "../../job/dbmodel/job.model.zmodel";
 model Queue extends Base {
     
     id String @id @default(uuid())
-    label String? @unique
+    label String @unique
     description String?
     project Project @relation( "ProjectQueues", fields: [project_id], references: [id])
     project_id String
