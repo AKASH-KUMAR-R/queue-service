@@ -14,16 +14,15 @@ const findById = async (db: PrismaClient, id: string) => {
 	});
 };
 
-// TODO: Implement locking mechanism to prevent race conditions
 const findNextJob = async (db: PrismaClient, queue_id: string) => {
 	return await db.$transaction(async (tx) => {
 		const job: Job[] = await tx.$queryRaw`
 			UPDATE "Job"
-			SET status = 'IN_PROGRESS',
+			SET status = ${JobStatus.IN_PROGRESS},
 				attempts = attempts + 1
 			WHERE id = (
 				SELECT id FROM "Job"
-				WHERE queue_id = ${queue_id} AND status = 'PENDING' AND attempts < 5
+				WHERE queue_id = ${queue_id} AND status = ${JobStatus.PENDING} AND attempts < 5
 				ORDER BY "created_at" ASC
 				FOR UPDATE SKIP LOCKED
 				LIMIT 1
