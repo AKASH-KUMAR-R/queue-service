@@ -7,7 +7,15 @@ export const handleError = (
 	statusCode = 500
 ) => {
 	logger.error(error);
+
+	const returnErrorMessage =
+		typeof error === "string"
+			? error
+			: error instanceof Error
+			? error.message
+			: "An unexpected error occurred";
+
 	return res.status(statusCode).json({
-		error: (error as Error).message || "An unexpected error occurred",
+		error: returnErrorMessage,
 	});
 };
