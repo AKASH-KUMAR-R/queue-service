@@ -1,4 +1,4 @@
-import axios, { type AxiosProxyConfig, type CreateAxiosDefaults } from "axios";
+import axios, { type CreateAxiosDefaults } from "axios";
 
 type CustomCreateAxiosDefaults = CreateAxiosDefaults & {
 	apiKey: string;

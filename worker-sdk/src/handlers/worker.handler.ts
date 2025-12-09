@@ -13,7 +13,7 @@ export default function createWorker(options: WorkerOptions) {
 
 	async function findNextJob() {
 		const res = await api.get(
-			`/api/worker/job/next-job?queue_label=${options.queue_label}`
+			`/api/worker/job/next-job?queue_label=${options.queueLabel}`
 		);
 
 		logger.info("Fetched next job:", { data: res.data });
@@ -46,7 +46,7 @@ export default function createWorker(options: WorkerOptions) {
 	}
 
 	async function run(handler: (payload: any) => Promise<void>) {
-		logger.info(`Worker started for queue: ${options.queue_label}`);
+		logger.info(`Worker started for queue: ${options.queueLabel}`);
 		while (true) {
 			let nextJob: Job | null = null;
 

@@ -1,7 +1,7 @@
 export type WorkerOptions = {
 	baseUrl: string;
 	apiKey: string;
-	queue_label: string;
+	queueLabel: string;
 	pollingTime?: number;
 };
 
