@@ -1,4 +1,4 @@
-import { JobStatus, PrismaClient, type Prisma } from "@prisma/client";
+import { JobStatus, PrismaClient, type Job, type Prisma } from "@prisma/client";
 
 const createJob = async (db: PrismaClient, data: Prisma.JobCreateInput) => {
 	return await db.job.create({
@@ -17,36 +17,21 @@ const findById = async (db: PrismaClient, id: string) => {
 // TODO: Implement locking mechanism to prevent race conditions
 const findNextJob = async (db: PrismaClient, queue_id: string) => {
 	return await db.$transaction(async (tx) => {
-		const nextJob = await tx.job.findFirst({
-			where: {
-				queue_id,
-				status: JobStatus.PENDING,
-				attempts: {
-					lt: 5,
-				},
-			},
-			orderBy: {
-				created_at: "asc",
-			},
-		});
+		const job: Job[] = await tx.$queryRaw`
+			UPDATE "Job"
+			SET status = 'IN_PROGRESS',
+				attempts = attempts + 1
+			WHERE id = (
+				SELECT id FROM "Job"
+				WHERE queue_id = ${queue_id} AND status = 'PENDING' AND attempts < 5
+				ORDER BY "created_at" ASC
+				FOR UPDATE SKIP LOCKED
+				LIMIT 1
+			)
+			RETURNING *;
+		`;
 
-		if (!nextJob) {
-			return null;
-		}
-
-		const updatedJob = await tx.job.update({
-			where: {
-				id: nextJob.id,
-			},
-			data: {
-				status: JobStatus.IN_PROGRESS,
-				attempts: {
-					increment: 1,
-				},
-			},
-		});
-
-		return updatedJob;
+		return job[0] ?? null;
 	});
 };
 
