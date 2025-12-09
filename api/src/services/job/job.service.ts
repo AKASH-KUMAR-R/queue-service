@@ -14,6 +14,7 @@ const findById = async (db: PrismaClient, id: string) => {
 	});
 };
 
+// TODO: Implement locking mechanism to prevent race conditions
 const findNextJob = async (db: PrismaClient, queue_id: string) => {
 	return await db.$transaction(async (tx) => {
 		const nextJob = await tx.job.findFirst({
