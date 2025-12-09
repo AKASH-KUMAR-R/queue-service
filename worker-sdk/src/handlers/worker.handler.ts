@@ -11,6 +11,8 @@ export default function createWorker(options: WorkerOptions) {
 		apiKey: options.apiKey,
 	});
 
+	let isShuttingDown = false;
+
 	async function findNextJob() {
 		const res = await api.get(
 			`/api/worker/job/next-job?queue_label=${options.queueLabel}`
@@ -45,9 +47,22 @@ export default function createWorker(options: WorkerOptions) {
 		}
 	}
 
+	function stop() {
+		logger.info("Gracefully shutting down worker...");
+		isShuttingDown = true;
+	}
+
 	async function run(handler: (payload: any) => Promise<void>) {
 		logger.info(`Worker started for queue: ${options.queueLabel}`);
-		while (true) {
+
+		// Setup signal handlers for graceful shutdown
+		const signalHandler = () => {
+			stop();
+		};
+		process.on("SIGTERM", signalHandler);
+		process.on("SIGINT", signalHandler);
+
+		while (!isShuttingDown) {
 			let nextJob: Job | null = null;
 
 			try {
@@ -64,9 +79,16 @@ export default function createWorker(options: WorkerOptions) {
 
 			await runJob(nextJob, handler);
 		}
+
+		// Cleanup signal handlers
+		process.off("SIGTERM", signalHandler);
+		process.off("SIGINT", signalHandler);
+
+		logger.info("Worker shutdown complete");
 	}
 
 	return {
 		run,
+		stop,
 	};
 }
