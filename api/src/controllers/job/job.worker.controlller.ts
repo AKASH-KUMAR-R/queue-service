@@ -91,6 +91,10 @@ const markAsFailed = async (req: Request, res: Response) => {
 			return handleError(res, "Job not found", 404);
 		}
 
+		if (job.status === JobStatus.COMPLETED) {
+			return handleError(res, "This job is already completed", 400);
+		}
+
 		const updatedJob =
 			job.attempts >= 5
 				? await jobService.updateStatusAsFailed(req.db, jobId)
