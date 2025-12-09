@@ -24,6 +24,9 @@ const findNextJob = async (db: PrismaClient, queue_id: string) => {
 					lt: 5,
 				},
 			},
+			orderBy: {
+				created_at: "asc",
+			},
 		});
 
 		if (!nextJob) {
@@ -77,9 +80,6 @@ const updateStatusAsFailed = async (db: PrismaClient, id: string) => {
 		},
 		data: {
 			status: JobStatus.FAILED,
-			attempts: {
-				increment: 1,
-			},
 		},
 	});
 };

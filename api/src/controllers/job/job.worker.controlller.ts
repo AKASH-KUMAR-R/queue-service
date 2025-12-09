@@ -49,7 +49,7 @@ const getNextJobFromQueue = async (req: Request, res: Response) => {
 		const queue = await queueService.findByLabel(req.db, queue_label);
 
 		if (!queue) {
-			return handleError(res, "No queue found", 400);
+			return handleError(res, "No queue found", 404);
 		}
 
 		const nextJob = await jobService.findNextJob(req.db, queue.id);
@@ -83,10 +83,20 @@ const markAsCompleted = async (req: Request, res: Response) => {
 
 const markAsFailed = async (req: Request, res: Response) => {
 	try {
-		const updatedJob = await jobService.updateStatusAsFailed(
-			req.db,
-			req.params.id as string
-		);
+		const jobId = req.params.id as string;
+
+		const job = await jobService.findById(req.db, jobId);
+
+		if (!job) {
+			return handleError(res, "Job not found", 404);
+		}
+
+		const updatedJob =
+			job.attempts >= 5
+				? await jobService.updateStatusAsFailed(req.db, jobId)
+				: await jobService.updateById(req.db, jobId, {
+						status: JobStatus.PENDING,
+				  });
 
 		return res.status(200).json({
 			data: updatedJob,

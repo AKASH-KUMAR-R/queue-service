@@ -18,7 +18,7 @@ const validationMiddleware = (schema: zod.ZodType) => {
 	};
 };
 
-const paramsValidationMiddleware = <T extends zod.ZodType>(schema: T) => {
+const queryValidationMiddleware = <T extends zod.ZodType>(schema: T) => {
 	return (req: Request, res: Response, next: NextFunction) => {
 		const result = schema.safeParse(req.query);
 
@@ -45,4 +45,4 @@ const validateId = (req: Request, res: Response, next: NextFunction) => {
 	next();
 };
 
-export { validationMiddleware, validateId, paramsValidationMiddleware };
+export { validationMiddleware, validateId, queryValidationMiddleware };

@@ -3,7 +3,7 @@ import { Router } from "express";
 import jobWorkerController from "@controllers/job/job.worker.controlller";
 import commonController from "@common/controller/common.controller";
 import {
-	paramsValidationMiddleware,
+	queryValidationMiddleware,
 	validateId,
 	validationMiddleware,
 } from "@common/middleware/zod.middleware";
@@ -19,7 +19,7 @@ router.get("/search", workerAuthMiddleware, commonController.search);
 router.get(
 	"/next-job",
 	workerAuthMiddleware,
-	paramsValidationMiddleware(NextJobQueryParams),
+	queryValidationMiddleware(NextJobQueryParams),
 	jobWorkerController.getNextJobFromQueue
 );
 router.get(
