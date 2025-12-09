@@ -3,6 +3,7 @@ import type { Request, Response } from "express";
 import jobService from "@services/job/job.service";
 import { handleError } from "@utils/error.util";
 import queueService from "@services/queue/queue.service";
+import { JobStatus } from "@prisma/client";
 
 const addJobToQueue = async (req: Request, res: Response) => {
 	try {
@@ -41,6 +42,70 @@ const getJobById = async (req: Request, res: Response) => {
 	}
 };
 
+const getNextJobFromQueue = async (req: Request, res: Response) => {
+	try {
+		const queue_label = req.validQuery.queue_label;
+
+		const queue = await queueService.findByLabel(req.db, queue_label);
+
+		if (!queue) {
+			return handleError(res, "No queue found", 404);
+		}
+
+		const nextJob = await jobService.findNextJob(req.db, queue.id);
+
+		if (!nextJob) {
+			return handleError(res, "No job found", 404);
+		}
+
+		return res.status(200).json({
+			data: nextJob,
+		});
+	} catch (err) {
+		handleError(res, err);
+	}
+};
+
+const markAsCompleted = async (req: Request, res: Response) => {
+	try {
+		const updatedJob = await jobService.updateStatusAsCompleted(
+			req.db,
+			req.params.id as string
+		);
+
+		return res.status(200).json({
+			data: updatedJob,
+		});
+	} catch (err) {
+		handleError(res, err);
+	}
+};
+
+const markAsFailed = async (req: Request, res: Response) => {
+	try {
+		const jobId = req.params.id as string;
+
+		const job = await jobService.findById(req.db, jobId);
+
+		if (!job) {
+			return handleError(res, "Job not found", 404);
+		}
+
+		const updatedJob =
+			job.attempts >= 5
+				? await jobService.updateStatusAsFailed(req.db, jobId)
+				: await jobService.updateById(req.db, jobId, {
+						status: JobStatus.PENDING,
+				  });
+
+		return res.status(200).json({
+			data: updatedJob,
+		});
+	} catch (err) {
+		handleError(res, err);
+	}
+};
+
 const updateJobById = async (req: Request, res: Response) => {
 	try {
 		const updatedJob = await jobService.updateById(
@@ -57,5 +122,8 @@ const updateJobById = async (req: Request, res: Response) => {
 export default {
 	addJobToQueue,
 	getJobById,
+	getNextJobFromQueue,
 	updateJobById,
+	markAsCompleted,
+	markAsFailed,
 };

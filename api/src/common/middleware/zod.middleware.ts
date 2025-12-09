@@ -1,7 +1,11 @@
 import type { NextFunction, Request, Response } from "express";
 import zod from "zod";
 
-const validationMiddleware = (schema: zod.ZodTypeAny) => {
+const idParamSchema = zod.object({
+	id: zod.uuid(),
+});
+
+const validationMiddleware = (schema: zod.ZodType) => {
 	return (req: Request, res: Response, next: NextFunction) => {
 		const result = schema.safeParse(req.body);
 		if (!result.success) {
@@ -14,13 +18,26 @@ const validationMiddleware = (schema: zod.ZodTypeAny) => {
 	};
 };
 
-const validateId = (req: Request, res: Response, next: NextFunction) => {
-	const schema = zod.object({
-		id: zod.uuid(),
-	});
-	const result = schema.safeParse(req.params);
+const queryValidationMiddleware = <T extends zod.ZodType>(schema: T) => {
+	return (req: Request, res: Response, next: NextFunction) => {
+		const result = schema.safeParse(req.query);
 
-	if (result.success === false) {
+		if (!result.success) {
+			return res.status(400).json({
+				errors: result.error,
+			});
+		}
+
+		req.validQuery = result.data;
+
+		next();
+	};
+};
+
+const validateId = (req: Request, res: Response, next: NextFunction) => {
+	const result = idParamSchema.safeParse(req.params);
+
+	if (!result.success) {
 		return res.status(400).json({
 			errors: result.error,
 		});
@@ -28,4 +45,4 @@ const validateId = (req: Request, res: Response, next: NextFunction) => {
 	next();
 };
 
-export { validationMiddleware, validateId };
+export { validationMiddleware, validateId, queryValidationMiddleware };
