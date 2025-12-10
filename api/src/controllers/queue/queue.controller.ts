@@ -1,6 +1,9 @@
 import type { Request, Response } from "express";
+
 import type { Queue } from "@prisma/client";
+
 import queueService from "@services/queue/queue.service";
+
 import { handleError } from "@utils/error.util";
 
 export const addQueue = async (req: Request, res: Response) => {

@@ -1,9 +1,11 @@
 import { Router } from "express";
+
 import commonController from "@common/controller/common.controller";
 import {
 	validateId,
 	validationMiddleware,
 } from "@common/middleware/zod.middleware";
+
 import { ProjectCreateRequest } from "@models/project/requests/ProjectCreateRequest";
 import { ProjectUpdateRequest } from "@models/project/requests/ProjectUpdateRequest";
 
@@ -16,13 +18,13 @@ router.get("/:id", validateId, commonController.getById);
 router.post(
 	"/create",
 	validationMiddleware(ProjectCreateRequest),
-	commonController.upsert
+	commonController.upsert,
 );
 router.put(
 	"/:id",
 	validateId,
 	validationMiddleware(ProjectUpdateRequest),
-	commonController.upsert
+	commonController.upsert,
 );
 router.delete("/:id", validateId, commonController.remove);
 

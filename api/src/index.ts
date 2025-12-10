@@ -1,23 +1,23 @@
-import { configDotenv } from "dotenv";
 import Express, {
 	type NextFunction,
 	type Request,
 	type Response,
 } from "express";
+
 import cors from "cors";
+import { configDotenv } from "dotenv";
 import pinoHttp from "pino-http";
 
-import { logger } from "@utils/logger.util";
+import { prismaMiddleware } from "@common/middleware/prisma.middleware";
 
+import apiKeyRouter from "@routes/api-key/apiKey.routes";
+import jobWorkerRouter from "@routes/job/job.worker.routes";
+import projectRouter from "@routes/project/project.routes";
 import queueRouter from "@routes/queue/queue.routes";
 import userRouter from "@routes/user/user.routes";
-import projectRouter from "@routes/project/project.routes";
-import apiKeyRouter from "@routes/api-key/apiKey.routes";
 
-import jobWorkerRouter from "@routes/job/job.worker.routes";
-
-import { prismaMiddleware } from "@common/middleware/prisma.middleware";
 import { handleError } from "@utils/error.util";
+import { logger } from "@utils/logger.util";
 
 const NODE_ENV = process.env.NODE_ENV || "development";
 const envPath = NODE_ENV === "production" ? ".prod.env" : ".dev.env";
@@ -31,14 +31,14 @@ const app = Express();
 app.use(
 	cors({
 		origin: "*",
-	})
+	}),
 );
 
 app.use(
 	pinoHttp({
 		logger,
 		autoLogging: true,
-	})
+	}),
 );
 
 app.use(Express.json());
@@ -63,6 +63,6 @@ app.listen(process.env.PORT, () => {
 	console.log(
 		"Server listening at port ",
 		process.env.PORT,
-		process.env.DATABASE_URL
+		process.env.DATABASE_URL,
 	);
 });

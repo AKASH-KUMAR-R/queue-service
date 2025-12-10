@@ -1,0 +1,50 @@
+{
+  "overrides": [
+    {
+      "files": "src/**/*",
+      "options": {
+        "tabWidth": 4,
+        "useTabs": true,
+        "semi": true,
+
+        "plugins": ["@trivago/prettier-plugin-sort-imports"],
+        "importOrder": [
+          "^express(.*)$",
+          "<THIRD_PARTY_MODULES>",
+          "^@common/(.*)$",
+          "^@routes/(.*)$",
+          "^@models/(.*)$",
+          "^@controllers/(.*)$",
+          "^@services/(.*)$",
+          "^@utils/(.*)$",
+          "^[../]"
+        ],
+        "importOrderSeparation": true,
+        "importOrderSortSpecifiers": true
+      }
+    },
+    {
+      "files": "/**/*",
+      "options": {
+        "tabWidth": 4,
+        "useTabs": true,
+        "semi": true,
+
+        "plugins": ["@trivago/prettier-plugin-sort-imports"],
+        "importOrder": [
+          "^express(.*)$",
+          "<THIRD_PARTY_MODULES>",
+          "^@common/(.*)$",
+          "^@routes/(.*)$",
+          "^@models/(.*)$",
+          "^@controllers/(.*)$",
+          "^@services/(.*)$",
+          "^@utils/(.*)$",
+          "^[../]"
+        ],
+        "importOrderSeparation": true,
+        "importOrderSortSpecifiers": true
+      }
+    }
+  ]
+}

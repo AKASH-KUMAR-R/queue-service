@@ -1,0 +1,27 @@
+{
+  "overrides": [
+    {
+      "files": "src/**/*",
+      "options": {
+        "tabWidth": 4,
+        "useTabs": true,
+        "semi": true,
+
+        "plugins": ["@trivago/prettier-plugin-sort-imports"],
+        "importOrder": [
+          "^react(.*)$",
+          "<THIRD_PARTY_MODULES>",
+          "^@shared/(.*)$",
+          "^@components/(.*)$",
+          "^@entities/(.*)$",
+          "^@features/(.*)$",
+          "^@layouts/(.*)$",
+          "^@pages/(.*)$",
+          "^[../]"
+        ],
+        "importOrderSeparation": true,
+        "importOrderSortSpecifiers": true
+      }
+    }
+  ]
+}

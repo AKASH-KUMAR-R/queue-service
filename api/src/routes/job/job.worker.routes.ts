@@ -1,16 +1,18 @@
 import { Router } from "express";
 
-import jobWorkerController from "@controllers/job/job.worker.controlller";
 import commonController from "@common/controller/common.controller";
+import { workerAuthMiddleware } from "@common/middleware/auth.middleware";
 import {
 	queryValidationMiddleware,
 	validateId,
 	validationMiddleware,
 } from "@common/middleware/zod.middleware";
+
 import JobCreateRequest from "@models/job/requests/JobCreateRequest";
 import JobUpdateRequest from "@models/job/requests/JobUpdateRequest";
-import { workerAuthMiddleware } from "@common/middleware/auth.middleware";
 import NextJobQueryParams from "@models/job/requests/NextJobQueryParams";
+
+import jobWorkerController from "@controllers/job/job.worker.controlller";
 
 const router = Router();
 
@@ -20,34 +22,34 @@ router.get(
 	"/next-job",
 	workerAuthMiddleware,
 	queryValidationMiddleware(NextJobQueryParams),
-	jobWorkerController.getNextJobFromQueue
+	jobWorkerController.getNextJobFromQueue,
 );
 router.get(
 	"/:id",
 	workerAuthMiddleware,
 	validateId,
-	jobWorkerController.getJobById
+	jobWorkerController.getJobById,
 );
 
 router.post(
 	"/create",
 	workerAuthMiddleware,
 	validationMiddleware(JobCreateRequest),
-	jobWorkerController.addJobToQueue
+	jobWorkerController.addJobToQueue,
 );
 
 router.put(
 	"/mark-as-completed/:id",
 	workerAuthMiddleware,
 	validateId,
-	jobWorkerController.markAsCompleted
+	jobWorkerController.markAsCompleted,
 );
 
 router.put(
 	"/mark-as-failed/:id",
 	workerAuthMiddleware,
 	validateId,
-	jobWorkerController.markAsFailed
+	jobWorkerController.markAsFailed,
 );
 
 router.put(
@@ -55,6 +57,6 @@ router.put(
 	workerAuthMiddleware,
 	validateId,
 	validationMiddleware(JobUpdateRequest),
-	jobWorkerController.updateJobById
+	jobWorkerController.updateJobById,
 );
 export default router;

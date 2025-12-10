@@ -1,15 +1,17 @@
 import type { Request, Response } from "express";
 
-import jobService from "@services/job/job.service";
-import { handleError } from "@utils/error.util";
-import queueService from "@services/queue/queue.service";
 import { JobStatus } from "@prisma/client";
+
+import jobService from "@services/job/job.service";
+import queueService from "@services/queue/queue.service";
+
+import { handleError } from "@utils/error.util";
 
 const addJobToQueue = async (req: Request, res: Response) => {
 	try {
 		const queue = await queueService.findByLabel(
 			req.db,
-			req.body.queue_label
+			req.body.queue_label,
 		);
 		if (!queue) {
 			return handleError(res, "Queue not found", 404);
@@ -70,7 +72,7 @@ const markAsCompleted = async (req: Request, res: Response) => {
 	try {
 		const updatedJob = await jobService.updateStatusAsCompleted(
 			req.db,
-			req.params.id as string
+			req.params.id as string,
 		);
 
 		return res.status(200).json({
@@ -100,7 +102,7 @@ const markAsFailed = async (req: Request, res: Response) => {
 				? await jobService.updateStatusAsFailed(req.db, jobId)
 				: await jobService.updateById(req.db, jobId, {
 						status: JobStatus.PENDING,
-				  });
+					});
 
 		return res.status(200).json({
 			data: updatedJob,
@@ -115,7 +117,7 @@ const updateJobById = async (req: Request, res: Response) => {
 		const updatedJob = await jobService.updateById(
 			req.db,
 			req.params.id as string,
-			req.body
+			req.body,
 		);
 		res.status(200).json(updatedJob);
 	} catch (err) {

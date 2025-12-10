@@ -1,4 +1,5 @@
 import jwt, { type JwtPayload } from "jsonwebtoken";
+
 import { VERIFY_JWT_STATUS } from "@common/types/jwt";
 
 type VERIFY_JWT_RETURN = {
