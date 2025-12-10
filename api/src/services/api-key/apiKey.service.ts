@@ -2,7 +2,7 @@ import type { ApiKey, Prisma, PrismaClient } from "@prisma/client";
 
 const createApiKey = async (
 	db: PrismaClient,
-	data: Prisma.ApiKeyCreateInput
+	data: Prisma.ApiKeyCreateInput,
 ) => {
 	return await db.apiKey.create({
 		data,
@@ -31,7 +31,7 @@ const findApiKeyBySecret = async (db: PrismaClient, secret: string) => {
 const updateApiKeyById = async (
 	db: PrismaClient,
 	id: string,
-	data: Prisma.ApiKeyUpdateInput
+	data: Prisma.ApiKeyUpdateInput,
 ) => {
 	return await db.apiKey.update({
 		where: {

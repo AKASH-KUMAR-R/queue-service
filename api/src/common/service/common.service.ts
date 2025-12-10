@@ -1,10 +1,11 @@
 import type { Prisma, PrismaClient } from "@prisma/client";
+
 import type { ModelName } from "../types/model";
 
 const create = async <M extends ModelName>(
 	model: M,
 	db: PrismaClient,
-	data: Prisma.Args<PrismaClient[M], "create">["data"]
+	data: Prisma.Args<PrismaClient[M], "create">["data"],
 ) => {
 	return await (db[model] as any).create({ data });
 };
@@ -13,7 +14,7 @@ const updateById = async <M extends ModelName>(
 	model: M,
 	db: PrismaClient,
 	id: string,
-	data: Prisma.Args<PrismaClient[M], "update">["data"]
+	data: Prisma.Args<PrismaClient[M], "update">["data"],
 ) => {
 	return await (db[model] as any).update({
 		where: { id },
@@ -24,7 +25,7 @@ const updateById = async <M extends ModelName>(
 const deleteById = async <M extends ModelName>(
 	model: M,
 	db: PrismaClient,
-	id: string
+	id: string,
 ) => {
 	return await (db[model] as any).delete({
 		where: { id },
@@ -34,7 +35,7 @@ const deleteById = async <M extends ModelName>(
 const findById = async <M extends ModelName>(
 	model: M,
 	db: PrismaClient,
-	id: string
+	id: string,
 ) => {
 	return await (db[model] as any).findUnique({
 		where: { id },
@@ -50,7 +51,7 @@ const findMany = async <M extends ModelName>(
 	db: PrismaClient,
 	page: number,
 	limit: number,
-	query = {}
+	query = {},
 ) => {
 	const filters = { ...query, skip: (page - 1) * limit, take: limit };
 

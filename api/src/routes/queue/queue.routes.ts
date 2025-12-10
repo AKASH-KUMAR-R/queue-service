@@ -5,6 +5,7 @@ import {
 	validateId,
 	validationMiddleware,
 } from "@common/middleware/zod.middleware";
+
 import { QueueCreateRequest } from "@models/queue/requests/QueueCreateRequest";
 import { QueueUpdateRequest } from "@models/queue/requests/QueueUpdateRequest";
 
@@ -17,13 +18,13 @@ router.get("/:id", validateId, commonController.getById);
 router.post(
 	"/create",
 	validationMiddleware(QueueCreateRequest),
-	commonController.upsert
+	commonController.upsert,
 );
 router.put(
 	"/:id",
 	validateId,
 	validationMiddleware(QueueUpdateRequest),
-	commonController.update
+	commonController.update,
 );
 
 router.delete("/:id", validateId, commonController.remove);

@@ -1,4 +1,4 @@
-import { JobStatus, PrismaClient, type Job, type Prisma } from "@prisma/client";
+import { type Job, JobStatus, type Prisma, PrismaClient } from "@prisma/client";
 
 const createJob = async (db: PrismaClient, data: Prisma.JobCreateInput) => {
 	return await db.job.create({
@@ -37,7 +37,7 @@ const findNextJob = async (db: PrismaClient, queue_id: string) => {
 const updateById = async (
 	db: PrismaClient,
 	id: string,
-	updatedData: Prisma.JobUpdateInput
+	updatedData: Prisma.JobUpdateInput,
 ) => {
 	return await db.job.update({
 		where: {

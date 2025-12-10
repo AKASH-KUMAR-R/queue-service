@@ -5,8 +5,10 @@ import {
 	validateId,
 	validationMiddleware,
 } from "@common/middleware/zod.middleware";
-import apiKeyController from "@controllers/api-key/apiKey.controller";
+
 import ApiKeyCreateRequest from "@models/api-key/requests/ApiKeyCreateRequest";
+
+import apiKeyController from "@controllers/api-key/apiKey.controller";
 
 const router = Router();
 
@@ -18,7 +20,7 @@ router.put("/revoke/:id", validateId, apiKeyController.revoke);
 router.post(
 	"/create",
 	validationMiddleware(ApiKeyCreateRequest),
-	apiKeyController.create
+	apiKeyController.create,
 );
 
 export default router;

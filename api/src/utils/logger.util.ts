@@ -1,5 +1,5 @@
-import pino from "pino";
 import path from "path";
+import pino from "pino";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -18,7 +18,7 @@ export const logger = pino(
 						__dirname,
 						"..",
 						"..",
-						"./logs/all.log"
+						"./logs/all.log",
 					),
 				},
 			},
@@ -29,7 +29,7 @@ export const logger = pino(
 						__dirname,
 						"..",
 						"..",
-						"./logs/error.log"
+						"./logs/error.log",
 					),
 				},
 				level: "error",
@@ -42,5 +42,5 @@ export const logger = pino(
 				level: "info",
 			},
 		],
-	})
+	}),
 );

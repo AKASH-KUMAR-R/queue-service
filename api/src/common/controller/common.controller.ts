@@ -1,6 +1,9 @@
 import type { Request, Response } from "express";
-import { handleError } from "@utils/error.util";
+
 import commonService from "@common/service/common.service";
+
+import { handleError } from "@utils/error.util";
+
 import type { ModelName } from "../types/model";
 
 const models: Record<string, ModelName> = {
@@ -9,7 +12,7 @@ const models: Record<string, ModelName> = {
 	project: "project",
 	queue: "queue",
 	job: "job",
-	apiKey: "apiKey",
+	"api-key": "apiKey",
 };
 
 const queryFields: Record<string, string[]> = {
@@ -17,7 +20,7 @@ const queryFields: Record<string, string[]> = {
 	project: ["id", "title", "description"],
 	queue: ["id", "status", "createdAt"],
 	job: ["id", "status", "queue_id"],
-	apiKey: ["project_id"],
+	"api-key": ["project_id"],
 };
 
 export const upsert = async (req: Request, res: Response) => {
@@ -28,7 +31,7 @@ export const upsert = async (req: Request, res: Response) => {
 			"Model Path:",
 			modelPath,
 			"Request Path:",
-			req.originalUrl
+			req.originalUrl,
 		);
 
 		if (!modelPath || !models[modelPath]) {
@@ -38,7 +41,7 @@ export const upsert = async (req: Request, res: Response) => {
 		const result = await commonService.create(
 			models[modelPath],
 			req.db,
-			req.body
+			req.body,
 		);
 
 		res.status(201).json({
@@ -63,7 +66,7 @@ export const update = async (req: Request, res: Response) => {
 			models[modelPath],
 			req.db,
 			id,
-			req.body
+			req.body,
 		);
 		res.status(200).json({
 			data: result,
@@ -84,7 +87,7 @@ export const remove = async (req: Request, res: Response) => {
 		const result = await commonService.deleteById(
 			models[modelPath],
 			req.db,
-			id
+			id,
 		);
 		res.status(200).json({
 			data: result,
@@ -105,7 +108,7 @@ export const getById = async (req: Request, res: Response) => {
 		const result = await commonService.findById(
 			models[modelPath],
 			req.db,
-			id
+			id,
 		);
 		res.status(200).json({
 			data: result,
@@ -122,7 +125,7 @@ export const list = async (req: Request, res: Response) => {
 			"Model Path:",
 			modelPath,
 			"Request Path:",
-			req.originalUrl
+			req.originalUrl,
 		);
 		if (!modelPath || !models[modelPath]) {
 			return res.status(400).json({ error: "Invalid model path" });
@@ -163,7 +166,7 @@ export const search = async (req: Request, res: Response) => {
 			req.db,
 			page,
 			limit,
-			validQueryFields
+			validQueryFields,
 		);
 
 		res.status(200).json({

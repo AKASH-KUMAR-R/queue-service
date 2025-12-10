@@ -25,7 +25,7 @@ const findByLabel = async (db: PrismaClient, label: string) => {
 const updateById = async (
 	db: PrismaClient,
 	id: string,
-	updatedData: Partial<Queue>
+	updatedData: Partial<Queue>,
 ) => {
 	return await db.queue.update({
 		where: {
