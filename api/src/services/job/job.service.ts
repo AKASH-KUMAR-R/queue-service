@@ -15,11 +15,13 @@ const findById = async (db: PrismaClient, id: string) => {
 };
 
 const findNextJob = async (db: PrismaClient, queue_id: string) => {
+	const date = new Date();
 	return await db.$transaction(async (tx) => {
 		const job: Job[] = await tx.$queryRaw`
 			UPDATE "Job"
 			SET status = ${JobStatus.IN_PROGRESS}::"JobStatus",
-				attempts = attempts + 1
+				attempts = attempts + 1,
+				started_at = (NOW() AT TIME ZONE 'UTC')
 			WHERE id = (
 				SELECT id FROM "Job"
 				WHERE queue_id = ${queue_id} AND status = ${JobStatus.PENDING}::"JobStatus" AND attempts < 5
