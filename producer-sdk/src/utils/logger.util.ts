@@ -8,14 +8,14 @@ const COLORS = {
 export function createLogger() {
 	const infoLogger = (message: string, meta?: object) => {
 		console.log(
-			`${COLORS.green}(@qaas/worker-sdk)[INFO]:${COLORS.reset} ${COLORS.cyan}${message}${COLORS.reset}`,
+			`${COLORS.green}(@qaas/producer-sdk)[INFO]:${COLORS.reset} ${COLORS.cyan}${message}${COLORS.reset}`,
 			meta || ""
 		);
 	};
 
 	const errorLogger = (message: string, meta?: object) => {
 		console.error(
-			`${COLORS.red}(@qaas/worker-sdk)[ERROR]:${COLORS.reset} ${COLORS.cyan}${message}${COLORS.reset}`,
+			`${COLORS.red}(@qaas/producer-sdk)[ERROR]:${COLORS.reset} ${COLORS.cyan}${message}${COLORS.reset}`,
 			meta || ""
 		);
 	};

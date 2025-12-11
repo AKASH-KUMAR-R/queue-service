@@ -9,14 +9,14 @@ export default function createProducer(options: ProducerOptions) {
 		baseURL: options.baseUrl,
 	});
 
-	async function addJob(queue_label: string, options: AddJobOptions) {
+	async function addJob(queueLabel: string, options: AddJobOptions) {
 		try {
 			const res = await client.post("/api/worker/job/create", {
 				payload: options.payload,
-				queue_label,
+				queue_label: queueLabel,
 			});
 
-			logger.info(`Job added to ${queue_label}`);
+			logger.info(`Job added to ${queueLabel}`);
 			return res.data;
 		} catch (err) {
 			handleError(err);

@@ -4,5 +4,5 @@ export type ProducerOptions = {
 };
 
 export type AddJobOptions = {
-	payload: object;
+	payload: Record<string, any>;
 };

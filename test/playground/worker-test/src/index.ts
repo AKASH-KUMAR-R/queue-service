@@ -20,7 +20,7 @@ app.use(express.json());
 
 const worker = createWorker({
 	apiKey: process.env.WORKER_API_KEY || "",
-	queue_label: "email_queue",
+	queueLabel: "email_queue",
 	baseUrl: "http://localhost:4000",
 	pollingTime: 3000,
 });
