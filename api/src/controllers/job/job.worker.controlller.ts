@@ -24,7 +24,9 @@ const addJobToQueue = async (req: Request, res: Response) => {
 				},
 			},
 			payload: req.body.payload,
+			timeout_ms: req.body.timeout_ms,
 		});
+
 		res.status(201).json(result);
 	} catch (err) {
 		handleError(res, err);

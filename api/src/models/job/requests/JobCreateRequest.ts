@@ -4,6 +4,7 @@ const JobCreateRequest = zod
 	.object({
 		queue_label: zod.string(),
 		payload: zod.json(),
+		timeout_ms: zod.number().optional(),
 	})
 	.strip();
 
