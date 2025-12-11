@@ -60,9 +60,5 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 });
 
 app.listen(process.env.PORT, () => {
-	console.log(
-		"Server listening at port ",
-		process.env.PORT,
-		process.env.DATABASE_URL,
-	);
+	console.log("Server listening at port ", process.env.PORT);
 });

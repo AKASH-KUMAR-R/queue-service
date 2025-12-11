@@ -53,6 +53,13 @@ router.put(
 );
 
 router.put(
+	"/heartbeat/:id",
+	workerAuthMiddleware,
+	validateId,
+	jobWorkerController.heartBeatCheck,
+);
+
+router.put(
 	"/update/:id",
 	workerAuthMiddleware,
 	validateId,
