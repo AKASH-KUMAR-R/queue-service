@@ -53,7 +53,7 @@ const findMany = async <M extends ModelName>(
 	limit: number,
 	query = {},
 ) => {
-	const filters = { ...query, skip: (page - 1) * limit, take: limit };
+	const filters = { where: query, skip: (page - 1) * limit, take: limit };
 
 	const result = await (db[model] as any).findMany(filters);
 	const total = await (db[model] as any).count({ where: query });
