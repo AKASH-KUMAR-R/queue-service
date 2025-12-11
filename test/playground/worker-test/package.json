@@ -22,6 +22,7 @@
 		"typescript": "^5.9.3"
 	},
 	"dependencies": {
+		"@qaas/producer-sdk": "file:../../../producer-sdk",
 		"@qaas/worker-sdk": "file:../../../worker-sdk",
 		"cors": "^2.8.5",
 		"dotenv": "^17.2.3",
