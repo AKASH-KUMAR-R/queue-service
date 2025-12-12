@@ -129,6 +129,7 @@ export const detectAndHandleDeadJobs = async () => {
 
 		const result = await prisma.job.updateMany({
 			where: {
+				id: job.id,
 				status: JobStatus.IN_PROGRESS,
 				attempts: job.attempts,
 				started_at: {
