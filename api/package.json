@@ -8,7 +8,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "generate": "dotenv -e .dev.env -- npx zenstack generate",
     "migrate:dev": "dotenv -e .dev.env -- prisma migrate dev",
-    "migrate:prod": "dotenv -e .prod.env -- prisma migrate deploy"
+    "migrate:prod": "dotenv -e .prod.env -- prisma migrate deploy",
+    "scheduler:dev": "dotenv -e .dev.env -- npx tsx ./src/scheduler/index.ts",
+    "scheduler:prod": "dotenv -e .prod.env -- npx tsx ./src/scheduler/index.ts"
   },
   "keywords": [],
   "author": "",

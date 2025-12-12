@@ -19,7 +19,9 @@ const findNextJob = async (db: PrismaClient, queue_id: string) => {
 		const job: Job[] = await tx.$queryRaw`
 			UPDATE "Job"
 			SET status = ${JobStatus.IN_PROGRESS}::"JobStatus",
-				attempts = attempts + 1
+				attempts = attempts + 1,
+				started_at = (NOW() AT TIME ZONE 'UTC'),
+				heartbeated_at = (NOW() AT TIME ZONE 'UTC')
 			WHERE id = (
 				SELECT id FROM "Job"
 				WHERE queue_id = ${queue_id} AND status = ${JobStatus.PENDING}::"JobStatus" AND attempts < 5

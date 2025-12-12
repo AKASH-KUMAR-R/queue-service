@@ -11,7 +11,9 @@ model Job extends Base {
     payload Json    
     status JobStatus @default(PENDING)
     attempts Int @default(0)
-
+    started_at DateTime?
+    heartbeated_at DateTime?
+    timeout_ms Int?
 
 }
 

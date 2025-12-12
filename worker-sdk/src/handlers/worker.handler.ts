@@ -1,3 +1,5 @@
+import { AxiosError } from "axios";
+
 import getApiClient from "../config/axios.config";
 import type { Job, WorkerOptions } from "../types/worker";
 import { wait } from "../utils/run.util";
@@ -22,6 +24,12 @@ export default function createWorker(options: WorkerOptions) {
 		return res.data.data || null;
 	}
 
+	async function heartBeat(jobId: string) {
+		logger.info("Sending heartbeat for job:", { jobId });
+		const res = await api.put(`/api/worker/job/heartbeat/${jobId}`);
+		return res;
+	}
+
 	async function jobFailed(jobId: string) {
 		const res = await api.put(`/api/worker/job/mark-as-failed/${jobId}`);
 
@@ -37,13 +45,44 @@ export default function createWorker(options: WorkerOptions) {
 	}
 
 	async function runJob(job: Job, handler: (payload: any) => Promise<void>) {
+		let intervalId: NodeJS.Timeout | undefined;
+		let cancelJob = false;
+
 		try {
+			intervalId = setInterval(async () => {
+				try {
+					const res = await heartBeat(job.id);
+
+					const jobStatus = res.data;
+
+					if (jobStatus.shouldStop) {
+						cancelJob = true;
+					}
+				} catch (err) {
+					if (err instanceof AxiosError) {
+						if (err.response?.status === 409) {
+							cancelJob = true;
+							return;
+						}
+					}
+					handleError(err);
+				}
+			}, 4000);
+
 			await handler(job.payload);
+
+			if (cancelJob) {
+				throw new Error("Job was cancelled during execution.");
+			}
 
 			await jobCompleted(job.id);
 		} catch (err) {
 			handleError(err);
 			await jobFailed(job.id);
+		} finally {
+			if (intervalId) {
+				clearInterval(intervalId);
+			}
 		}
 	}
 

@@ -24,7 +24,9 @@ const addJobToQueue = async (req: Request, res: Response) => {
 				},
 			},
 			payload: req.body.payload,
+			timeout_ms: req.body.timeout_ms,
 		});
+
 		res.status(201).json(result);
 	} catch (err) {
 		handleError(res, err);
@@ -39,6 +41,40 @@ const getJobById = async (req: Request, res: Response) => {
 		}
 
 		res.status(200).json(job);
+	} catch (err) {
+		handleError(res, err);
+	}
+};
+
+const heartBeatCheck = async (req: Request, res: Response) => {
+	try {
+		const jobId = req.params.id as string;
+
+		const job = await jobService.findById(req.db, jobId);
+
+		if (!job) {
+			return handleError(res, "Job not found", 404);
+		}
+
+		if (job.status !== JobStatus.IN_PROGRESS) {
+			return res.status(409).json({
+				jobId: job.id,
+				jobStatus: job.status,
+				shouldStop: true,
+			});
+		}
+
+		await jobService.updateById(req.db, jobId, {
+			heartbeated_at: new Date(),
+		});
+
+		res.status(200).json({
+			data: {
+				jobId: job.id,
+				jobStatus: job.status,
+				shouldStop: false,
+			},
+		});
 	} catch (err) {
 		handleError(res, err);
 	}
@@ -130,6 +166,7 @@ export default {
 	getJobById,
 	getNextJobFromQueue,
 	updateJobById,
+	heartBeatCheck,
 	markAsCompleted,
 	markAsFailed,
 };
