@@ -4,6 +4,7 @@ import { logger } from "@utils/logger.util";
 import { prisma } from "@utils/prisma.util";
 
 const MAX_ATTEMPTS = 5;
+const ALLOWED_HEARTBEAT_GAP = 30000;
 
 export const detectAndHandleTimeoutJobs = async () => {
 	const timeoutedJobs = await prisma.job.findMany({
@@ -84,5 +85,65 @@ export const detectAndHandleTimeoutJobs = async () => {
 				`Job with id ${job.id} is marked ad failed due to timeout...`,
 			);
 		}
+	}
+};
+
+export const detectAndHandleDeadJobs = async () => {
+	const deadJobs = await prisma.job.findMany({
+		where: {
+			status: JobStatus.IN_PROGRESS,
+			started_at: {
+				not: null,
+			},
+		},
+		orderBy: {
+			created_at: "asc",
+		},
+		take: 100,
+	});
+
+	logger.info(`Found ${deadJobs.length} for dead check`);
+
+	if (!deadJobs.length) {
+		return;
+	}
+
+	const now = new Date();
+
+	const expiredJobs = deadJobs.filter((eachOne) => {
+		if (!eachOne.heartbeated_at) return false;
+
+		return (
+			now.getTime() - eachOne.heartbeated_at.getTime() >
+			ALLOWED_HEARTBEAT_GAP
+		);
+	});
+
+	logger.info(
+		`${expiredJobs.length} jobs are dead due to delay in heartbeat`,
+	);
+
+	for (const job of expiredJobs) {
+		const status =
+			job.attempts >= MAX_ATTEMPTS ? JobStatus.FAILED : JobStatus.PENDING;
+
+		const result = await prisma.job.updateMany({
+			where: {
+				status: JobStatus.IN_PROGRESS,
+				attempts: job.attempts,
+				started_at: {
+					not: null,
+				},
+			},
+			data: {
+				status,
+			},
+		});
+
+		if (!result.count) {
+			continue;
+		}
+
+		logger.info(`Job with id ${job.id} is marked as ${status}`);
 	}
 };
