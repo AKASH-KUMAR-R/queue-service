@@ -14,6 +14,8 @@ model Job extends Base {
     started_at DateTime?
     heartbeated_at DateTime?
     timeout_ms Int?
+    priority Int @default(5)  // 1 to 10. 1 means high and 10 means low
+    scheduled_at DateTime?
 
 }
 
