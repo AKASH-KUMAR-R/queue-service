@@ -24,8 +24,8 @@ const findNextJob = async (db: PrismaClient, queue_id: string) => {
 				heartbeated_at = (NOW() AT TIME ZONE 'UTC')
 			WHERE id = (
 				SELECT id FROM "Job"
-				WHERE queue_id = ${queue_id} AND status = ${JobStatus.PENDING}::"JobStatus" AND attempts < 5
-				ORDER BY "created_at" ASC
+				WHERE queue_id = ${queue_id} AND status = ${JobStatus.PENDING}::"JobStatus" AND attempts < 5 AND (scheduled_at IS NULL OR scheduled_at <= NOW())
+				ORDER BY "priority" ASC, "created_at" ASC
 				FOR UPDATE SKIP LOCKED
 				LIMIT 1
 			)
