@@ -9,25 +9,26 @@ configDotenv();
 const app = express();
 
 app.use(
-	cors({
-		origin: "*",
-		credentials: true,
-		allowedHeaders: ["x-api-key"],
-	})
+    cors({
+        origin: "*",
+        credentials: true,
+        allowedHeaders: ["x-api-key"],
+    })
 );
 
 app.use(express.json());
 
 const worker = createWorker({
-	apiKey: process.env.WORKER_API_KEY || "",
-	queueLabel: "email_queue",
-	baseUrl: "http://localhost:4000",
-	pollingTime: 3000,
+    apiKey: process.env.WORKER_API_KEY || "",
+    queueLabel: "email_queue",
+    baseUrl: "http://localhost:4000",
+    pollingTime: 3000,
+    concurrency: 4,
 });
 
 const producer = createProducer({
-	baseUrl: "http://localhost:4000",
-	apiKey: process.env.WORKER_API_KEY || "",
+    baseUrl: "http://localhost:4000",
+    apiKey: process.env.WORKER_API_KEY || "",
 });
 
 // const addMockJobs = async () => {
@@ -48,12 +49,12 @@ const producer = createProducer({
 // addMockJobs();
 
 app.listen(process.env.PORT || 8000, () => {
-	console.log("Worker test server is running");
+    console.log("Worker test server is running");
 
-	worker.run(async (payload) => {
-		console.log("Processing job:", payload);
-		// Simulate job processing
-		await new Promise((resolve) => setTimeout(resolve, 10000));
-		console.log("Job completed:", payload);
-	});
+    worker.run(async (payload) => {
+        console.log("Processing job:", payload);
+        // Simulate job processing
+        await new Promise((resolve) => setTimeout(resolve, 10000));
+        console.log("Job completed:", payload);
+    });
 });
