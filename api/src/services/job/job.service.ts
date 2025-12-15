@@ -14,6 +14,7 @@ const findById = async (db: PrismaClient, id: string) => {
 	});
 };
 
+// REFER: Research more about time converions at db level
 const findNextJob = async (db: PrismaClient, queue_id: string) => {
 	return await db.$transaction(async (tx) => {
 		const job: Job[] = await tx.$queryRaw`
