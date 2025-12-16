@@ -18,7 +18,6 @@ export default function createWorker(workerOptions: WorkerOptions) {
         apiKey: options.apiKey,
     });
 
-    // TODO: handling the raise condition when multiple workers try to update the set value.
     let isShuttingDown = false;
     const activeJobs = new Set<string>([]);
 
@@ -136,7 +135,6 @@ export default function createWorker(workerOptions: WorkerOptions) {
                 continue;
             }
 
-            // TODO: adding a callback function as a second parameter to handler for user to check whether the job is cancelled or not.
             activeJobs.add(nextJob.id);
             try {
                 await runJob(nextJob, handler);
