@@ -2,6 +2,8 @@
 import "../../base/base.model.zmodel";
 import "../../project/dbmodel/project.model.zmodel";
 import "../../job/dbmodel/job.model.zmodel";
+import "../../queue-limit/dbmodel/queueRateLimit.model.zmodel";
+
 model Queue extends Base {
     
     id String @id @default(uuid())
@@ -12,8 +14,11 @@ model Queue extends Base {
     status QueueStatus @default(ACTIVE)
     // order_no Int
 
+    rate_limit_count Int? @gte(1)
+    rate_limit_window_ms Int? @gte(1)
 
     jobs Job[] @relation("QueueJobs")
+    queueRateLimiter QueueRateLimiter? @relation("QueueRateLimiter")
 }
 
 
