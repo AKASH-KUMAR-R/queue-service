@@ -1,7 +1,7 @@
 import { AxiosError } from "axios";
 
 import getApiClient from "../config/axios.config";
-import type { Job, WorkerOptions } from "../types/worker";
+import type { Job, JobHandlerFunc, WorkerOptions } from "../types/worker";
 import { wait } from "../utils/run.util";
 
 import { logger } from "../config/logger.config";
@@ -70,7 +70,7 @@ export default function createWorker(workerOptions: WorkerOptions) {
         process.off("SIGINT", signalHandler);
     }
 
-    async function runJob(job: Job, handler: (payload: any) => Promise<void>) {
+    async function runJob(job: Job, handler: JobHandlerFunc) {
         let intervalId: NodeJS.Timeout | undefined;
         let cancelJob = false;
 
@@ -99,7 +99,9 @@ export default function createWorker(workerOptions: WorkerOptions) {
                 }
             }, 4000);
 
-            await handler(job.payload);
+            await handler(job.payload, () => {
+                return cancelJob;
+            });
 
             if (cancelJob) {
                 throw new Error("Job was cancelled during execution.");
@@ -116,7 +118,7 @@ export default function createWorker(workerOptions: WorkerOptions) {
         }
     }
 
-    async function checkForJobs(handler: (payload: any) => Promise<void>) {
+    async function checkForJobs(handler: JobHandlerFunc) {
         logger.info(`Worker started for queue: ${options.queueLabel}`);
 
         while (!isShuttingDown) {
