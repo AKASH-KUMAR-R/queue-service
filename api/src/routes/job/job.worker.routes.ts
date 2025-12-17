@@ -14,6 +14,8 @@ import NextJobQueryParams from "@models/job/requests/NextJobQueryParams";
 
 import jobWorkerController from "@controllers/job/job.worker.controlller";
 
+import jobRateLimiter from "./job.middleware";
+
 const router = Router();
 
 router.get("/list", workerAuthMiddleware, commonController.list);
@@ -22,6 +24,7 @@ router.get(
 	"/next-job",
 	workerAuthMiddleware,
 	queryValidationMiddleware(NextJobQueryParams),
+	jobRateLimiter,
 	jobWorkerController.getNextJobFromQueue,
 );
 router.get(

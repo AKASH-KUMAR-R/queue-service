@@ -9,6 +9,8 @@ import {
 import { QueueCreateRequest } from "@models/queue/requests/QueueCreateRequest";
 import { QueueUpdateRequest } from "@models/queue/requests/QueueUpdateRequest";
 
+import queueController from "@controllers/queue/queue.controller";
+
 const router = Router();
 
 router.get("/list", commonController.list);
@@ -18,8 +20,9 @@ router.get("/:id", validateId, commonController.getById);
 router.post(
 	"/create",
 	validationMiddleware(QueueCreateRequest),
-	commonController.upsert,
+	queueController.addQueue,
 );
+
 router.put(
 	"/:id",
 	validateId,
