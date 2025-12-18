@@ -117,7 +117,7 @@ export default function createWorker(workerOptions: WorkerOptions) {
         }
     }
 
-    async function checkForJobs(handler: JobHandlerFunc) {
+    async function processWaitingJobs(handler: JobHandlerFunc) {
         logger.info(`Worker started for queue: ${options.queueLabel}`);
 
         while (!isShuttingDown) {
@@ -153,9 +153,7 @@ export default function createWorker(workerOptions: WorkerOptions) {
         logger.info("Worker shutdown complete");
     }
 
-    async function initiateWorkersWithConcurrency(
-        handler: (payload: any) => Promise<void>
-    ) {
+    async function initiateWorkersWithConcurrency(handler: JobHandlerFunc) {
         if (isShuttingDown) {
             return;
         }
@@ -165,7 +163,7 @@ export default function createWorker(workerOptions: WorkerOptions) {
         const workers: Promise<void>[] = [];
 
         for (let i = 0; i < (options.concurrency || 1); i++) {
-            workers.push(checkForJobs(handler));
+            workers.push(processWaitingJobs(handler));
         }
 
         await Promise.all(workers);

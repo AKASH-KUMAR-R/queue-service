@@ -28,5 +28,5 @@ export enum JobStatus {
 
 export type JobHandlerFunc = (
     payload: any,
-    cancelledCallbackFunc?: () => Boolean
+    cancelledCallbackFunc?: () => boolean
 ) => Promise<void>;
