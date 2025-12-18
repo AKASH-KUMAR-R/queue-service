@@ -56,7 +56,10 @@ model Queue {
     project Project @relation("ProjectQueues", fields: [project_id], references: [id])
     project_id String
     status QueueStatus @default(ACTIVE)
+    rate_limit_count Int?
+    rate_limit_window_ms Int?
     jobs Job[] @relation("QueueJobs")
+    queueRateLimiter QueueRateLimiter? @relation("QueueRateLimiter")
 }
 
 model Job {
@@ -71,6 +74,18 @@ model Job {
     started_at DateTime?
     heartbeated_at DateTime?
     timeout_ms Int?
+    priority Int @default(5)
+    scheduled_at DateTime?
+}
+
+model QueueRateLimiter {
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt()
+    id String @id() @default(uuid())
+    job_count Int @default(0)
+    last_reset_at DateTime?
+    queue Queue @relation("QueueRateLimiter", fields: [queue_id], references: [id])
+    queue_id String @unique()
 }
 
 model ApiKey {
