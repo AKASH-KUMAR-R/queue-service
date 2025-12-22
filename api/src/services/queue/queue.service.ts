@@ -28,7 +28,10 @@ const createQueue = async (
 	});
 };
 
-const findById = async (db: PrismaClient, id: string) => {
+const findById = async (
+	db: PrismaClient | Prisma.TransactionClient,
+	id: string,
+) => {
 	return await db.queue.findUnique({
 		where: {
 			id,

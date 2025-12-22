@@ -1,4 +1,13 @@
-import { type Job, JobStatus, type Prisma, PrismaClient } from "@prisma/client";
+import {
+	type Job,
+	JobEventType,
+	JobStatus,
+	type Prisma,
+	PrismaClient,
+} from "@prisma/client";
+
+import jobEventsService from "@services/job-events/jobEvents.service";
+import queueService from "@services/queue/queue.service";
 
 const createJob = async (db: PrismaClient, data: Prisma.JobCreateInput) => {
 	return await db.job.create({
@@ -32,7 +41,25 @@ const findNextJob = async (db: PrismaClient, queue_id: string) => {
 			RETURNING *;
 		`;
 
-		return job[0] ?? null;
+		console.log("Acquired Job:", job);
+		if (!job[0]) return null;
+
+		const queue = await queueService.findById(tx, queue_id);
+
+		if (!queue) {
+			throw new Error("Queue not found");
+		}
+
+		await jobEventsService.createJobEvent(tx, {
+			project_id: queue.project_id,
+			queue_id: job[0].queue_id,
+			job_id: job[0].id,
+			event_type: JobEventType.JOB_ACQUIRED,
+			prev_status: JobStatus.PENDING,
+			next_status: JobStatus.IN_PROGRESS,
+		});
+
+		return job[0];
 	});
 };
 

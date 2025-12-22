@@ -11,6 +11,7 @@ import pinoHttp from "pino-http";
 import { prismaMiddleware } from "@common/middleware/prisma.middleware";
 
 import apiKeyRouter from "@routes/api-key/apiKey.routes";
+import jobEventsRouter from "@routes/job-events/jobEvents.routes";
 import jobWorkerRouter from "@routes/job/job.worker.routes";
 import projectRouter from "@routes/project/project.routes";
 import queueRouter from "@routes/queue/queue.routes";
@@ -50,7 +51,7 @@ app.use("/api/dashboard/queue", queueRouter);
 app.use("/api/dashboard/user", userRouter);
 app.use("/api/dashboard/project", projectRouter);
 app.use("/api/dashboard/api-key", apiKeyRouter);
-
+app.use("/api/dashboard/job-events", jobEventsRouter);
 //  routes for worker sdk
 app.use("/api/worker/job", jobWorkerRouter);
 

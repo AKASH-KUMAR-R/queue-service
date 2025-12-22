@@ -13,6 +13,7 @@ const models: Record<string, ModelName> = {
 	queue: "queue",
 	job: "job",
 	"api-key": "apiKey",
+	"job-events": "jobEvents",
 };
 
 const queryFields: Record<string, string[]> = {
@@ -21,6 +22,15 @@ const queryFields: Record<string, string[]> = {
 	queue: ["id", "status", "createdAt"],
 	job: ["id", "status", "queue_id"],
 	"api-key": ["project_id"],
+	"job-events": [
+		"id",
+		"job_id",
+		"event_type",
+		"queue_id",
+		"project_id",
+		"prev_status",
+		"next_status",
+	],
 };
 
 export const upsert = async (req: Request, res: Response) => {
