@@ -3,6 +3,7 @@ import "../../base/base.model.zmodel";
 import "../../project/dbmodel/project.model.zmodel";
 import "../../job/dbmodel/job.model.zmodel";
 import "../../queue-limit/dbmodel/queueRateLimit.model.zmodel";
+import "../../job-event/dbmodel/jobEvent.model.zmodel";
 
 model Queue extends Base {
     
@@ -19,6 +20,8 @@ model Queue extends Base {
 
     jobs Job[] @relation("QueueJobs")
     queueRateLimiter QueueRateLimiter? @relation("QueueRateLimiter")
+
+    job_events JobEvents[] @relation("Queue Job Events")
 }
 
 

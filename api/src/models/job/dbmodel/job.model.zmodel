@@ -1,6 +1,7 @@
 
 import "../../base/base.model.zmodel";
 import "../../queue/dbmodel/queue.model.zmodel";
+import "../../job-event/dbmodel/jobEvent.model.zmodel";
 
 model Job extends Base {
     id String @id @default(uuid())
@@ -16,7 +17,9 @@ model Job extends Base {
     timeout_ms Int?
     priority Int @default(5) @gte(1) @lte(10)  // 1 to 10. 1 means high and 10 means low
     scheduled_at DateTime?
-    
+
+    job_events JobEvents[] @relation("Job Events")
+     
 }
 
 enum JobStatus {

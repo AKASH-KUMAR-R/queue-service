@@ -25,6 +25,17 @@ enum JobStatus {
     FAILED
 }
 
+enum JobEventType {
+    JOB_CREATED
+    JOB_ACQUIRED
+    JOB_STARTED
+    JOB_HEARTBEAT
+    JOB_COMPLETED
+    JOB_FAILED
+    JOB_REQUEUED
+    JOB_EXPIRED
+}
+
 model User {
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt()
@@ -45,6 +56,7 @@ model Project {
     user_id String
     queues Queue[] @relation("ProjectQueues")
     apiKeys ApiKey[] @relation("ProjectApiKeys")
+    job_events JobEvents[] @relation("Project Job Events")
 }
 
 model Queue {
@@ -60,6 +72,7 @@ model Queue {
     rate_limit_window_ms Int?
     jobs Job[] @relation("QueueJobs")
     queueRateLimiter QueueRateLimiter? @relation("QueueRateLimiter")
+    job_events JobEvents[] @relation("Queue Job Events")
 }
 
 model Job {
@@ -76,6 +89,23 @@ model Job {
     timeout_ms Int?
     priority Int @default(5)
     scheduled_at DateTime?
+    job_events JobEvents[] @relation("Job Events")
+}
+
+model JobEvents {
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt()
+    id String @id() @default(uuid())
+    job Job @relation("Job Events", fields: [job_id], references: [id])
+    job_id String
+    queue Queue @relation("Queue Job Events", fields: [queue_id], references: [id])
+    queue_id String
+    project Project @relation("Project Job Events", fields: [project_id], references: [id])
+    project_id String
+    event_type JobEventType
+    prev_status JobStatus
+    next_status JobStatus
+    metadata Json?
 }
 
 model QueueRateLimiter {

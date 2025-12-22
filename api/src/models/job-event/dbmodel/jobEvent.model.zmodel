@@ -1,0 +1,35 @@
+
+import "../../base/base.model.zmodel";
+import "../../job/dbmodel/job.model.zmodel";
+import "../../queue/dbmodel/queue.model.zmodel";
+import "../../project/dbmodel/project.model.zmodel";
+
+model JobEvents extends Base {
+    id String @id @default(uuid())
+
+    job Job @relation("Job Events", fields: [job_id], references: [id])
+    job_id String
+
+    queue Queue @relation("Queue Job Events", fields: [queue_id], references: [id])
+    queue_id String 
+
+    project Project @relation("Project Job Events", fields: [project_id], references: [id])
+    project_id String
+
+    event_type JobEventType
+    prev_status JobStatus
+    next_status JobStatus
+    metadata Json?
+}
+
+
+enum JobEventType {
+    JOB_CREATED
+    JOB_ACQUIRED
+    JOB_STARTED
+    JOB_HEARTBEAT
+    JOB_COMPLETED
+    JOB_FAILED
+    JOB_REQUEUED
+    JOB_EXPIRED
+}
