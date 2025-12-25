@@ -23,6 +23,11 @@ const addJobToQueue = async (req: Request, res: Response) => {
 					id: queue.id,
 				},
 			},
+			project: {
+				connect: {
+					id: queue.project_id,
+				},
+			},
 			payload: req.body.payload,
 			timeout_ms: req.body.timeout_ms,
 			priority: req.body.priority,
