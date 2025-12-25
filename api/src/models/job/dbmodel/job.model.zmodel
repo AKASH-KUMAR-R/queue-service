@@ -2,12 +2,16 @@
 import "../../base/base.model.zmodel";
 import "../../queue/dbmodel/queue.model.zmodel";
 import "../../job-event/dbmodel/jobEvent.model.zmodel";
+import "../../project/dbmodel/project.model.zmodel";
 
 model Job extends Base {
     id String @id @default(uuid())
 
     queue Queue @relation("QueueJobs", fields: [queue_id], references: [id])
     queue_id String 
+
+    project Project? @relation("ProjectJobs", fields: [project_id], references: [id])
+    project_id String?
 
     payload Json    
     status JobStatus @default(PENDING)

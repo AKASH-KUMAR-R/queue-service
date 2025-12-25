@@ -3,6 +3,7 @@ import "../../base/base.model.zmodel";
 import "../../user/dbmodel/user.model.zmodel";
 import "../../queue/dbmodel/queue.model.zmodel";
 import "../../api-key/dbmodel/apiKey.model.zmodel";
+import "../../job/dbmodel/job.model.zmodel";
 import "../../job-event/dbmodel/jobEvent.model.zmodel";
 
 model Project extends Base {
@@ -17,5 +18,6 @@ model Project extends Base {
     // Relations 
     queues Queue[] @relation("ProjectQueues")
     apiKeys ApiKey[] @relation("ProjectApiKeys")
+    jobs Job[] @relation("ProjectJobs")
     job_events JobEvents[] @relation("Project Job Events")
 }

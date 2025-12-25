@@ -56,6 +56,7 @@ model Project {
     user_id String
     queues Queue[] @relation("ProjectQueues")
     apiKeys ApiKey[] @relation("ProjectApiKeys")
+    jobs Job[] @relation("ProjectJobs")
     job_events JobEvents[] @relation("Project Job Events")
 }
 
@@ -81,6 +82,8 @@ model Job {
     id String @id() @default(uuid())
     queue Queue @relation("QueueJobs", fields: [queue_id], references: [id])
     queue_id String
+    project Project? @relation("ProjectJobs", fields: [project_id], references: [id])
+    project_id String?
     payload Json
     status JobStatus @default(PENDING)
     attempts Int @default(0)
