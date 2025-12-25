@@ -71,9 +71,7 @@ const heartBeatCheck = async (req: Request, res: Response) => {
 			});
 		}
 
-		await jobService.updateById(req.db, jobId, {
-			heartbeated_at: new Date(),
-		});
+		await jobService.updateHeartbeat(req.db, jobId);
 
 		res.status(200).json({
 			data: {

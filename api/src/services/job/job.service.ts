@@ -23,6 +23,7 @@ const findById = async (db: PrismaClient, id: string) => {
 	});
 };
 
+// TODO: Optimize by reducing repeated calls of queue from controller and here
 const findNextJob = async (db: PrismaClient, queue_id: string) => {
 	return await db.$transaction(async (tx) => {
 		const job: Job[] = await tx.$queryRaw`
@@ -63,6 +64,34 @@ const findNextJob = async (db: PrismaClient, queue_id: string) => {
 	});
 };
 
+const updateHeartbeat = async (db: PrismaClient, id: string) => {
+	return await db.$transaction(async (tx) => {
+		const updatedJob = await tx.job.update({
+			where: {
+				id,
+			},
+			data: {
+				heartbeated_at: new Date(),
+			},
+		});
+
+		if (!updatedJob) {
+			throw new Error("Job not found");
+		}
+
+		await jobEventsService.createJobEvent(tx, {
+			project_id: updatedJob.project_id,
+			queue_id: updatedJob.queue_id,
+			job_id: updatedJob.id,
+			event_type: JobEventType.JOB_HEARTBEAT,
+			prev_status: updatedJob.status,
+			next_status: updatedJob.status,
+		});
+
+		return updatedJob;
+	});
+};
+
 const updateById = async (
 	db: PrismaClient,
 	id: string,
@@ -77,24 +106,54 @@ const updateById = async (
 };
 
 const updateStatusAsCompleted = async (db: PrismaClient, id: string) => {
-	return await db.job.update({
-		where: {
-			id,
-		},
-		data: {
-			status: JobStatus.COMPLETED,
-		},
+	return await db.$transaction(async (tx) => {
+		const updatedJob = await tx.job.update({
+			where: {
+				id,
+			},
+			data: {
+				status: JobStatus.COMPLETED,
+			},
+		});
+
+		if (!updatedJob) {
+			throw new Error("Job not found");
+		}
+
+		await jobEventsService.createJobEvent(tx, {
+			project_id: updatedJob.project_id,
+			queue_id: updatedJob.queue_id,
+			job_id: updatedJob.id,
+			event_type: JobEventType.JOB_COMPLETED,
+			prev_status: JobStatus.IN_PROGRESS,
+			next_status: JobStatus.COMPLETED,
+		});
 	});
 };
 
 const updateStatusAsFailed = async (db: PrismaClient, id: string) => {
-	return await db.job.update({
-		where: {
-			id,
-		},
-		data: {
-			status: JobStatus.FAILED,
-		},
+	return await db.$transaction(async (tx) => {
+		const updatedJob = await tx.job.update({
+			where: {
+				id,
+			},
+			data: {
+				status: JobStatus.FAILED,
+			},
+		});
+
+		if (!updatedJob) {
+			throw new Error("Job not found");
+		}
+
+		await jobEventsService.createJobEvent(tx, {
+			project_id: updatedJob.project_id,
+			queue_id: updatedJob.queue_id,
+			job_id: updatedJob.id,
+			event_type: JobEventType.JOB_FAILED,
+			prev_status: JobStatus.IN_PROGRESS,
+			next_status: JobStatus.FAILED,
+		});
 	});
 };
 
@@ -105,4 +164,5 @@ export default {
 	updateById,
 	updateStatusAsCompleted,
 	updateStatusAsFailed,
+	updateHeartbeat,
 };
