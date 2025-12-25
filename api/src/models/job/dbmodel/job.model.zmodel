@@ -10,8 +10,8 @@ model Job extends Base {
     queue Queue @relation("QueueJobs", fields: [queue_id], references: [id])
     queue_id String 
 
-    project Project? @relation("ProjectJobs", fields: [project_id], references: [id])
-    project_id String?
+    project Project @relation("ProjectJobs", fields: [project_id], references: [id])
+    project_id String
 
     payload Json    
     status JobStatus @default(PENDING)
