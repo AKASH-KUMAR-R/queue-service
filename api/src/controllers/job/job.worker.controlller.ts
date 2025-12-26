@@ -141,9 +141,7 @@ const markAsFailed = async (req: Request, res: Response) => {
 		const updatedJob =
 			job.attempts >= 5
 				? await jobService.updateStatusAsFailed(req.db, jobId)
-				: await jobService.updateById(req.db, jobId, {
-						status: JobStatus.PENDING,
-					});
+				: await jobService.updateStatusAsPendingByRetry(req.db, jobId);
 
 		return res.status(200).json({
 			data: updatedJob,

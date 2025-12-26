@@ -157,6 +157,32 @@ const updateStatusAsFailed = async (db: PrismaClient, id: string) => {
 	});
 };
 
+const updateStatusAsPendingByRetry = async (db: PrismaClient, id: string) => {
+	return await db.$transaction(async (tx) => {
+		const updatedJob = await tx.job.update({
+			where: {
+				id,
+			},
+			data: {
+				status: JobStatus.PENDING,
+			},
+		});
+
+		if (!updatedJob) {
+			throw new Error("Job not found");
+		}
+
+		await jobEventsService.createJobEvent(tx, {
+			project_id: updatedJob.project_id,
+			queue_id: updatedJob.queue_id,
+			job_id: updatedJob.id,
+			event_type: JobEventType.JOB_REQUEUED,
+			prev_status: JobStatus.IN_PROGRESS,
+			next_status: JobStatus.PENDING,
+		});
+	});
+};
+
 export default {
 	createJob,
 	findById,
@@ -164,5 +190,6 @@ export default {
 	updateById,
 	updateStatusAsCompleted,
 	updateStatusAsFailed,
+	updateStatusAsPendingByRetry,
 	updateHeartbeat,
 };
