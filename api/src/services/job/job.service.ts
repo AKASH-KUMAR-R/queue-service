@@ -7,6 +7,7 @@ import {
 } from "@prisma/client";
 
 import jobEventsService from "@services/job-events/jobEvents.service";
+import queueMetricsService from "@services/queue-metrics/queueMetrics.service";
 import queueService from "@services/queue/queue.service";
 
 const createJob = async (db: PrismaClient, data: Prisma.JobCreateInput) => {
@@ -50,6 +51,8 @@ const findNextJob = async (db: PrismaClient, queue_id: string) => {
 		if (!queue) {
 			throw new Error("Queue not found");
 		}
+
+		await queueMetricsService.incActiveMetric(tx, queue.id);
 
 		await jobEventsService.createJobEvent(tx, {
 			project_id: queue.project_id,
@@ -120,6 +123,8 @@ const updateStatusAsCompleted = async (db: PrismaClient, id: string) => {
 			throw new Error("Job not found");
 		}
 
+		await queueMetricsService.incCompletedMetric(tx, updatedJob.queue_id);
+
 		await jobEventsService.createJobEvent(tx, {
 			project_id: updatedJob.project_id,
 			queue_id: updatedJob.queue_id,
@@ -146,6 +151,7 @@ const updateStatusAsFailed = async (db: PrismaClient, id: string) => {
 			throw new Error("Job not found");
 		}
 
+		await queueMetricsService.incFailedMetric(tx, updatedJob.queue_id);
 		await jobEventsService.createJobEvent(tx, {
 			project_id: updatedJob.project_id,
 			queue_id: updatedJob.queue_id,
@@ -171,6 +177,8 @@ const updateStatusAsPendingByRetry = async (db: PrismaClient, id: string) => {
 		if (!updatedJob) {
 			throw new Error("Job not found");
 		}
+
+		await queueMetricsService.decActiveMetric(tx, updatedJob.queue_id);
 
 		await jobEventsService.createJobEvent(tx, {
 			project_id: updatedJob.project_id,
