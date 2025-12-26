@@ -74,6 +74,7 @@ model Queue {
     jobs Job[] @relation("QueueJobs")
     queueRateLimiter QueueRateLimiter? @relation("QueueRateLimiter")
     job_events JobEvents[] @relation("Queue Job Events")
+    queue_metrics QueueMetrics? @relation("QueueMetrics")
 }
 
 model Job {
@@ -119,6 +120,17 @@ model QueueRateLimiter {
     last_reset_at DateTime?
     queue Queue @relation("QueueRateLimiter", fields: [queue_id], references: [id])
     queue_id String @unique()
+}
+
+model QueueMetrics {
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt()
+    id String @id() @default(uuid())
+    queue Queue @relation("QueueMetrics", fields: [queue_id], references: [id])
+    queue_id String @unique()
+    active_jobs BigInt @default(0)
+    failed_jobs BigInt @default(0)
+    completed_jobs BigInt @default(0)
 }
 
 model ApiKey {
