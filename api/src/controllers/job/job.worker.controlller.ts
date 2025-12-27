@@ -23,6 +23,11 @@ const addJobToQueue = async (req: Request, res: Response) => {
 					id: queue.id,
 				},
 			},
+			project: {
+				connect: {
+					id: queue.project_id,
+				},
+			},
 			payload: req.body.payload,
 			timeout_ms: req.body.timeout_ms,
 			priority: req.body.priority,
@@ -66,9 +71,7 @@ const heartBeatCheck = async (req: Request, res: Response) => {
 			});
 		}
 
-		await jobService.updateById(req.db, jobId, {
-			heartbeated_at: new Date(),
-		});
+		await jobService.updateHeartbeat(req.db, jobId);
 
 		res.status(200).json({
 			data: {
@@ -138,9 +141,7 @@ const markAsFailed = async (req: Request, res: Response) => {
 		const updatedJob =
 			job.attempts >= 5
 				? await jobService.updateStatusAsFailed(req.db, jobId)
-				: await jobService.updateById(req.db, jobId, {
-						status: JobStatus.PENDING,
-					});
+				: await jobService.updateStatusAsPendingByRetry(req.db, jobId);
 
 		return res.status(200).json({
 			data: updatedJob,

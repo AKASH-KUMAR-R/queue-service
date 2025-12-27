@@ -3,6 +3,7 @@ import type { Request, Response } from "express";
 import commonService from "@common/service/common.service";
 
 import { handleError } from "@utils/error.util";
+import { enhancedSerialize } from "@utils/response.util";
 
 import type { ModelName } from "../types/model";
 
@@ -13,14 +14,26 @@ const models: Record<string, ModelName> = {
 	queue: "queue",
 	job: "job",
 	"api-key": "apiKey",
+	"job-events": "jobEvents",
+	"queue-metrics": "queueMetrics",
 };
 
 const queryFields: Record<string, string[]> = {
 	user: ["id", "name", "email"],
 	project: ["id", "title", "description"],
-	queue: ["id", "status", "createdAt"],
+	queue: ["id", "status", "created_at"],
 	job: ["id", "status", "queue_id"],
 	"api-key": ["project_id"],
+	"job-events": [
+		"id",
+		"job_id",
+		"event_type",
+		"queue_id",
+		"project_id",
+		"prev_status",
+		"next_status",
+	],
+	"queue-metrics": ["id", "queue_id"],
 };
 
 export const upsert = async (req: Request, res: Response) => {
@@ -44,9 +57,11 @@ export const upsert = async (req: Request, res: Response) => {
 			req.body,
 		);
 
-		res.status(201).json({
-			data: result,
-		});
+		res.status(201).json(
+			enhancedSerialize({
+				data: result,
+			}),
+		);
 	} catch (err) {
 		handleError(res, err, 500);
 	}
@@ -68,9 +83,11 @@ export const update = async (req: Request, res: Response) => {
 			id,
 			req.body,
 		);
-		res.status(200).json({
-			data: result,
-		});
+		res.status(200).json(
+			enhancedSerialize({
+				data: result,
+			}),
+		);
 	} catch (err) {
 		handleError(res, err, 500);
 	}
@@ -89,9 +106,11 @@ export const remove = async (req: Request, res: Response) => {
 			req.db,
 			id,
 		);
-		res.status(200).json({
-			data: result,
-		});
+		res.status(200).json(
+			enhancedSerialize({
+				data: result,
+			}),
+		);
 	} catch (err) {
 		handleError(res, err, 500);
 	}
@@ -110,9 +129,11 @@ export const getById = async (req: Request, res: Response) => {
 			req.db,
 			id,
 		);
-		res.status(200).json({
-			data: result,
-		});
+		res.status(200).json(
+			enhancedSerialize({
+				data: result,
+			}),
+		);
 	} catch (err) {
 		handleError(res, err, 500);
 	}
@@ -131,9 +152,11 @@ export const list = async (req: Request, res: Response) => {
 			return res.status(400).json({ error: "Invalid model path" });
 		}
 		const result = await commonService.findAll(models[modelPath], req.db);
-		res.status(200).json({
-			data: result,
-		});
+		res.status(200).json(
+			enhancedSerialize({
+				data: result,
+			}),
+		);
 	} catch (err) {
 		handleError(res, err, 500);
 	}
@@ -169,9 +192,11 @@ export const search = async (req: Request, res: Response) => {
 			validQueryFields,
 		);
 
-		res.status(200).json({
-			data: result,
-		});
+		res.status(200).json(
+			enhancedSerialize({
+				data: result,
+			}),
+		);
 	} catch (err) {
 		handleError(res, err, 500);
 	}

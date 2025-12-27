@@ -1,0 +1,15 @@
+import "../../base/base.model.zmodel";
+import "../../queue/dbmodel/queue.model.zmodel";
+
+
+model QueueMetrics extends Base {
+    id String @id @default(uuid())
+
+    queue Queue @relation("QueueMetrics", fields: [queue_id], references: [id])
+    queue_id String @unique()
+
+    active_jobs BigInt @default(0)
+    failed_jobs BigInt @default(0)
+    completed_jobs BigInt @default(0)
+
+}

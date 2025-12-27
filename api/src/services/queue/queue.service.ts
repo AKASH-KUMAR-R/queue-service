@@ -1,11 +1,13 @@
 import type { Prisma, PrismaClient, Queue } from "@prisma/client";
 
+import queueMetricsService from "@services/queue-metrics/queueMetrics.service";
+
 const createQueue = async (
 	db: PrismaClient,
 	data: Prisma.QueueUncheckedCreateInput,
 	queueLimiter?: Prisma.QueueRateLimiterUncheckedCreateWithoutQueueInput,
 ) => {
-	const newQueue: Prisma.QueueCreateInput = {
+	const enrichedData: Prisma.QueueCreateInput = {
 		label: data.label,
 		description: data.description || null,
 		rate_limit_count: data.rate_limit_count || null,
@@ -16,19 +18,28 @@ const createQueue = async (
 	};
 
 	if (queueLimiter) {
-		newQueue.queueRateLimiter = {
+		enrichedData.queueRateLimiter = {
 			create: {
 				job_count: queueLimiter.job_count || 0,
 			},
 		};
 	}
 
-	return await db.queue.create({
-		data: newQueue,
+	return await db.$transaction(async (tx) => {
+		const newQueue = await tx.queue.create({
+			data: enrichedData,
+		});
+
+		await queueMetricsService.create(tx, { queue_id: newQueue.id });
+
+		return newQueue;
 	});
 };
 
-const findById = async (db: PrismaClient, id: string) => {
+const findById = async (
+	db: PrismaClient | Prisma.TransactionClient,
+	id: string,
+) => {
 	return await db.queue.findUnique({
 		where: {
 			id,
