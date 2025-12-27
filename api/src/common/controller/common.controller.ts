@@ -3,6 +3,7 @@ import type { Request, Response } from "express";
 import commonService from "@common/service/common.service";
 
 import { handleError } from "@utils/error.util";
+import { enhancedSerialize } from "@utils/response.util";
 
 import type { ModelName } from "../types/model";
 
@@ -56,9 +57,11 @@ export const upsert = async (req: Request, res: Response) => {
 			req.body,
 		);
 
-		res.status(201).json({
-			data: result,
-		});
+		res.status(201).json(
+			enhancedSerialize({
+				data: result,
+			}),
+		);
 	} catch (err) {
 		handleError(res, err, 500);
 	}
@@ -80,9 +83,11 @@ export const update = async (req: Request, res: Response) => {
 			id,
 			req.body,
 		);
-		res.status(200).json({
-			data: result,
-		});
+		res.status(200).json(
+			enhancedSerialize({
+				data: result,
+			}),
+		);
 	} catch (err) {
 		handleError(res, err, 500);
 	}
@@ -101,9 +106,11 @@ export const remove = async (req: Request, res: Response) => {
 			req.db,
 			id,
 		);
-		res.status(200).json({
-			data: result,
-		});
+		res.status(200).json(
+			enhancedSerialize({
+				data: result,
+			}),
+		);
 	} catch (err) {
 		handleError(res, err, 500);
 	}
@@ -122,9 +129,11 @@ export const getById = async (req: Request, res: Response) => {
 			req.db,
 			id,
 		);
-		res.status(200).json({
-			data: result,
-		});
+		res.status(200).json(
+			enhancedSerialize({
+				data: result,
+			}),
+		);
 	} catch (err) {
 		handleError(res, err, 500);
 	}
@@ -143,9 +152,11 @@ export const list = async (req: Request, res: Response) => {
 			return res.status(400).json({ error: "Invalid model path" });
 		}
 		const result = await commonService.findAll(models[modelPath], req.db);
-		res.status(200).json({
-			data: result,
-		});
+		res.status(200).json(
+			enhancedSerialize({
+				data: result,
+			}),
+		);
 	} catch (err) {
 		handleError(res, err, 500);
 	}
@@ -181,9 +192,11 @@ export const search = async (req: Request, res: Response) => {
 			validQueryFields,
 		);
 
-		res.status(200).json({
-			data: result,
-		});
+		res.status(200).json(
+			enhancedSerialize({
+				data: result,
+			}),
+		);
 	} catch (err) {
 		handleError(res, err, 500);
 	}
