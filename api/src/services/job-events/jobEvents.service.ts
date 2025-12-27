@@ -4,7 +4,7 @@ const createJobEvent = async (
 	db: PrismaClient | Prisma.TransactionClient,
 	data: Prisma.JobEventsUncheckedCreateInput,
 ) => {
-	const enforcedData: Prisma.JobEventsCreateInput = {
+	const enrichedData: Prisma.JobEventsCreateInput = {
 		project: {
 			connect: { id: data.project_id },
 		},
@@ -20,11 +20,11 @@ const createJobEvent = async (
 	};
 
 	if (data.metadata) {
-		enforcedData.metadata = data.metadata;
+		enrichedData.metadata = data.metadata;
 	}
 
 	return await db.jobEvents.create({
-		data: enforcedData,
+		data: enrichedData,
 	});
 };
 

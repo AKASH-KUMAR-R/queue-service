@@ -133,6 +133,8 @@ const updateStatusAsCompleted = async (db: PrismaClient, id: string) => {
 			prev_status: JobStatus.IN_PROGRESS,
 			next_status: JobStatus.COMPLETED,
 		});
+
+		return updatedJob;
 	});
 };
 
@@ -160,6 +162,8 @@ const updateStatusAsFailed = async (db: PrismaClient, id: string) => {
 			prev_status: JobStatus.IN_PROGRESS,
 			next_status: JobStatus.FAILED,
 		});
+
+		return updatedJob;
 	});
 };
 
@@ -188,6 +192,8 @@ const updateStatusAsPendingByRetry = async (db: PrismaClient, id: string) => {
 			prev_status: JobStatus.IN_PROGRESS,
 			next_status: JobStatus.PENDING,
 		});
+
+		return updatedJob;
 	});
 };
 
