@@ -17,6 +17,7 @@ const create = async (
 	});
 };
 
+// TODO: active job non zero check
 const incCompletedMetric = async (
 	db: PrismaClient | Prisma.TransactionClient,
 	queue_id: string,
@@ -36,6 +37,7 @@ const incCompletedMetric = async (
 	});
 };
 
+// TODO: active job non zero check
 const incFailedMetric = async (
 	db: PrismaClient | Prisma.TransactionClient,
 	queue_id: string,
@@ -71,6 +73,7 @@ const incActiveMetric = async (
 	});
 };
 
+// TODO: active job non zero check
 const decActiveMetric = async (
 	db: PrismaClient | Prisma.TransactionClient,
 	queue_id: string,
