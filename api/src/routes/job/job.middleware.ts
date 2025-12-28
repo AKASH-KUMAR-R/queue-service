@@ -68,4 +68,19 @@ const jobRateLimiter = async (
 	}
 };
 
+export const extractWorkerId = async (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+) => {
+	const workerId = req.headers["x-worker-id"] as string;
+
+	if (!workerId) {
+		return handleError(res, "X-Worker-Id is required", 400);
+	}
+
+	req.worker_id = workerId;
+
+	next();
+};
 export default jobRateLimiter;
