@@ -17,22 +17,26 @@ const addJobToQueue = async (req: Request, res: Response) => {
 			return handleError(res, "Queue not found", 404);
 		}
 
-		const result = await jobService.createJob(req.db, {
-			queue: {
-				connect: {
-					id: queue.id,
+		const result = await jobService.createJob(
+			req.db,
+			{
+				queue: {
+					connect: {
+						id: queue.id,
+					},
 				},
-			},
-			project: {
-				connect: {
-					id: queue.project_id,
+				project: {
+					connect: {
+						id: queue.project_id,
+					},
 				},
+				payload: req.body.payload,
+				timeout_ms: req.body.timeout_ms,
+				priority: req.body.priority,
+				scheduled_at: req.body.scheduled_at,
 			},
-			payload: req.body.payload,
-			timeout_ms: req.body.timeout_ms,
-			priority: req.body.priority,
-			scheduled_at: req.body.scheduled_at,
-		});
+			req.worker_id as string,
+		);
 
 		res.status(201).json(result);
 	} catch (err) {
@@ -71,7 +75,11 @@ const heartBeatCheck = async (req: Request, res: Response) => {
 			});
 		}
 
-		await jobService.updateHeartbeat(req.db, jobId);
+		await jobService.updateHeartbeat(
+			req.db,
+			jobId,
+			req.worker_id as string,
+		);
 
 		res.status(200).json({
 			data: {
@@ -95,7 +103,11 @@ const getNextJobFromQueue = async (req: Request, res: Response) => {
 			return handleError(res, "No queue found", 404);
 		}
 
-		const nextJob = await jobService.findNextJob(req.db, queue.id);
+		const nextJob = await jobService.findNextJob(
+			req.db,
+			queue.id,
+			req.worker_id as string,
+		);
 
 		if (!nextJob) {
 			return handleError(res, "No job found", 404);
@@ -114,6 +126,7 @@ const markAsCompleted = async (req: Request, res: Response) => {
 		const updatedJob = await jobService.updateStatusAsCompleted(
 			req.db,
 			req.params.id as string,
+			req.worker_id as string,
 		);
 
 		return res.status(200).json({
@@ -140,8 +153,16 @@ const markAsFailed = async (req: Request, res: Response) => {
 
 		const updatedJob =
 			job.attempts >= 5
-				? await jobService.updateStatusAsFailed(req.db, jobId)
-				: await jobService.updateStatusAsPendingByRetry(req.db, jobId);
+				? await jobService.updateStatusAsFailed(
+						req.db,
+						jobId,
+						req.worker_id as string,
+					)
+				: await jobService.updateStatusAsPendingByRetry(
+						req.db,
+						jobId,
+						req.worker_id as string,
+					);
 
 		return res.status(200).json({
 			data: updatedJob,

@@ -16,6 +16,7 @@ const models: Record<string, ModelName> = {
 	"api-key": "apiKey",
 	"job-events": "jobEvents",
 	"queue-metrics": "queueMetrics",
+	"worker-status": "workerStatus",
 };
 
 const queryFields: Record<string, string[]> = {
