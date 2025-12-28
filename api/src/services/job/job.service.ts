@@ -70,7 +70,12 @@ const findNextJob = async (
 			RETURNING *;
 		`;
 
-		if (!job[0]) return null;
+		if (!job[0]) {
+			await workerStatusService.upsertForHeartbeat(tx, worker_id, {
+				queue_id,
+			});
+			return null;
+		}
 
 		const queue = await queueService.findById(tx, queue_id);
 
@@ -173,19 +178,6 @@ const updateStatusAsCompleted = async (
 			queue_id: updatedJob.queue_id,
 		});
 
-		await workerStatusService.upsert(tx, worker_id, {
-			create: {
-				worker_id,
-				last_seen: new Date(),
-				queue_id: updatedJob.queue_id,
-			},
-			update: {
-				last_seen: new Date(),
-				active_jobs: {
-					decrement: 1,
-				},
-			},
-		});
 		await jobEventsService.createJobEvent(tx, {
 			project_id: updatedJob.project_id,
 			queue_id: updatedJob.queue_id,
@@ -218,20 +210,6 @@ const updateStatusAsFailed = async (
 		if (!updatedJob) {
 			throw new Error("Job not found");
 		}
-
-		await workerStatusService.upsert(tx, worker_id, {
-			create: {
-				worker_id,
-				last_seen: new Date(),
-				queue_id: updatedJob.queue_id,
-			},
-			update: {
-				last_seen: new Date(),
-				active_jobs: {
-					decrement: 1,
-				},
-			},
-		});
 
 		await workerStatusService.upsertForJobReleased(tx, worker_id, {
 			queue_id: updatedJob.queue_id,
@@ -276,20 +254,6 @@ const updateStatusAsPendingByRetry = async (
 
 		await workerStatusService.upsertForJobReleased(tx, worker_id, {
 			queue_id: updatedJob.queue_id,
-		});
-
-		await workerStatusService.upsert(tx, worker_id, {
-			create: {
-				worker_id,
-				last_seen: new Date(),
-				queue_id: updatedJob.queue_id,
-			},
-			update: {
-				last_seen: new Date(),
-				active_jobs: {
-					decrement: 1,
-				},
-			},
 		});
 
 		await jobEventsService.createJobEvent(tx, {
