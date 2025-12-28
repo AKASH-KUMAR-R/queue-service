@@ -75,6 +75,7 @@ model Queue {
     queueRateLimiter QueueRateLimiter? @relation("QueueRateLimiter")
     job_events JobEvents[] @relation("Queue Job Events")
     queue_metrics QueueMetrics? @relation("QueueMetrics")
+    queue_workers WorkerStatus[] @relation("QueueWorkers")
 }
 
 model Job {
@@ -109,6 +110,7 @@ model JobEvents {
     event_type JobEventType
     prev_status JobStatus
     next_status JobStatus
+    worker_id String
     metadata Json?
 }
 
@@ -131,6 +133,18 @@ model QueueMetrics {
     active_jobs BigInt @default(0)
     failed_jobs BigInt @default(0)
     completed_jobs BigInt @default(0)
+}
+
+model WorkerStatus {
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt()
+    id String @id() @default(uuid())
+    queue Queue @relation("QueueWorkers", fields: [queue_id], references: [id])
+    queue_id String
+    worker_id String @unique()
+    active_jobs BigInt @default(0)
+    last_seen DateTime
+    metadata Json?
 }
 
 model ApiKey {

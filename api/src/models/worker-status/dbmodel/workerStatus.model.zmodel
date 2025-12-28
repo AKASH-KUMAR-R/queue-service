@@ -1,0 +1,17 @@
+
+import "../../base/base.model.zmodel";
+import "../../queue/dbmodel/queue.model.zmodel";
+
+model WorkerStatus extends Base {
+
+    id String @id @default(uuid())
+
+    queue Queue @relation( "QueueWorkers", fields: [queue_id], references: [id])
+    queue_id String
+
+    worker_id String @unique
+    active_jobs BigInt @default(0)
+    last_seen DateTime
+
+    metadata Json?
+}
