@@ -6,6 +6,7 @@ import { wait } from "../utils/run.util";
 
 import { logger } from "../config/logger.config";
 import handleError from "../utils/error.util";
+import { generateWorkerId } from "../utils/worker.util";
 
 export default function createWorker(workerOptions: WorkerOptions) {
     const options: WorkerOptions = {
@@ -13,9 +14,12 @@ export default function createWorker(workerOptions: WorkerOptions) {
         ...workerOptions,
     };
 
+    const workerId = generateWorkerId(options.queueLabel);
+
     const api = getApiClient({
         baseURL: options.baseUrl,
         apiKey: options.apiKey,
+        workerId,
     });
 
     let isShuttingDown = false;
@@ -159,6 +163,11 @@ export default function createWorker(workerOptions: WorkerOptions) {
         }
 
         setupSignalHandlers();
+
+        logger.info(
+            `Starting workers with concurrency: ${options.concurrency}.`
+        );
+        logger.info(`Worker ID: ${workerId}`);
 
         const workers: Promise<void>[] = [];
 
