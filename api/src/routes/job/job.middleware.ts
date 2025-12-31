@@ -46,13 +46,7 @@ const jobRateLimiter = async (
 				req.db,
 				queueRateLimit.id,
 			);
-		} else if (queueRateLimit.job_count < queue.rate_limit_count) {
-			logger.info("Job count in rate limiter incremented");
-			await queueRateLimiterService.incQueueRateLimitCounter(
-				req.db,
-				queueRateLimit.id,
-			);
-		} else {
+		} else if (queueRateLimit.job_count >= queue.rate_limit_count) {
 			return handleError(
 				res,
 				new Error(

@@ -41,14 +41,17 @@ const queueRateLimitExpired = async (db: PrismaClient, id: string) => {
 		where: { id },
 		data: {
 			last_reset_at: new Date(),
-			job_count: 1,
+			job_count: 0,
 		},
 	});
 
 	return result;
 };
 
-const incQueueRateLimitCounter = async (db: PrismaClient, id: string) => {
+const incQueueRateLimitCounter = async (
+	db: PrismaClient | Prisma.TransactionClient,
+	id: string,
+) => {
 	const result = await db.queueRateLimiter.update({
 		where: { id },
 		data: {

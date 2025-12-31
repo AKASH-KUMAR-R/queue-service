@@ -7,6 +7,7 @@ import {
 } from "@prisma/client";
 
 import jobEventsService from "@services/job-events/jobEvents.service";
+import queueRateLimiterService from "@services/queue-limit/queueRateLimiter.service";
 import queueMetricsService from "@services/queue-metrics/queueMetrics.service";
 import queueService from "@services/queue/queue.service";
 import workerStatusService from "@services/worker-status/workerStatus.service";
@@ -77,10 +78,17 @@ const findNextJob = async (
 			return null;
 		}
 
-		const queue = await queueService.findById(tx, queue_id);
+		const queue = await queueService.findByIdWithQueueLimiter(tx, queue_id);
 
 		if (!queue) {
 			throw new Error("Queue not found");
+		}
+
+		if (queue.queueRateLimiter) {
+			await queueRateLimiterService.incQueueRateLimitCounter(
+				tx,
+				queue.queueRateLimiter.id,
+			);
 		}
 
 		await queueMetricsService.incActiveMetric(tx, queue.id);

@@ -66,6 +66,20 @@ const findByLabelWithQueueLimiter = async (db: PrismaClient, label: string) => {
 	});
 };
 
+const findByIdWithQueueLimiter = async (
+	db: PrismaClient | Prisma.TransactionClient,
+	id: string,
+) => {
+	return await db.queue.findUnique({
+		where: {
+			id,
+		},
+		include: {
+			queueRateLimiter: true,
+		},
+	});
+};
+
 const updateById = async (
 	db: PrismaClient,
 	id: string,
@@ -92,6 +106,7 @@ export default {
 	findById,
 	findByLabel,
 	findByLabelWithQueueLimiter,
+	findByIdWithQueueLimiter,
 	updateById,
 	deleteQueue,
 };
