@@ -19,6 +19,7 @@ model JobEvents extends Base {
     event_type JobEventType
     prev_status JobStatus
     next_status JobStatus
+    worker_id String
     metadata Json?
 }
 

@@ -14,7 +14,7 @@ import NextJobQueryParams from "@models/job/requests/NextJobQueryParams";
 
 import jobWorkerController from "@controllers/job/job.worker.controlller";
 
-import jobRateLimiter from "./job.middleware";
+import jobRateLimiter, { extractWorkerId } from "./job.middleware";
 
 const router = Router();
 
@@ -25,12 +25,14 @@ router.get(
 	workerAuthMiddleware,
 	queryValidationMiddleware(NextJobQueryParams),
 	jobRateLimiter,
+	extractWorkerId,
 	jobWorkerController.getNextJobFromQueue,
 );
 router.get(
 	"/:id",
 	workerAuthMiddleware,
 	validateId,
+	extractWorkerId,
 	jobWorkerController.getJobById,
 );
 
@@ -38,6 +40,7 @@ router.post(
 	"/create",
 	workerAuthMiddleware,
 	validationMiddleware(JobCreateRequest),
+	extractWorkerId,
 	jobWorkerController.addJobToQueue,
 );
 
@@ -45,6 +48,7 @@ router.put(
 	"/mark-as-completed/:id",
 	workerAuthMiddleware,
 	validateId,
+	extractWorkerId,
 	jobWorkerController.markAsCompleted,
 );
 
@@ -52,6 +56,7 @@ router.put(
 	"/mark-as-failed/:id",
 	workerAuthMiddleware,
 	validateId,
+	extractWorkerId,
 	jobWorkerController.markAsFailed,
 );
 
@@ -59,6 +64,7 @@ router.put(
 	"/heartbeat/:id",
 	workerAuthMiddleware,
 	validateId,
+	extractWorkerId,
 	jobWorkerController.heartBeatCheck,
 );
 
@@ -66,6 +72,7 @@ router.put(
 	"/update/:id",
 	workerAuthMiddleware,
 	validateId,
+	extractWorkerId,
 	validationMiddleware(JobUpdateRequest),
 	jobWorkerController.updateJobById,
 );

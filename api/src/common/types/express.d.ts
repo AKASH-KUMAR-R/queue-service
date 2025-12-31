@@ -7,6 +7,7 @@ declare global {
 			db: PrismaClient;
 			user?: User;
 			project?: Project;
+			worker_id?: string;
 		}
 	}
 }

@@ -14,6 +14,7 @@ const createJobEvent = async (
 		queue: {
 			connect: { id: data.queue_id },
 		},
+		worker_id: data.worker_id,
 		event_type: data.event_type,
 		prev_status: data.prev_status,
 		next_status: data.next_status,

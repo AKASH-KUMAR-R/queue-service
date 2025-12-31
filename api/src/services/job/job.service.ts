@@ -9,10 +9,33 @@ import {
 import jobEventsService from "@services/job-events/jobEvents.service";
 import queueMetricsService from "@services/queue-metrics/queueMetrics.service";
 import queueService from "@services/queue/queue.service";
+import workerStatusService from "@services/worker-status/workerStatus.service";
 
-const createJob = async (db: PrismaClient, data: Prisma.JobCreateInput) => {
-	return await db.job.create({
-		data,
+const createJob = async (
+	db: PrismaClient,
+	data: Prisma.JobCreateInput,
+	worker_id: string,
+) => {
+	return await db.$transaction(async (tx) => {
+		const newJob = await tx.job.create({
+			data,
+		});
+
+		await workerStatusService.upsertForHeartbeat(tx, worker_id, {
+			queue_id: newJob.queue_id,
+		});
+
+		await jobEventsService.createJobEvent(tx, {
+			project_id: newJob.project_id,
+			queue_id: newJob.queue_id,
+			job_id: newJob.id,
+			worker_id,
+			event_type: JobEventType.JOB_CREATED,
+			prev_status: JobStatus.PENDING,
+			next_status: JobStatus.PENDING,
+		});
+
+		return newJob;
 	});
 };
 
@@ -25,7 +48,11 @@ const findById = async (db: PrismaClient, id: string) => {
 };
 
 // TODO: Optimize by reducing repeated calls of queue from controller and here
-const findNextJob = async (db: PrismaClient, queue_id: string) => {
+const findNextJob = async (
+	db: PrismaClient,
+	queue_id: string,
+	worker_id: string,
+) => {
 	return await db.$transaction(async (tx) => {
 		const job: Job[] = await tx.$queryRaw`
 			UPDATE "Job"
@@ -43,8 +70,12 @@ const findNextJob = async (db: PrismaClient, queue_id: string) => {
 			RETURNING *;
 		`;
 
-		console.log("Acquired Job:", job);
-		if (!job[0]) return null;
+		if (!job[0]) {
+			await workerStatusService.upsertForHeartbeat(tx, worker_id, {
+				queue_id,
+			});
+			return null;
+		}
 
 		const queue = await queueService.findById(tx, queue_id);
 
@@ -54,10 +85,15 @@ const findNextJob = async (db: PrismaClient, queue_id: string) => {
 
 		await queueMetricsService.incActiveMetric(tx, queue.id);
 
+		await workerStatusService.upsertForJobAcquired(tx, worker_id, {
+			queue_id: queue.id,
+		});
+
 		await jobEventsService.createJobEvent(tx, {
 			project_id: queue.project_id,
 			queue_id: job[0].queue_id,
 			job_id: job[0].id,
+			worker_id,
 			event_type: JobEventType.JOB_ACQUIRED,
 			prev_status: JobStatus.PENDING,
 			next_status: JobStatus.IN_PROGRESS,
@@ -67,7 +103,11 @@ const findNextJob = async (db: PrismaClient, queue_id: string) => {
 	});
 };
 
-const updateHeartbeat = async (db: PrismaClient, id: string) => {
+const updateHeartbeat = async (
+	db: PrismaClient,
+	id: string,
+	worker_id: string,
+) => {
 	return await db.$transaction(async (tx) => {
 		const updatedJob = await tx.job.update({
 			where: {
@@ -82,10 +122,15 @@ const updateHeartbeat = async (db: PrismaClient, id: string) => {
 			throw new Error("Job not found");
 		}
 
+		await workerStatusService.upsertForHeartbeat(tx, worker_id, {
+			queue_id: updatedJob.queue_id,
+		});
+
 		await jobEventsService.createJobEvent(tx, {
 			project_id: updatedJob.project_id,
 			queue_id: updatedJob.queue_id,
 			job_id: updatedJob.id,
+			worker_id,
 			event_type: JobEventType.JOB_HEARTBEAT,
 			prev_status: updatedJob.status,
 			next_status: updatedJob.status,
@@ -108,7 +153,11 @@ const updateById = async (
 	});
 };
 
-const updateStatusAsCompleted = async (db: PrismaClient, id: string) => {
+const updateStatusAsCompleted = async (
+	db: PrismaClient,
+	id: string,
+	worker_id: string,
+) => {
 	return await db.$transaction(async (tx) => {
 		const updatedJob = await tx.job.update({
 			where: {
@@ -125,10 +174,15 @@ const updateStatusAsCompleted = async (db: PrismaClient, id: string) => {
 
 		await queueMetricsService.incCompletedMetric(tx, updatedJob.queue_id);
 
+		await workerStatusService.upsertForJobReleased(tx, worker_id, {
+			queue_id: updatedJob.queue_id,
+		});
+
 		await jobEventsService.createJobEvent(tx, {
 			project_id: updatedJob.project_id,
 			queue_id: updatedJob.queue_id,
 			job_id: updatedJob.id,
+			worker_id,
 			event_type: JobEventType.JOB_COMPLETED,
 			prev_status: JobStatus.IN_PROGRESS,
 			next_status: JobStatus.COMPLETED,
@@ -138,7 +192,11 @@ const updateStatusAsCompleted = async (db: PrismaClient, id: string) => {
 	});
 };
 
-const updateStatusAsFailed = async (db: PrismaClient, id: string) => {
+const updateStatusAsFailed = async (
+	db: PrismaClient,
+	id: string,
+	worker_id: string,
+) => {
 	return await db.$transaction(async (tx) => {
 		const updatedJob = await tx.job.update({
 			where: {
@@ -153,11 +211,17 @@ const updateStatusAsFailed = async (db: PrismaClient, id: string) => {
 			throw new Error("Job not found");
 		}
 
+		await workerStatusService.upsertForJobReleased(tx, worker_id, {
+			queue_id: updatedJob.queue_id,
+		});
+
 		await queueMetricsService.incFailedMetric(tx, updatedJob.queue_id);
+
 		await jobEventsService.createJobEvent(tx, {
 			project_id: updatedJob.project_id,
 			queue_id: updatedJob.queue_id,
 			job_id: updatedJob.id,
+			worker_id,
 			event_type: JobEventType.JOB_FAILED,
 			prev_status: JobStatus.IN_PROGRESS,
 			next_status: JobStatus.FAILED,
@@ -167,7 +231,11 @@ const updateStatusAsFailed = async (db: PrismaClient, id: string) => {
 	});
 };
 
-const updateStatusAsPendingByRetry = async (db: PrismaClient, id: string) => {
+const updateStatusAsPendingByRetry = async (
+	db: PrismaClient,
+	id: string,
+	worker_id: string,
+) => {
 	return await db.$transaction(async (tx) => {
 		const updatedJob = await tx.job.update({
 			where: {
@@ -184,10 +252,15 @@ const updateStatusAsPendingByRetry = async (db: PrismaClient, id: string) => {
 
 		await queueMetricsService.decActiveMetric(tx, updatedJob.queue_id);
 
+		await workerStatusService.upsertForJobReleased(tx, worker_id, {
+			queue_id: updatedJob.queue_id,
+		});
+
 		await jobEventsService.createJobEvent(tx, {
 			project_id: updatedJob.project_id,
 			queue_id: updatedJob.queue_id,
 			job_id: updatedJob.id,
+			worker_id,
 			event_type: JobEventType.JOB_REQUEUED,
 			prev_status: JobStatus.IN_PROGRESS,
 			next_status: JobStatus.PENDING,

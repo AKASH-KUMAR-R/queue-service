@@ -17,6 +17,7 @@ import projectRouter from "@routes/project/project.routes";
 import queueMetricsRouter from "@routes/queue-metrics/queueMetrics.routes";
 import queueRouter from "@routes/queue/queue.routes";
 import userRouter from "@routes/user/user.routes";
+import workerStatusRouter from "@routes/worker-status/workerStatus.routes";
 
 import { handleError } from "@utils/error.util";
 import { logger } from "@utils/logger.util";
@@ -57,6 +58,7 @@ app.use("/api/dashboard/queue-metrics", queueMetricsRouter);
 
 //  routes for worker sdk
 app.use("/api/worker/job", jobWorkerRouter);
+app.use("/api/worker/worker-status", workerStatusRouter);
 
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 	console.error(err.message);
