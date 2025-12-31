@@ -6,6 +6,8 @@ import queueService from "@services/queue/queue.service";
 import { handleError } from "@utils/error.util";
 import { logger } from "@utils/logger.util";
 
+import { QueueRateLimitExceeded } from "@errors/QueueRateLimitExceeded";
+
 const jobRateLimiter = async (
 	req: Request,
 	res: Response,
@@ -47,12 +49,8 @@ const jobRateLimiter = async (
 				queueRateLimit.id,
 			);
 		} else if (queueRateLimit.job_count >= queue.rate_limit_count) {
-			return handleError(
-				res,
-				new Error(
-					"Rate limit exceeded for this queue. Please try again later",
-				),
-				429,
+			throw new QueueRateLimitExceeded(
+				"Queue rate limit exceeded. Please try again later.",
 			);
 		}
 

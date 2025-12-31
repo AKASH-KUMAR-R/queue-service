@@ -12,6 +12,8 @@ import queueMetricsService from "@services/queue-metrics/queueMetrics.service";
 import queueService from "@services/queue/queue.service";
 import workerStatusService from "@services/worker-status/workerStatus.service";
 
+import { QueueRateLimitExceeded } from "@errors/QueueRateLimitExceeded";
+
 const createJob = async (
 	db: PrismaClient,
 	data: Prisma.JobCreateInput,
@@ -85,6 +87,12 @@ const findNextJob = async (
 		}
 
 		if (queue.queueRateLimiter) {
+			if (queue.queueRateLimiter.job_count >= queue.rate_limit_count!) {
+				return new QueueRateLimitExceeded(
+					"Queue rate limit exceeded. Please try again later.",
+				);
+			}
+
 			await queueRateLimiterService.incQueueRateLimitCounter(
 				tx,
 				queue.queueRateLimiter.id,
