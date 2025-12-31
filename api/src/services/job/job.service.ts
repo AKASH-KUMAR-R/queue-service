@@ -7,9 +7,12 @@ import {
 } from "@prisma/client";
 
 import jobEventsService from "@services/job-events/jobEvents.service";
+import queueRateLimiterService from "@services/queue-limit/queueRateLimiter.service";
 import queueMetricsService from "@services/queue-metrics/queueMetrics.service";
 import queueService from "@services/queue/queue.service";
 import workerStatusService from "@services/worker-status/workerStatus.service";
+
+import { QueueRateLimitExceeded } from "@errors/QueueRateLimitExceeded";
 
 const createJob = async (
 	db: PrismaClient,
@@ -54,6 +57,21 @@ const findNextJob = async (
 	worker_id: string,
 ) => {
 	return await db.$transaction(async (tx) => {
+		const queue = await queueService.findByIdWithQueueLimiter(tx, queue_id);
+
+		if (!queue) {
+			throw new Error("Queue not found");
+		}
+
+		if (
+			queue.queueRateLimiter &&
+			queue.queueRateLimiter.job_count >= queue.rate_limit_count!
+		) {
+			throw new QueueRateLimitExceeded(
+				"Queue rate limit exceeded. Please try again later.",
+			);
+		}
+
 		const job: Job[] = await tx.$queryRaw`
 			UPDATE "Job"
 			SET status = ${JobStatus.IN_PROGRESS}::"JobStatus",
@@ -77,10 +95,11 @@ const findNextJob = async (
 			return null;
 		}
 
-		const queue = await queueService.findById(tx, queue_id);
-
-		if (!queue) {
-			throw new Error("Queue not found");
+		if (queue.queueRateLimiter) {
+			await queueRateLimiterService.incQueueRateLimitCounter(
+				tx,
+				queue.queueRateLimiter.id,
+			);
 		}
 
 		await queueMetricsService.incActiveMetric(tx, queue.id);

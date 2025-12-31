@@ -17,6 +17,7 @@
           "^@controllers/(.*)$",
           "^@services/(.*)$",
           "^@utils/(.*)$",
+          "^@errors/(.*)$",
           "^[../]"
         ],
         "importOrderSeparation": true,

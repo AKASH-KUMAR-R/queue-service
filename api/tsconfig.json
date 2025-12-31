@@ -49,7 +49,8 @@
       "@controllers/*": ["controllers/*"],
       "@models/*": ["models/*"],
       "@utils/*": ["utils/*"],
-      "@routes/*": ["routes/*"]
+      "@routes/*": ["routes/*"],
+      "@errors/*": ["errors/*"]
     }
   },
   "include": ["src/**/*"]
