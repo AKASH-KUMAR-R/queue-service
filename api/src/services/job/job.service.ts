@@ -57,6 +57,21 @@ const findNextJob = async (
 	worker_id: string,
 ) => {
 	return await db.$transaction(async (tx) => {
+		const queue = await queueService.findByIdWithQueueLimiter(tx, queue_id);
+
+		if (!queue) {
+			throw new Error("Queue not found");
+		}
+
+		if (
+			queue.queueRateLimiter &&
+			queue.queueRateLimiter.job_count >= queue.rate_limit_count!
+		) {
+			throw new QueueRateLimitExceeded(
+				"Queue rate limit exceeded. Please try again later.",
+			);
+		}
+
 		const job: Job[] = await tx.$queryRaw`
 			UPDATE "Job"
 			SET status = ${JobStatus.IN_PROGRESS}::"JobStatus",
@@ -80,19 +95,7 @@ const findNextJob = async (
 			return null;
 		}
 
-		const queue = await queueService.findByIdWithQueueLimiter(tx, queue_id);
-
-		if (!queue) {
-			throw new Error("Queue not found");
-		}
-
 		if (queue.queueRateLimiter) {
-			if (queue.queueRateLimiter.job_count >= queue.rate_limit_count!) {
-				return new QueueRateLimitExceeded(
-					"Queue rate limit exceeded. Please try again later.",
-				);
-			}
-
 			await queueRateLimiterService.incQueueRateLimitCounter(
 				tx,
 				queue.queueRateLimiter.id,

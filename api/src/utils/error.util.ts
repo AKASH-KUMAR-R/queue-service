@@ -1,6 +1,6 @@
 import type { Response } from "express";
 
-import { QueueRateLimitExceeded } from "errors/QueueRateLimitExceeded";
+import { QueueRateLimitExceeded } from "@errors/QueueRateLimitExceeded";
 
 import { logger } from "./logger.util";
 
