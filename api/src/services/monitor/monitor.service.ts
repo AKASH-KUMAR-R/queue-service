@@ -59,14 +59,13 @@ export const detectAndHandleTimeoutJobs = async () => {
 			const updatedJob = await tx.job.update({
 				where: {
 					id: job.id,
+					status: JobStatus.IN_PROGRESS,
+					attempts: currAttempts,
 				},
 				data: {
 					status: isTerminated ? JobStatus.FAILED : JobStatus.PENDING,
 				},
-				include: {},
 			});
-
-			updatedJob;
 
 			if (!updatedJob) {
 				throw new Error("Job not found");
@@ -152,6 +151,8 @@ export const detectAndHandleDeadJobs = async () => {
 			const updatedJob = await tx.job.update({
 				where: {
 					id: job.id,
+					status: JobStatus.IN_PROGRESS,
+					attempts: currAttempts,
 				},
 				data: {
 					status: isTerminated ? JobStatus.FAILED : JobStatus.PENDING,
