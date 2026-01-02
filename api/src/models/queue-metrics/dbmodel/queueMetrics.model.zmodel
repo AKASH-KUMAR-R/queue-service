@@ -12,4 +12,5 @@ model QueueMetrics extends Base {
     failed_jobs BigInt @default(0)
     completed_jobs BigInt @default(0)
 
+    @@index([queue_id]) // for quick lookup by queue_id in metrics aggregation jobs
 }

@@ -23,6 +23,8 @@ model Job extends Base {
     scheduled_at DateTime?
 
     job_events JobEvents[] @relation("Job Events")
+
+    @@index([queue_id, status, priority, created_at]) // For fetching next job to process
      
 }
 

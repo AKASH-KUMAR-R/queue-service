@@ -44,6 +44,8 @@ model User {
     name String
     password String
     project Project[] @relation("UserProjects")
+
+    @@index([email])
 }
 
 model Project {
@@ -58,6 +60,8 @@ model Project {
     apiKeys ApiKey[] @relation("ProjectApiKeys")
     jobs Job[] @relation("ProjectJobs")
     job_events JobEvents[] @relation("Project Job Events")
+
+    @@index([user_id])
 }
 
 model Queue {
@@ -76,6 +80,9 @@ model Queue {
     job_events JobEvents[] @relation("Queue Job Events")
     queue_metrics QueueMetrics? @relation("QueueMetrics")
     queue_workers WorkerStatus[] @relation("QueueWorkers")
+
+    @@index([label])
+    @@index([project_id])
 }
 
 model Job {
@@ -95,6 +102,8 @@ model Job {
     priority Int @default(5)
     scheduled_at DateTime?
     job_events JobEvents[] @relation("Job Events")
+
+    @@index([queue_id, status, priority, created_at])
 }
 
 model JobEvents {
@@ -112,6 +121,8 @@ model JobEvents {
     next_status JobStatus
     worker_id String
     metadata Json?
+
+    @@index([job_id, created_at(sort: Desc)])
 }
 
 model QueueRateLimiter {
@@ -122,6 +133,8 @@ model QueueRateLimiter {
     last_reset_at DateTime?
     queue Queue @relation("QueueRateLimiter", fields: [queue_id], references: [id])
     queue_id String @unique()
+
+    @@index([queue_id])
 }
 
 model QueueMetrics {
@@ -133,6 +146,8 @@ model QueueMetrics {
     active_jobs BigInt @default(0)
     failed_jobs BigInt @default(0)
     completed_jobs BigInt @default(0)
+
+    @@index([queue_id])
 }
 
 model WorkerStatus {
@@ -145,6 +160,8 @@ model WorkerStatus {
     active_jobs BigInt @default(0)
     last_seen DateTime
     metadata Json?
+
+    @@index([queue_id, last_seen(sort: Desc)])
 }
 
 model ApiKey {
@@ -156,4 +173,6 @@ model ApiKey {
     revoked_at DateTime?
     project Project @relation("ProjectApiKeys", fields: [project_id], references: [id])
     project_id String
+
+    @@index([project_id, revoked])
 }

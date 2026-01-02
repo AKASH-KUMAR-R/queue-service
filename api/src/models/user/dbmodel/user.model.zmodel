@@ -10,5 +10,6 @@ model User extends Base {
     password String @password()
     project Project[] @relation("UserProjects")
 
+    @@index([email])
 }
 
