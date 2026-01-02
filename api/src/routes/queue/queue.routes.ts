@@ -16,6 +16,7 @@ const router = Router();
 router.get("/list", commonController.list);
 router.get("/search", commonController.search);
 router.get("/:id", validateId, commonController.getById);
+router.get("/:id/jobs", validateId, queueController.getQueueJobs);
 
 router.post(
 	"/create",

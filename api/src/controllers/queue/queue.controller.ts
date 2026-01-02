@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 
+import jobService from "@services/job/job.service";
 import queueService from "@services/queue/queue.service";
 
 import { handleError } from "@utils/error.util";
@@ -26,6 +27,24 @@ const addQueue = async (req: Request, res: Response) => {
 	}
 };
 
+const getQueueJobs = async (req: Request, res: Response) => {
+	try {
+		const queueId = req.params.id as string;
+
+		const results = await jobService.findJobsByQueueId(
+			req.db,
+			queueId,
+			parseInt(req.query.page as string) || 1,
+			parseInt(req.query.limit as string) || 10,
+		);
+
+		res.status(200).json(results);
+	} catch (err) {
+		handleError(res, err);
+	}
+};
+
 export default {
 	addQueue,
+	getQueueJobs,
 };
