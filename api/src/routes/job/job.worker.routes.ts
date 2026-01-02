@@ -1,6 +1,5 @@
 import { Router } from "express";
 
-import commonController from "@common/controller/common.controller";
 import { workerAuthMiddleware } from "@common/middleware/auth.middleware";
 import {
 	queryValidationMiddleware,
@@ -18,8 +17,6 @@ import jobRateLimiter, { extractWorkerId } from "./job.middleware";
 
 const router = Router();
 
-router.get("/list", workerAuthMiddleware, commonController.list);
-router.get("/search", workerAuthMiddleware, commonController.search);
 router.get(
 	"/next-job",
 	workerAuthMiddleware,

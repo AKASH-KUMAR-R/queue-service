@@ -12,6 +12,8 @@ import queueMetricsService from "@services/queue-metrics/queueMetrics.service";
 import queueService from "@services/queue/queue.service";
 import workerStatusService from "@services/worker-status/workerStatus.service";
 
+import { PaginationParams, PaginationResults } from "@utils/pagination.util";
+
 import { QueueRateLimitExceeded } from "@errors/QueueRateLimitExceeded";
 
 const createJob = async (
@@ -48,6 +50,34 @@ const findById = async (db: PrismaClient, id: string) => {
 			id,
 		},
 	});
+};
+
+const findJobsByQueueId = async (
+	db: PrismaClient,
+	queueId: string,
+	page: number,
+	limit: number,
+) => {
+	const paginationParams = new PaginationParams(page, limit);
+
+	const results = await db.job.findMany({
+		where: {
+			queue_id: queueId,
+		},
+		orderBy: {
+			created_at: "desc",
+		},
+		take: paginationParams.limit,
+		skip: paginationParams.offset,
+	});
+
+	const count = await db.job.count({
+		where: {
+			queue_id: queueId,
+		},
+	});
+
+	return new PaginationResults(results, page, limit, count);
 };
 
 // TODO: Optimize by reducing repeated calls of queue from controller and here
@@ -292,6 +322,7 @@ const updateStatusAsPendingByRetry = async (
 export default {
 	createJob,
 	findById,
+	findJobsByQueueId,
 	findNextJob,
 	updateById,
 	updateStatusAsCompleted,

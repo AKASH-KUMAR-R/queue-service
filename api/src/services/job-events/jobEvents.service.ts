@@ -1,5 +1,7 @@
 import type { Prisma, PrismaClient } from "@prisma/client";
 
+import { PaginationParams, PaginationResults } from "@utils/pagination.util";
+
 const createJobEvent = async (
 	db: PrismaClient | Prisma.TransactionClient,
 	data: Prisma.JobEventsUncheckedCreateInput,
@@ -40,7 +42,36 @@ const findById = async (db: PrismaClient, id: string) => {
 	});
 };
 
+const findByJobId = async (
+	db: PrismaClient,
+	jobId: string,
+	page: number,
+	limit: number,
+) => {
+	const paginationParams = new PaginationParams(page, limit);
+
+	const results = await db.jobEvents.findMany({
+		where: {
+			job_id: jobId,
+		},
+		orderBy: {
+			created_at: "desc",
+		},
+		skip: paginationParams.offset,
+		take: paginationParams.limit,
+	});
+
+	const count = await db.jobEvents.count({
+		where: {
+			job_id: jobId,
+		},
+	});
+
+	return new PaginationResults(results, page, limit, count);
+};
+
 export default {
 	createJobEvent,
 	findById,
+	findByJobId,
 };

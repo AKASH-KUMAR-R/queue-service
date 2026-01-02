@@ -17,6 +17,17 @@ const create = async (
 	});
 };
 
+const findByQueueId = async (
+	db: PrismaClient | Prisma.TransactionClient,
+	queueId: string,
+) => {
+	return await db.queueMetrics.findUnique({
+		where: {
+			queue_id: queueId,
+		},
+	});
+};
+
 // TODO: active job non zero check
 const incCompletedMetric = async (
 	db: PrismaClient | Prisma.TransactionClient,
@@ -92,6 +103,7 @@ const decActiveMetric = async (
 
 export default {
 	create,
+	findByQueueId,
 	incActiveMetric,
 	decActiveMetric,
 	incCompletedMetric,
