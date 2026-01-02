@@ -64,6 +64,9 @@ const findJobsByQueueId = async (
 		where: {
 			queue_id: queueId,
 		},
+		orderBy: {
+			created_at: "desc",
+		},
 		take: paginationParams.limit,
 		skip: paginationParams.offset,
 	});

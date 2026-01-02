@@ -48,7 +48,7 @@ const findByJobId = async (
 	page: number,
 	limit: number,
 ) => {
-	const paginatedParams = new PaginationParams(page, limit);
+	const paginationParams = new PaginationParams(page, limit);
 
 	const results = await db.jobEvents.findMany({
 		where: {
@@ -57,8 +57,8 @@ const findByJobId = async (
 		orderBy: {
 			created_at: "desc",
 		},
-		skip: paginatedParams.offset,
-		take: paginatedParams.limit,
+		skip: paginationParams.offset,
+		take: paginationParams.limit,
 	});
 
 	const count = await db.jobEvents.count({

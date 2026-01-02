@@ -1,6 +1,5 @@
 import { Router } from "express";
 
-import commonController from "@common/controller/common.controller";
 import { workerAuthMiddleware } from "@common/middleware/auth.middleware";
 import {
 	queryValidationMiddleware,
