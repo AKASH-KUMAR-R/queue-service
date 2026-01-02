@@ -18,8 +18,6 @@ import jobRateLimiter, { extractWorkerId } from "./job.middleware";
 
 const router = Router();
 
-router.get("/list", workerAuthMiddleware, commonController.list);
-router.get("/search", workerAuthMiddleware, commonController.search);
 router.get(
 	"/next-job",
 	workerAuthMiddleware,
