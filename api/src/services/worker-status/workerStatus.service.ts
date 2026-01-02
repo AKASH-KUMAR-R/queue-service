@@ -17,6 +17,20 @@ const upsert = async (
 	});
 };
 
+const findByQueueId = async (
+	db: PrismaClient | Prisma.TransactionClient,
+	queueId: string,
+) => {
+	return await db.workerStatus.findMany({
+		where: {
+			queue_id: queueId,
+		},
+		orderBy: {
+			last_seen: "desc",
+		},
+	});
+};
+
 const upsertForJobAcquired = async (
 	db: PrismaClient | Prisma.TransactionClient,
 	worker_id: string,
@@ -101,6 +115,7 @@ const upsertForHeartbeat = async (
 
 export default {
 	upsert,
+	findByQueueId,
 	upsertForHeartbeat,
 	upsertForJobAcquired,
 	upsertForJobReleased,
