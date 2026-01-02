@@ -10,5 +10,4 @@ model QueueRateLimiter extends Base {
     queue Queue @relation("QueueRateLimiter", fields: [queue_id], references: [id])
     queue_id String @unique
 
-    @@index([queue_id]) // for quick lookup by queue_id in job rate limiter middleware
 }
