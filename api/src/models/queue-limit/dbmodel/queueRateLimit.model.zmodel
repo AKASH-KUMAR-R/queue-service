@@ -9,4 +9,5 @@ model QueueRateLimiter extends Base {
     
     queue Queue @relation("QueueRateLimiter", fields: [queue_id], references: [id])
     queue_id String @unique
+
 }

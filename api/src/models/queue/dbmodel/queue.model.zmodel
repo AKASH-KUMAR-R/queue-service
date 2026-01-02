@@ -26,6 +26,8 @@ model Queue extends Base {
     job_events JobEvents[] @relation("Queue Job Events")
     queue_metrics QueueMetrics? @relation("QueueMetrics")
     queue_workers WorkerStatus[] @relation("QueueWorkers")
+
+    @@index([project_id])
 }
 
 

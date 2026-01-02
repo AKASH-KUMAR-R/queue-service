@@ -20,4 +20,6 @@ model Project extends Base {
     apiKeys ApiKey[] @relation("ProjectApiKeys")
     jobs Job[] @relation("ProjectJobs")
     job_events JobEvents[] @relation("Project Job Events")
+
+    @@index([user_id])
 }

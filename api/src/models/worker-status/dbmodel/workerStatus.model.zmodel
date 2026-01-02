@@ -14,4 +14,6 @@ model WorkerStatus extends Base {
     last_seen DateTime
 
     metadata Json?
+
+    @@index([queue_id, last_seen(sort: Desc)]) // For fetching active workers of a queue based on last seen time
 }
