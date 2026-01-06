@@ -11,6 +11,7 @@
         "importOrder": [
           "^react(.*)$",
           "<THIRD_PARTY_MODULES>",
+          "^@api/(.*)$",
           "^@shared/(.*)$",
           "^@components/(.*)$",
           "^@entities/(.*)$",
