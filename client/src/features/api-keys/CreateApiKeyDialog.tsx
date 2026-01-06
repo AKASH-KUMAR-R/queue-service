@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 import { type CreateApiKeyRequest } from "../../entities/api-key/model/types";
-import { Dialog, DialogContent } from "../../shared/ui/Dialog";
+import { Dialog, DialogContent } from "../../shared/ui/dialog";
 import { Input } from "../../shared/ui/form/Input";
 import { Textarea } from "../../shared/ui/form/Textarea";
 import {

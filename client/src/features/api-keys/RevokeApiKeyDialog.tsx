@@ -2,7 +2,7 @@ import { AlertTriangle } from "lucide-react";
 
 import { type ApiKey } from "../../entities/api-key/model/types";
 import { ApiKeyDisplay } from "../../entities/api-key/ui/ApiKeyDisplay";
-import { Dialog, DialogContent } from "../../shared/ui/Dialog";
+import { Dialog, DialogContent } from "../../shared/ui/dialog";
 
 interface RevokeApiKeyDialogProps {
 	open: boolean;

@@ -3,7 +3,7 @@ import { AlertTriangle } from "lucide-react";
 import { type ApiKeyWithSecret } from "../../entities/api-key/model/types";
 import { ApiKeyDisplay } from "../../entities/api-key/ui/ApiKeyDisplay";
 import { ApiKeyStatusBadge } from "../../entities/api-key/ui/ApiKeyStatusBadge";
-import { Dialog, DialogContent } from "../../shared/ui/Dialog";
+import { Dialog, DialogContent } from "../../shared/ui/dialog";
 
 interface ApiKeyCreatedDialogProps {
 	open: boolean;

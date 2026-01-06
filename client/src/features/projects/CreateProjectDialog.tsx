@@ -3,15 +3,15 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-import { Dialog, DialogContent } from "../../shared/ui/Dialog";
-import { Input } from "../../shared/ui/form/Input";
+import { Dialog, DialogContent } from "@shared/ui/dialog";
+import { Input } from "@shared/ui/form/Input";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "../../shared/ui/form/Select";
+} from "@shared/ui/form/Select";
 import {
 	RadixForm,
 	RadixFormControl,
@@ -20,7 +20,7 @@ import {
 	RadixFormItem,
 	RadixFormLabel,
 	RadixFormMessage,
-} from "../../shared/ui/radix-form";
+} from "@shared/ui/radix-form";
 
 const createProjectSchema = z.object({
 	name: z

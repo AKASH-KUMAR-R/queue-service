@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-import { Dialog, DialogContent } from "../../shared/ui/Dialog";
+import { Dialog, DialogContent } from "../../shared/ui/dialog";
 import { Input } from "../../shared/ui/form/Input";
 import {
 	Select,
