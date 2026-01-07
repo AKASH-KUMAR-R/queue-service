@@ -175,6 +175,13 @@ export const navGroups: NavGroup[] = [
 	},
 ];
 
+export const NAVBAR_RESTRICTED_PATHS: string[] = [
+	"/login",
+	"/register",
+	"/forgot-password",
+	"/reset-password",
+];
+
 // ============================================================================
 // Utility Functions
 // ============================================================================
