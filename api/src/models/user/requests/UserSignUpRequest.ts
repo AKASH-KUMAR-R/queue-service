@@ -1,6 +1,6 @@
 import zod from "zod";
 
-const UserCreateRequest = zod
+const UserSignUpRequest = zod
 	.object({
 		name: zod.string().min(1).max(100).optional(),
 		email: zod.email(),
@@ -8,4 +8,4 @@ const UserCreateRequest = zod
 	})
 	.strip();
 
-export { UserCreateRequest };
+export { UserSignUpRequest };
