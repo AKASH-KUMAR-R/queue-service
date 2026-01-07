@@ -10,55 +10,77 @@ import { WorkersPage } from "@pages/WorkersPage";
 import { ProjectApiKeysPage } from "@pages/project/ProjectApiKeysPage";
 
 import { useProject } from "./ProjectContext";
-import { Sidebar } from "./Sidebar";
+import { CommonLayoutWrapper } from "./wrapper/CommonLayoutWrapper";
 
 export function AppLayout() {
 	const { currentProject } = useProject();
 
 	return (
 		<div className="flex h-screen bg-background">
-			<Sidebar />
-			<main className="flex-1 overflow-auto">
-				<Routes>
-					{/* Default route */}
-					<Route path="/" element={<QueuesPage />} />
+			{/* <main className="flex-1 overflow-auto"> */}
+			<Routes>
+				<Route
+					path="*"
+					element={
+						<CommonLayoutWrapper>
+							<Routes>
+								<Route path="/" element={<QueuesPage />} />
 
-					{/* Queue Management routes */}
-					<Route path="/queues" element={<QueuesPage />} />
-					<Route path="/jobs" element={<JobsPage />} />
-					<Route path="/jobs/:queueId" element={<JobsPage />} />
-					<Route path="/workers" element={<WorkersPage />} />
-					<Route path="/metrics" element={<MetricsPage />} />
+								<Route
+									path="/queues"
+									element={<QueuesPage />}
+								/>
+								<Route path="/jobs" element={<JobsPage />} />
+								<Route
+									path="/jobs/:queueId"
+									element={<JobsPage />}
+								/>
+								<Route
+									path="/workers"
+									element={<WorkersPage />}
+								/>
+								<Route
+									path="/metrics"
+									element={<MetricsPage />}
+								/>
 
-					{/* Project routes */}
-					<Route
-						path="/project/statistics"
-						element={<ProjectStatisticsPage />}
-					/>
-					<Route
-						path="/project/api-keys"
-						element={
-							<ProjectApiKeysPage projectId={currentProject.id} />
-						}
-					/>
-					<Route
-						path="/project/settings"
-						element={<ProjectSettingsPage />}
-					/>
+								<Route
+									path="/project/statistics"
+									element={<ProjectStatisticsPage />}
+								/>
+								<Route
+									path="/project/api-keys"
+									element={
+										<ProjectApiKeysPage
+											projectId={currentProject.id}
+										/>
+									}
+								/>
+								<Route
+									path="/project/settings"
+									element={<ProjectSettingsPage />}
+								/>
 
-					{/* General routes */}
-					<Route
-						path="/settings/appearance"
-						element={<AppearanceSettingsPage />}
-					/>
+								<Route
+									path="/settings/appearance"
+									element={<AppearanceSettingsPage />}
+								/>
 
-					{/* Backward compatibility redirects */}
-					<Route
-						path="/settings"
-						element={<Navigate to="/project/settings" replace />}
-					/>
-				</Routes>
-			</main>
+								<Route
+									path="/settings"
+									element={
+										<Navigate
+											to="/project/settings"
+											replace
+										/>
+									}
+								/>
+							</Routes>
+						</CommonLayoutWrapper>
+					}
+				/>
+			</Routes>
+			{/* </main> */}
 		</div>
 	);
 }
