@@ -13,18 +13,18 @@ import userController from "@controllers/user/user.controller";
 
 const router = Router();
 
-router.get("/list", commonController.list);
-router.get("/search", commonController.search);
+router.get("/list", authMiddleware, commonController.list);
+router.get("/search", authMiddleware, commonController.search);
 router.get("/current-user", authMiddleware, userController.getCurrentUser);
-router.get("/:id", validateId, commonController.getById);
+router.get("/:id", authMiddleware, validateId, commonController.getById);
 
 router.put(
 	"/:id",
+	authMiddleware,
 	validateId,
 	validationMiddleware(UserUpdateRequest),
 	commonController.update,
 );
 
-router.delete("/:id", validateId, commonController.remove);
-
+router.delete("/:id", validateId, authMiddleware, commonController.remove);
 export default router;

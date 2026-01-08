@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import commonController from "@common/controller/common.controller";
+import { authMiddleware } from "@common/middleware/auth.middleware";
 import {
 	validateId,
 	validationMiddleware,
@@ -12,13 +13,14 @@ import apiKeyController from "@controllers/api-key/apiKey.controller";
 
 const router = Router();
 
-router.get("/list", commonController.list);
-router.get("/:id", validateId, commonController.getById);
+router.get("/list", authMiddleware, commonController.list);
+router.get("/:id", authMiddleware, validateId, commonController.getById);
 
-router.put("/revoke/:id", validateId, apiKeyController.revoke);
+router.put("/revoke/:id", authMiddleware, validateId, apiKeyController.revoke);
 
 router.post(
 	"/create",
+	authMiddleware,
 	validationMiddleware(ApiKeyCreateRequest),
 	apiKeyController.create,
 );
