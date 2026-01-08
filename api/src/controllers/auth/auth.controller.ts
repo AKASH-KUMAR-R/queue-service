@@ -1,5 +1,7 @@
 import type { Request, Response } from "express";
 
+import { DAY_IN_MILLISECONDS, MINUTES_IN_MILLISECOND } from "lib/time";
+
 import userService from "@services/user/user.service";
 
 import { compareText, hashText } from "@utils/bcrypt.util";
@@ -49,12 +51,14 @@ const login = async (req: Request, res: Response) => {
 			httpOnly: true,
 			secure: true,
 			sameSite: process.env.NODE_ENV === "production" ? "lax" : "none",
+			maxAge: MINUTES_IN_MILLISECOND * 15, // 15 minutes
 		});
 
 		res.cookie("refreshToken", refreshToken, {
 			httpOnly: true,
 			secure: true,
 			sameSite: process.env.NODE_ENV === "production" ? "lax" : "none",
+			maxAge: DAY_IN_MILLISECONDS * 7, // 7 days
 		});
 
 		res.status(200).json({

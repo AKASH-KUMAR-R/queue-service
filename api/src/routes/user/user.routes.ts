@@ -26,5 +26,5 @@ router.put(
 	commonController.update,
 );
 
-router.delete("/:id", validateId, authMiddleware, commonController.remove);
+router.delete("/:id", authMiddleware, validateId, commonController.remove);
 export default router;

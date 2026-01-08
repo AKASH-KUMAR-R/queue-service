@@ -25,7 +25,9 @@ export const handleError = (
 		returnErrorMessage = error.message;
 	} else if (error instanceof Prisma.PrismaClientKnownRequestError) {
 		if (error.code === PrismaErrorCode.UNIQUE_CONSTRAINT_FAILED) {
-			returnErrorMessage = "Resource already exists";
+			const target =
+				(error.meta?.target as string[])?.join(", ") || "field";
+			returnErrorMessage = `Resource with the same ${target} already exists`;
 			status = 409;
 		} else if (
 			error.code ===
@@ -36,7 +38,7 @@ export const handleError = (
 			returnErrorMessage = "Related resource does not exist";
 		} else {
 			status = 500;
-			returnErrorMessage = "Server database error";
+			returnErrorMessage = "Internal server error";
 		}
 	} else if (error instanceof Error) {
 		returnErrorMessage = error.message;
