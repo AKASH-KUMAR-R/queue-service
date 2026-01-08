@@ -38,7 +38,7 @@ export const CommonLayoutWrapper = ({
 			const { data, error } = await fetchCurrentUser();
 
 			if (!error) {
-				initialize(data);
+				initialize(data.user);
 			} else {
 				toast.info("Your session expired. Please login again");
 			}

@@ -3,7 +3,7 @@ import { handleError } from "@/shared/api/utils/handleError";
 
 export const fetchCurrentUser = async () => {
 	try {
-		const response = await api.get("/api/dashboard/users/me");
+		const response = await api.get("/api/dashboard/user/me");
 
 		return { data: response.data, error: null };
 	} catch (err) {

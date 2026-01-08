@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { handleError } from "@/shared/api/utils/handleError";
 import { useMultiLoading } from "@/shared/hooks/useMultiLoading";
@@ -32,6 +32,8 @@ const LOADING_STATES = {
 };
 
 const LoginPage = () => {
+	const navigate = useNavigate();
+
 	const { initialize } = useAuth();
 	const { isLoading, startLoading, stopLoading } = useMultiLoading();
 
@@ -58,6 +60,7 @@ const LoginPage = () => {
 			if (!error) {
 				initialize(data.user);
 				toast.success("Logged in successfully!");
+				navigate("/queues");
 			} else {
 				if (validationErrors) {
 					Object.entries(validationErrors).forEach(
