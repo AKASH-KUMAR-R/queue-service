@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import commonController from "@common/controller/common.controller";
+import { authMiddleware } from "@common/middleware/auth.middleware";
 import {
 	validateId,
 	validationMiddleware,
@@ -8,10 +9,13 @@ import {
 
 import { UserUpdateRequest } from "@models/user/requests/UserUpdateRequest";
 
+import userController from "@controllers/user/user.controller";
+
 const router = Router();
 
 router.get("/list", commonController.list);
 router.get("/search", commonController.search);
+router.get("/current-user", authMiddleware, userController.getCurrentUser);
 router.get("/:id", validateId, commonController.getById);
 
 router.put(

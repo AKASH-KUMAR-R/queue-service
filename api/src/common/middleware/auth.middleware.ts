@@ -25,6 +25,7 @@ export const authMiddleware = async (
 
 			if (accessTokenResult.status === VERIFY_JWT_STATUS.VERIFIED) {
 				userId = (accessTokenResult.payload as any).userId;
+				console.log("Access token verified from cookie");
 			}
 		}
 
