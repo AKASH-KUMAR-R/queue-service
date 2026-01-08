@@ -19,45 +19,45 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import z from "zod";
 
-import { useAuth } from "../context/AuthContext";
 import authService from "../services/authService";
 
-const loginSchema = z.object({
-	email: z.email("Please enter a valid email address"),
+const signUpSchema = z.object({
+	email: z.string().email("Please enter a valid email address"),
+	name: z.string().min(1, "Name is required"),
 	password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
 const LOADING_STATES = {
-	logining: "logining",
+	signingUp: "signingUp",
 };
 
-const LoginPage = () => {
-	const { initialize } = useAuth();
+const SignupPage = () => {
 	const { isLoading, startLoading, stopLoading } = useMultiLoading();
 
 	const form = useForm({
-		resolver: zodResolver(loginSchema),
+		resolver: zodResolver(signUpSchema),
 		defaultValues: {
 			email: "",
+			name: "",
 			password: "",
 		},
 	});
 
 	const [showPassword, setShowPassword] = useState(false);
 
-	const handleLogin = async () => {
+	const handleSignup = async () => {
 		try {
 			const values = form.getValues();
 
-			startLoading(LOADING_STATES.logining);
-			const { data, error, validationErrors } = await authService.login({
-				identifier: values.email,
+			startLoading(LOADING_STATES.signingUp);
+			const { error, validationErrors } = await authService.signup({
+				email: values.email,
+				name: values.name,
 				password: values.password,
 			});
 
 			if (!error) {
-				initialize(data.user);
-				toast.success("Logged in successfully!");
+				toast.success("Account created successfully!");
 			} else {
 				if (validationErrors) {
 					Object.entries(validationErrors).forEach(
@@ -74,12 +74,12 @@ const LoginPage = () => {
 		} catch (err) {
 			toast.error(handleError(err));
 		} finally {
-			stopLoading(LOADING_STATES.logining);
+			stopLoading(LOADING_STATES.signingUp);
 		}
 	};
 
 	return (
-		<div className=" h-screen flex items-center justify-center bg-background p-4">
+		<div className="h-screen flex items-center justify-center bg-background p-4">
 			<div className="w-full max-w-md">
 				{/* Header */}
 				<div className="text-center mb-8">
@@ -87,17 +87,38 @@ const LoginPage = () => {
 						{/* <Queue />  */}
 					</div>
 					<h1 className="text-2xl font-semibold mb-2">
-						Welcome Back
+						Welcome Newbie
 					</h1>
 					<p className="text-muted-foreground">
-						Sign in to your Queue Service account
+						Create your Queue Service account
 					</p>
 				</div>
 
 				<div className="bg-card border border-border rounded-lg shadow-lg p-6">
 					<Form {...form}>
-						<form onSubmit={form.handleSubmit(handleLogin)}>
+						<form onSubmit={form.handleSubmit(handleSignup)}>
 							<div className="space-y-4">
+								<RadixFormField
+									name="name"
+									control={form.control}
+									render={({ field }) => (
+										<RadixFormItem>
+											<RadixFormLabel>
+												Name
+											</RadixFormLabel>
+											<RadixFormControl>
+												<Input
+													type="text"
+													placeholder="Your name"
+													{...field}
+													value={field.value}
+													onChange={field.onChange}
+												/>
+											</RadixFormControl>
+											<RadixFormMessage />
+										</RadixFormItem>
+									)}
+								/>
 								<RadixFormField
 									name="email"
 									control={form.control}
@@ -113,10 +134,6 @@ const LoginPage = () => {
 													{...field}
 													value={field.value}
 													onChange={field.onChange}
-													// onBlur={() =>
-													// 	handleFieldBlur("email")
-													// }
-													// onKeyPress={handleKeyPress}
 												/>
 											</RadixFormControl>
 											<RadixFormMessage />
@@ -170,39 +187,39 @@ const LoginPage = () => {
 
 								{/* Remember & Forgot */}
 								{/* <div className="flex items-center justify-between">
-								<label className="flex items-center gap-2 cursor-pointer">
-									<input
-										type="checkbox"
-										checked={rememberMe}
-										onChange={(e) =>
-											setRememberMe(e.target.checked)
-										}
-										className="w-4 h-4 rounded border-input accent-primary"
-									/>
-									<span className="text-sm text-muted-foreground">
-										Remember me
-									</span>
-								</label>
-								<a
-									href="#"
-									className="text-sm text-primary hover:underline"
-								>
-									Forgot password?
-								</a>
-							</div> */}
+                                <label className="flex items-center gap-2 cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        checked={rememberMe}
+                                        onChange={(e) =>
+                                            setRememberMe(e.target.checked)
+                                        }
+                                        className="w-4 h-4 rounded border-input accent-primary"
+                                    />
+                                    <span className="text-sm text-muted-foreground">
+                                        Remember me
+                                    </span>
+                                </label>
+                                <a
+                                    href="#"
+                                    className="text-sm text-primary hover:underline"
+                                >
+                                    Forgot password?
+                                </a>
+                            </div> */}
 
 								{/* Submit Button */}
 								<Button
 									type="submit"
 									className="w-full"
 									disabled={isLoading(
-										LOADING_STATES.logining,
+										LOADING_STATES.signingUp,
 									)}
 								>
-									{isLoading(LOADING_STATES.logining) ? (
+									{isLoading(LOADING_STATES.signingUp) ? (
 										<Spinner size="sm" />
 									) : (
-										"Sign In"
+										"Sign Up"
 									)}
 								</Button>
 							</div>
@@ -238,12 +255,12 @@ const LoginPage = () => {
 
 					{/* Sign Up Link */}
 					<p className="text-center text-sm text-muted-foreground mt-6">
-						Don't have an account?{" "}
+						Already have an account?{" "}
 						<Link
-							to="/sign-up"
+							to="/"
 							className="text-primary font-medium hover:underline"
 						>
-							Sign up
+							Login
 						</Link>
 					</p>
 				</div>
@@ -264,4 +281,4 @@ const LoginPage = () => {
 	);
 };
 
-export default LoginPage;
+export default SignupPage;
