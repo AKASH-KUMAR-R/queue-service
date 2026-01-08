@@ -4,6 +4,7 @@ import Express, {
 	type Response,
 } from "express";
 
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import { configDotenv } from "dotenv";
 import pinoHttp from "pino-http";
@@ -47,6 +48,8 @@ app.use(
 );
 
 app.use(Express.json());
+
+app.use(cookieParser());
 
 app.use(prismaMiddleware);
 
