@@ -4,6 +4,7 @@ import Express, {
 	type Response,
 } from "express";
 
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import { configDotenv } from "dotenv";
 import pinoHttp from "pino-http";
@@ -11,6 +12,7 @@ import pinoHttp from "pino-http";
 import { prismaMiddleware } from "@common/middleware/prisma.middleware";
 
 import apiKeyRouter from "@routes/api-key/apiKey.routes";
+import authRouter from "@routes/auth/auth.routes";
 import jobEventsRouter from "@routes/job-events/jobEvents.routes";
 import jobDashboardRouter from "@routes/job/job.dashboard.routes";
 import jobWorkerRouter from "@routes/job/job.worker.routes";
@@ -47,7 +49,12 @@ app.use(
 
 app.use(Express.json());
 
+app.use(cookieParser());
+
 app.use(prismaMiddleware);
+
+// Routes for auth
+app.use("/api/auth", authRouter);
 
 // Routes for dashboards and other common UI cases
 app.use("/api/dashboard/queue", queueRouter);

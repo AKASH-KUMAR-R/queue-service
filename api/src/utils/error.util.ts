@@ -1,5 +1,8 @@
 import type { Response } from "express";
 
+import { Prisma } from "@prisma/client";
+import { PrismaErrorCode } from "@zenstackhq/runtime";
+
 import { QueueRateLimitExceeded } from "@errors/QueueRateLimitExceeded";
 
 import { logger } from "./logger.util";
@@ -12,21 +15,34 @@ export const handleError = (
 	logger.error(error);
 
 	let status = statusCode;
+	let returnErrorMessage = "An unexpected error occurred";
 
 	if (typeof error === "string") {
 		status = statusCode;
+		returnErrorMessage = error;
 	} else if (error instanceof QueueRateLimitExceeded) {
 		status = error.statusCode;
+		returnErrorMessage = error.message;
+	} else if (error instanceof Prisma.PrismaClientKnownRequestError) {
+		if (error.code === PrismaErrorCode.UNIQUE_CONSTRAINT_FAILED) {
+			const target =
+				(error.meta?.target as string[])?.join(", ") || "field";
+			returnErrorMessage = `Resource with the same ${target} already exists`;
+			status = 409;
+		} else if (
+			error.code ===
+				PrismaErrorCode.REQUIRED_CONNECTED_RECORD_NOT_FOUND ||
+			error.code === PrismaErrorCode.DEPEND_ON_RECORD_NOT_FOUND
+		) {
+			status = 400;
+			returnErrorMessage = "Related resource does not exist";
+		} else {
+			status = 500;
+			returnErrorMessage = "Internal server error";
+		}
+	} else if (error instanceof Error) {
+		returnErrorMessage = error.message;
 	}
-
-	const returnErrorMessage =
-		typeof error === "string"
-			? error
-			: error instanceof QueueRateLimitExceeded
-				? error.message
-				: error instanceof Error
-					? error.message
-					: "An unexpected error occurred";
 
 	return res.status(status).json({
 		error: returnErrorMessage,

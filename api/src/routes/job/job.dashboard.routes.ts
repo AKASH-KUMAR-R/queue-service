@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import commonController from "@common/controller/common.controller";
+import { authMiddleware } from "@common/middleware/auth.middleware";
 import {
 	queryValidationMiddleware,
 	validateId,
@@ -12,11 +13,12 @@ import jobDashboardController from "@controllers/job/job.dashboard.controller";
 
 const router = Router();
 
-router.get("/list", commonController.list);
-router.get("/search", commonController.search);
+router.get("/list", authMiddleware, commonController.list);
+router.get("/search", authMiddleware, commonController.search);
 
 router.get(
 	"/:id/events",
+	authMiddleware,
 	validateId,
 	queryValidationMiddleware(JobEventsListRequest),
 	jobDashboardController.getJobEvents,

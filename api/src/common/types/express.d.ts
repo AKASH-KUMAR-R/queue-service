@@ -5,7 +5,7 @@ declare global {
 		interface Request {
 			validQuery?: any;
 			db: PrismaClient;
-			user?: User;
+			user?: Omit<User, "password">;
 			project?: Project;
 			worker_id?: string;
 		}

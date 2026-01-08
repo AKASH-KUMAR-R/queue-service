@@ -7,8 +7,10 @@ model User extends Base {
     id String @id @default(uuid())
     email String @unique
     name String
-    password String @password()
+    password String
     project Project[] @relation("UserProjects")
 
+    @@allow('create', true)
+    @@allow('read', auth() == this)
 }
 
