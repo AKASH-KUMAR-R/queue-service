@@ -61,7 +61,10 @@ const login = async (req: Request, res: Response) => {
 			maxAge: DAY_IN_MILLISECONDS * 7, // 7 days
 		});
 
+		const { password: _, ...userWithoutPassword } = user;
+
 		res.status(200).json({
+			user: userWithoutPassword,
 			success: true,
 			message: "Login Successful",
 		});
