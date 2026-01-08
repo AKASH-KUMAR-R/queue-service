@@ -1,5 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
+import LoginPage from "@/features/auth/components/LoginPage";
+
 import { AppearanceSettingsPage } from "@pages/AppearanceSettingsPage";
 import { JobsPage } from "@pages/JobsPage";
 import { MetricsPage } from "@pages/MetricsPage";
@@ -24,7 +26,7 @@ export function AppLayout() {
 					element={
 						<CommonLayoutWrapper>
 							<Routes>
-								<Route path="/" element={<QueuesPage />} />
+								<Route path="/" element={<LoginPage />} />
 
 								<Route
 									path="/queues"

@@ -180,6 +180,7 @@ export const NAVBAR_RESTRICTED_PATHS: string[] = [
 	"/register",
 	"/forgot-password",
 	"/reset-password",
+	"",
 ];
 
 // ============================================================================
