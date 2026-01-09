@@ -9,7 +9,7 @@ type AuthContextType = {
 	clear: () => void;
 } | null;
 
-const AuthContext = createContext<AuthContextType | undefined>(null);
+const AuthContext = createContext<AuthContextType>(null);
 
 const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 	children,

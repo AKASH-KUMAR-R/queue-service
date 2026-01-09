@@ -7,7 +7,11 @@ export const handleError = (error: unknown) => {
 		if (resData && typeof resData === "object") {
 			// Extract and return a meaningful message from the response data
 
-			if ("errors" in resData && Array.isArray(resData.errors)) {
+			if (
+				"errors" in resData &&
+				typeof resData.errors === "object" &&
+				Array.isArray(resData.errors.formErrors)
+			) {
 				return (
 					resData.errors?.formErrors.join(", ") || "An error occurred"
 				);

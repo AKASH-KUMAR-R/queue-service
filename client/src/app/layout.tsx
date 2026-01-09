@@ -1,7 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
 import LoginPage from "@/features/auth/components/LoginPage";
-import SignupPage from "@/features/auth/components/SIgnnupPage";
+import SignupPage from "@/features/auth/components/SignnupPage";
 
 import { AppearanceSettingsPage } from "@pages/AppearanceSettingsPage";
 import { JobsPage } from "@pages/JobsPage";

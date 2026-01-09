@@ -152,6 +152,7 @@ const LoginPage = () => {
 														className="pr-10"
 													/>
 													<Button
+														type="button"
 														onClick={() =>
 															setShowPassword(
 																!showPassword,
@@ -226,12 +227,14 @@ const LoginPage = () => {
 					{/* Social Login */}
 					<div className="grid grid-cols-2 gap-3">
 						<Button
+							type="button"
 							variant="outline"
 							onClick={() => alert("Google login")}
 						>
 							Google
 						</Button>
 						<Button
+							type="button"
 							variant="outline"
 							onClick={() => alert("GitHub login")}
 						>
