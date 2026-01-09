@@ -14,6 +14,10 @@ const jobRateLimiter = async (
 	next: NextFunction,
 ) => {
 	try {
+		if (!req.project) {
+			throw new Error("Project context is missing in request");
+		}
+
 		const queueLabel = req.query.queue_label?.toString() || "";
 
 		logger.info(`Within job rate limiter. ${queueLabel}`);
@@ -21,6 +25,7 @@ const jobRateLimiter = async (
 		const queue = await queueService.findByLabelWithQueueLimiter(
 			req.db,
 			queueLabel,
+			req.project.id,
 		);
 
 		const queueRateLimit = queue?.queueRateLimiter;
