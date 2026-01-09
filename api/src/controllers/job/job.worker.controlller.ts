@@ -9,10 +9,16 @@ import { handleError } from "@utils/error.util";
 
 const addJobToQueue = async (req: Request, res: Response) => {
 	try {
+		if (!req.project) {
+			throw new Error("Project context is missing in request");
+		}
+
 		const queue = await queueService.findByLabel(
 			req.db,
 			req.body.queue_label,
+			req.project.id,
 		);
+
 		if (!queue) {
 			return handleError(res, "Queue not found", 404);
 		}
@@ -97,7 +103,15 @@ const getNextJobFromQueue = async (req: Request, res: Response) => {
 	try {
 		const queue_label = req.validQuery.queue_label;
 
-		const queue = await queueService.findByLabel(req.db, queue_label);
+		if (!req.project) {
+			throw new Error("Project context is missing in request");
+		}
+
+		const queue = await queueService.findByLabel(
+			req.db,
+			queue_label,
+			req.project.id,
+		);
 
 		if (!queue) {
 			return handleError(res, "No queue found", 404);

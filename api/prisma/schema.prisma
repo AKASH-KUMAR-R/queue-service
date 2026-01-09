@@ -66,7 +66,7 @@ model Queue {
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt()
     id String @id() @default(uuid())
-    label String @unique()
+    label String
     description String?
     project Project @relation("ProjectQueues", fields: [project_id], references: [id])
     project_id String
@@ -79,6 +79,7 @@ model Queue {
     queue_metrics QueueMetrics? @relation("QueueMetrics")
     queue_workers WorkerStatus[] @relation("QueueWorkers")
 
+    @@unique([project_id, label])
     @@index([project_id])
 }
 

@@ -1,4 +1,4 @@
-import type { Prisma, PrismaClient, Queue } from "@prisma/client";
+import { Prisma, type PrismaClient, type Queue } from "@prisma/client";
 
 import queueMetricsService from "@services/queue-metrics/queueMetrics.service";
 
@@ -47,18 +47,32 @@ const findById = async (
 	});
 };
 
-const findByLabel = async (db: PrismaClient, label: string) => {
+const findByLabel = async (
+	db: PrismaClient,
+	label: string,
+	project_id: string,
+) => {
 	return await db.queue.findUnique({
 		where: {
-			label,
+			project_id_label: {
+				project_id,
+				label,
+			},
 		},
 	});
 };
 
-const findByLabelWithQueueLimiter = async (db: PrismaClient, label: string) => {
+const findByLabelWithQueueLimiter = async (
+	db: PrismaClient,
+	label: string,
+	project_id: string,
+) => {
 	return await db.queue.findUnique({
 		where: {
-			label,
+			project_id_label: {
+				project_id,
+				label,
+			},
 		},
 		include: {
 			queueRateLimiter: true,
