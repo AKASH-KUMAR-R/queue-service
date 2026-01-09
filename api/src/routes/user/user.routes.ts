@@ -15,7 +15,7 @@ const router = Router();
 
 router.get("/list", authMiddleware, commonController.list);
 router.get("/search", authMiddleware, commonController.search);
-router.get("/current-user", authMiddleware, userController.getCurrentUser);
+router.get("/me", authMiddleware, userController.getCurrentUser);
 router.get("/:id", authMiddleware, validateId, commonController.getById);
 
 router.put(

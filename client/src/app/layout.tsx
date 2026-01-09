@@ -1,5 +1,8 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
+import LoginPage from "@/features/auth/components/LoginPage";
+import SignupPage from "@/features/auth/components/SignnupPage";
+
 import { AppearanceSettingsPage } from "@pages/AppearanceSettingsPage";
 import { JobsPage } from "@pages/JobsPage";
 import { MetricsPage } from "@pages/MetricsPage";
@@ -16,16 +19,16 @@ export function AppLayout() {
 	const { currentProject } = useProject();
 
 	return (
-		<div className="flex h-screen bg-background">
+		<div className=" h-screen overflow-auto">
 			{/* <main className="flex-1 overflow-auto"> */}
 			<Routes>
+				<Route path="/" element={<LoginPage />} />
+				<Route path="/sign-up" element={<SignupPage />} />
 				<Route
 					path="*"
 					element={
 						<CommonLayoutWrapper>
 							<Routes>
-								<Route path="/" element={<QueuesPage />} />
-
 								<Route
 									path="/queues"
 									element={<QueuesPage />}

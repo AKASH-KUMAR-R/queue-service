@@ -11,7 +11,7 @@ const validationMiddleware = (schema: zod.ZodType) => {
 		const result = schema.safeParse(req.body);
 		if (!result.success) {
 			return res.status(400).json({
-				errors: result.error,
+				errors: zod.flattenError(result.error),
 			});
 		}
 		req.body = result.data;
@@ -25,7 +25,7 @@ const queryValidationMiddleware = <T extends zod.ZodType>(schema: T) => {
 
 		if (!result.success) {
 			return res.status(400).json({
-				errors: result.error,
+				errors: zod.flattenError(result.error),
 			});
 		}
 
@@ -40,7 +40,7 @@ const validateId = (req: Request, res: Response, next: NextFunction) => {
 
 	if (!result.success) {
 		return res.status(400).json({
-			errors: result.error,
+			errors: zod.flattenError(result.error),
 		});
 	}
 	next();
