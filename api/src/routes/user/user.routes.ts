@@ -1,32 +1,30 @@
 import { Router } from "express";
 
 import commonController from "@common/controller/common.controller";
+import { authMiddleware } from "@common/middleware/auth.middleware";
 import {
 	validateId,
 	validationMiddleware,
 } from "@common/middleware/zod.middleware";
 
-import { UserCreateRequest } from "@models/user/requests/UserCreateRequest";
 import { UserUpdateRequest } from "@models/user/requests/UserUpdateRequest";
+
+import userController from "@controllers/user/user.controller";
 
 const router = Router();
 
-router.get("/list", commonController.list);
-router.get("/search", commonController.search);
-router.get("/:id", validateId, commonController.getById);
+router.get("/list", authMiddleware, commonController.list);
+router.get("/search", authMiddleware, commonController.search);
+router.get("/me", authMiddleware, userController.getCurrentUser);
+router.get("/:id", authMiddleware, validateId, commonController.getById);
 
-router.post(
-	"/create",
-	validationMiddleware(UserCreateRequest),
-	commonController.upsert,
-);
 router.put(
 	"/:id",
+	authMiddleware,
 	validateId,
 	validationMiddleware(UserUpdateRequest),
 	commonController.update,
 );
 
-router.delete("/:id", validateId, commonController.remove);
-
+router.delete("/:id", authMiddleware, validateId, commonController.remove);
 export default router;
