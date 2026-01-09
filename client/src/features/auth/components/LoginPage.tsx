@@ -2,8 +2,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 
-import { handleError } from "@/shared/api/utils/handleError";
-import { useMultiLoading } from "@/shared/hooks/useMultiLoading";
 import { Button } from "@/shared/ui/button";
 import { Form } from "@/shared/ui/form";
 import { Input } from "@/shared/ui/input";
@@ -20,22 +18,20 @@ import { toast } from "sonner";
 import z from "zod";
 
 import { useAuth } from "../context/AuthContext";
-import authService from "../services/authService";
+import {
+	type AuthLoginFormErrorHandler,
+	useAuthLoginForm,
+} from "../data/authLoginForm";
 
 const loginSchema = z.object({
 	email: z.email("Please enter a valid email address"),
 	password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
-const LOADING_STATES = {
-	logining: "logining",
-};
-
 const LoginPage = () => {
 	const navigate = useNavigate();
 
 	const { initialize } = useAuth();
-	const { isLoading, startLoading, stopLoading } = useMultiLoading();
 
 	const form = useForm({
 		resolver: zodResolver(loginSchema),
@@ -47,38 +43,41 @@ const LoginPage = () => {
 
 	const [showPassword, setShowPassword] = useState(false);
 
-	const handleLogin = async () => {
-		try {
-			const values = form.getValues();
+	const handleFormError: AuthLoginFormErrorHandler = (message, errors) => {
+		const values = form.getValues();
 
-			startLoading(LOADING_STATES.logining);
-			const { data, error, validationErrors } = await authService.login({
+		if (errors) {
+			Object.entries(errors).forEach(([field, message]) => {
+				form.setError(field as keyof typeof values, {
+					type: "server",
+					message,
+				});
+			});
+		}
+
+		if (message) {
+			toast.error(message);
+		}
+	};
+
+	const { mutate, isPending: isLoading } = useAuthLoginForm(handleFormError);
+
+	const handleLogin = async () => {
+		const values = form.getValues();
+
+		mutate(
+			{
 				identifier: values.email,
 				password: values.password,
-			});
-
-			if (!error) {
-				initialize(data.user);
-				toast.success("Logged in successfully!");
-				navigate("/queues");
-			} else {
-				if (validationErrors) {
-					Object.entries(validationErrors).forEach(
-						([field, message]) => {
-							form.setError(field as keyof typeof values, {
-								type: "server",
-								message,
-							});
-						},
-					);
-				}
-				toast.error(error);
-			}
-		} catch (err) {
-			toast.error(handleError(err));
-		} finally {
-			stopLoading(LOADING_STATES.logining);
-		}
+			},
+			{
+				onSuccess: (data) => {
+					initialize(data.data.user);
+					toast.success("Logged in successfully!");
+					navigate("/queues");
+				},
+			},
+		);
 	};
 
 	return (
@@ -199,11 +198,9 @@ const LoginPage = () => {
 								<Button
 									type="submit"
 									className="w-full"
-									disabled={isLoading(
-										LOADING_STATES.logining,
-									)}
+									disabled={isLoading}
 								>
-									{isLoading(LOADING_STATES.logining) ? (
+									{isLoading ? (
 										<Spinner size="sm" />
 									) : (
 										"Sign In"
