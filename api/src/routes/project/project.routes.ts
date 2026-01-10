@@ -10,6 +10,8 @@ import {
 import { ProjectCreateRequest } from "@models/project/requests/ProjectCreateRequest";
 import { ProjectUpdateRequest } from "@models/project/requests/ProjectUpdateRequest";
 
+import projectController from "@controllers/project/project.controller";
+
 const router = Router();
 
 router.get("/list", authMiddleware, commonController.list);
@@ -20,7 +22,7 @@ router.post(
 	"/create",
 	authMiddleware,
 	validationMiddleware(ProjectCreateRequest),
-	commonController.upsert,
+	projectController.createProject,
 );
 router.put(
 	"/:id",
