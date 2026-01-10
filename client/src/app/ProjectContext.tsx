@@ -1,4 +1,10 @@
-import { type ReactNode, createContext, useContext, useState } from "react";
+import {
+	type ReactNode,
+	createContext,
+	useCallback,
+	useContext,
+	useState,
+} from "react";
 
 import type { Project } from "@entities/project/types";
 
@@ -15,24 +21,29 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
 	const [currentProject, setCurrentProject] = useState<Project | null>(null);
 	const [projects, setProjects] = useState<Project[]>([]);
 
-	const initializeProjects = (initialProjects: Project[]) => {
+	const initializeProjects = useCallback((initialProjects: Project[]) => {
 		setProjects(initialProjects);
 		if (initialProjects.length > 0) {
 			setCurrentProject(initialProjects[0]);
 		}
-	};
+	}, []);
 
-	const addProject = (project: Project) => {
+	const addProject = useCallback((project: Project) => {
 		setProjects((prev) => [...prev, project]);
 		setCurrentProject(project);
-	};
+	}, []);
+
+	const changeCurrentProject = useCallback((project: Project) => {
+		console.debug("Changing current project to:", project);
+		setCurrentProject(project);
+	}, []);
 
 	return (
 		<ProjectContext.Provider
 			value={{
 				currentProject,
 				projects,
-				setCurrentProject,
+				setCurrentProject: changeCurrentProject,
 				addProject,
 				initializeProjects,
 			}}
