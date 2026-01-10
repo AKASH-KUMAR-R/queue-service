@@ -22,4 +22,8 @@ model Project extends Base {
     job_events JobEvents[] @relation("Project Job Events")
 
     @@index([user_id])
+
+    @@allow("all", auth().id == user_id)
+
 }
+
