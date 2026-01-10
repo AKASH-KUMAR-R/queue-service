@@ -23,7 +23,6 @@ model Project extends Base {
 
     @@index([user_id])
 
-    @@allow("all", auth().id == user_id)
-
+    @@allow("all", auth() != null && auth().id == user_id)
 }
 
