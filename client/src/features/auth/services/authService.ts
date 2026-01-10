@@ -1,10 +1,5 @@
 import type { User } from "@/entities/user/types/user";
 import api from "@/shared/api";
-import {
-	handleError,
-	prettifyFieldErrors,
-} from "@/shared/api/utils/handleError";
-import { AxiosError } from "axios";
 
 type LoginRequestPayload = {
 	identifier: string;
@@ -14,7 +9,7 @@ type LoginRequestPayload = {
 type LoginResponse = {
 	data: {
 		user: User;
-		success: Boolean;
+		success: boolean;
 		message: string;
 	};
 	error: string | null;
@@ -22,7 +17,7 @@ type LoginResponse = {
 type SignupResponse = {
 	data: {
 		user: User;
-		success: Boolean;
+		success: boolean;
 		message: string;
 	};
 	error: string | null;

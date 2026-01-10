@@ -18,7 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import z from "zod";
 
-import { useAuthSignup } from "../data/authSIgnupForm";
+import { useAuthSignup } from "../data/authSignupForm";
 
 const signUpSchema = z.object({
 	email: z.string().email("Please enter a valid email address"),

@@ -45,7 +45,7 @@ export const CommonLayoutWrapper = ({
 			setPending(false);
 			toast.error("Your session expired. Please login again.");
 		}
-	}, [data, isSuccess, initialize]);
+	}, [data, isSuccess, initialize, isLoading, isError]);
 
 	if (isPending) {
 		return (
