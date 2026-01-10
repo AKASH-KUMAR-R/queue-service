@@ -1,60 +1,86 @@
 import { useForm } from "react-hook-form";
 
+import { useProject } from "@/app/ProjectContext";
+import {
+	type ProjectUpdateFormErrorHandler,
+	useProjectUpdate,
+} from "@/features/projects/data/projectUpdateForm";
+import { Form } from "@/shared/ui/form";
+import {
+	RadixFormField,
+	RadixFormItem,
+	RadixFormLabel,
+	RadixFormMessage,
+} from "@/shared/ui/radix-form";
+import { mapServerFieldErrorToFormFields } from "@/shared/utils/formUtils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
 import { z } from "zod";
 
-import { FormField } from "@shared/ui/form/FormField";
 import { Input } from "@shared/ui/form/Input";
-import { Label } from "@shared/ui/form/Label";
 
 const settingsSchema = z.object({
-	maxAttempts: z
-		.number()
-		.min(1, "Max attempts must be at least 1")
-		.max(10, "Max attempts cannot exceed 10"),
-	timeout: z.number().min(1, "Timeout must be at least 1 second"),
-	retryDelay: z.number().min(0, "Retry delay cannot be negative"),
-	alertFailureRate: z.boolean(),
-	alertWorkerOffline: z.boolean(),
-	alertJobLatency: z.boolean(),
+	label: z
+		.string()
+		.min(1, "Project name is required")
+		.max(50, "Project name cannot exceed 50 characters"),
+	description: z
+		.string()
+		.max(200, "Description cannot exceed 200 characters")
+		.optional(),
 });
 
-type SettingsFormData = z.infer<typeof settingsSchema>;
+export type UpdateProjectFormData = z.infer<typeof settingsSchema>;
 
-/**
- * Project Settings Page
- *
- * Configure project-level settings including:
- * - Project information (name, environment, region)
- * - Default queue configuration
- * - Monitoring and alerts
- *
- * Following QaaS Guidelines:
- * - Desktop-first layout
- * - 14px base font
- * - 12-column grid
- * - Functional, engineering-focused
- */
 export function ProjectSettingsPage() {
-	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-	} = useForm<SettingsFormData>({
+	const { currentProject, setCurrentProject } = useProject();
+
+	if (!currentProject) {
+		return (
+			<div className="p-6">
+				<p className="text-sm text-muted-foreground">
+					No project selected. Please select a project to view and
+					edit its settings.
+				</p>
+			</div>
+		);
+	}
+
+	const form = useForm<UpdateProjectFormData>({
 		resolver: zodResolver(settingsSchema),
 		defaultValues: {
-			maxAttempts: 3,
-			timeout: 30,
-			retryDelay: 60,
-			alertFailureRate: true,
-			alertWorkerOffline: true,
-			alertJobLatency: false,
+			label: currentProject?.label || "",
+			description: currentProject?.description || "",
 		},
 	});
 
-	const onSubmit = (data: SettingsFormData) => {
-		console.log("Saving settings:", data);
-		// In real app, this would call an API
+	const handleUpdateError: ProjectUpdateFormErrorHandler = (
+		message,
+		errors,
+	) => {
+		if (message) {
+			toast.error(message);
+		}
+
+		if (errors) {
+			mapServerFieldErrorToFormFields(form.setError, errors);
+		}
+	};
+
+	const { mutate: updateProject } = useProjectUpdate(handleUpdateError);
+
+	const handleSubmit = (data: UpdateProjectFormData) => {
+		if (!currentProject) return;
+
+		updateProject(
+			{ projectId: currentProject.id, data },
+			{
+				onSuccess: (newProject) => {
+					setCurrentProject(newProject.data);
+					toast.success("Project updated successfully");
+				},
+			},
+		);
 	};
 
 	return (
@@ -67,111 +93,61 @@ export function ProjectSettingsPage() {
 					Configure project and queue settings
 				</p>
 			</div>
+			<Form {...form}>
+				<form
+					onSubmit={form.handleSubmit(handleSubmit)}
+					className="space-y-6"
+				>
+					{/* Project Information */}
+					<div className="bg-card border border-border rounded-lg p-6">
+						<h3 className="text-base font-medium text-card-foreground mb-4">
+							Project Information
+						</h3>
+						<div className="grid grid-cols-12 gap-4">
+							<div className="col-span-4">
+								<RadixFormField
+									name="label"
+									render={({ field }) => (
+										<RadixFormItem>
+											<RadixFormLabel htmlFor="projectName">
+												Project Name
+											</RadixFormLabel>
+											<Input
+												{...field}
+												defaultValue={
+													currentProject.label
+												}
+											/>
+											<RadixFormMessage />
+										</RadixFormItem>
+									)}
+								/>
+							</div>
 
-			<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-				{/* Project Information */}
-				<div className="bg-card border border-border rounded-lg p-6">
-					<h3 className="text-base font-medium text-card-foreground mb-4">
-						Project Information
-					</h3>
-					<div className="grid grid-cols-12 gap-4">
-						<div className="col-span-4">
-							<FormField>
-								<Label htmlFor="projectName">
-									Project Name
-								</Label>
-								<Input
-									id="projectName"
-									value="prod-core-api"
-									readOnly
-									className="bg-muted"
+							<div className="col-span-4">
+								<RadixFormField
+									name="description"
+									render={({ field }) => (
+										<RadixFormItem>
+											<RadixFormLabel htmlFor="projectDescription">
+												Project Description
+											</RadixFormLabel>
+											<Input
+												{...field}
+												defaultValue={
+													currentProject.description
+												}
+											/>
+											<RadixFormMessage />
+										</RadixFormItem>
+									)}
 								/>
-							</FormField>
-						</div>
-						<div className="col-span-4">
-							<FormField>
-								<Label htmlFor="environment">Environment</Label>
-								<Input
-									id="environment"
-									value="production"
-									readOnly
-									className="bg-muted"
-								/>
-							</FormField>
-						</div>
-						<div className="col-span-4">
-							<FormField>
-								<Label htmlFor="region">Region</Label>
-								<Input
-									id="region"
-									value="us-east-1"
-									readOnly
-									className="bg-muted"
-								/>
-							</FormField>
+							</div>
 						</div>
 					</div>
-				</div>
 
-				{/* Default Queue Configuration */}
-				<div className="bg-card border border-border rounded-lg p-6">
-					<h3 className="text-base font-medium text-card-foreground mb-4">
-						Default Queue Configuration
-					</h3>
-					<div className="grid grid-cols-12 gap-4">
-						<div className="col-span-4">
-							<FormField>
-								<Label htmlFor="maxAttempts" required>
-									Max Attempts
-								</Label>
-								<Input
-									id="maxAttempts"
-									type="number"
-									min="1"
-									max="10"
-									error={errors.maxAttempts?.message}
-									{...register("maxAttempts", {
-										valueAsNumber: true,
-									})}
-								/>
-							</FormField>
-						</div>
-						<div className="col-span-4">
-							<FormField>
-								<Label htmlFor="timeout">
-									Timeout (seconds)
-								</Label>
-								<Input
-									id="timeout"
-									type="number"
-									min="1"
-									{...register("timeout", {
-										valueAsNumber: true,
-									})}
-								/>
-							</FormField>
-						</div>
-						<div className="col-span-4">
-							<FormField>
-								<Label htmlFor="retryDelay">
-									Retry Delay (seconds)
-								</Label>
-								<Input
-									id="retryDelay"
-									type="number"
-									min="0"
-									error={errors.retryDelay?.message}
-									{...register("retryDelay", {
-										valueAsNumber: true,
-									})}
-								/>
-							</FormField>
-						</div>
-					</div>
-				</div>
-
-				{/* Monitoring & Alerts */}
-				<div className="bg-card border border-border rounded-lg p-6">
+					{/* Monitoring & Alerts */}
+					{/* <div className="bg-card border border-border rounded-lg p-6">
 					<h3 className="text-base font-medium text-card-foreground mb-4">
 						Monitoring & Alerts
 					</h3>
@@ -207,24 +183,25 @@ export function ProjectSettingsPage() {
 							</span>
 						</label>
 					</div>
-				</div>
+				</div> */}
 
-				{/* Actions */}
-				<div className="flex gap-3">
-					<button
-						type="submit"
-						className="px-4 py-2 bg-primary text-primary-foreground text-sm rounded hover:bg-primary/90 transition-colors"
-					>
-						Save Changes
-					</button>
-					<button
-						type="button"
-						className="px-4 py-2 bg-card border border-border text-sm text-foreground rounded hover:bg-accent transition-colors"
-					>
-						Cancel
-					</button>
-				</div>
-			</form>
+					{/* Actions */}
+					<div className="flex gap-3">
+						<button
+							type="submit"
+							className="px-4 py-2 bg-primary text-primary-foreground text-sm rounded hover:bg-primary/90 transition-colors"
+						>
+							Save Changes
+						</button>
+						<button
+							type="button"
+							className="px-4 py-2 bg-card border border-border text-sm text-foreground rounded hover:bg-accent transition-colors"
+						>
+							Cancel
+						</button>
+					</div>
+				</form>
+			</Form>
 		</div>
 	);
 }
