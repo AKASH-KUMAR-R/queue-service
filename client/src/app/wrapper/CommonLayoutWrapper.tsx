@@ -25,6 +25,8 @@ export const CommonLayoutWrapper = ({
 
 	const location = useLocation();
 
+	// Since we need to wait for the user to be set in the auth context
+	// we use a local state to manage the pending state and initialize the state as true. In order to avoid renavigating to the login page before setting the user in the auth context.
 	const [isPending, setPending] = useState(true);
 
 	const url = getCleanUrl(location.pathname);
