@@ -55,7 +55,7 @@ export function AppLayout() {
 									path="/project/api-keys"
 									element={
 										<ProjectApiKeysPage
-											projectId={currentProject.id}
+											projectId={currentProject?.id!}
 										/>
 									}
 								/>
