@@ -4,7 +4,7 @@ const create = async (
 	db: PrismaClient,
 	data: Prisma.ProjectUncheckedCreateInput,
 ) => {
-	const enhancedData: Prisma.ProjectCreateInput = {
+	const enrichedData: Prisma.ProjectCreateInput = {
 		label: data.label,
 		description: data.description || null,
 		user: {
@@ -14,7 +14,7 @@ const create = async (
 		},
 	};
 	return await db.project.create({
-		data: enhancedData,
+		data: enrichedData,
 	});
 };
 
