@@ -6,7 +6,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 
 import authService from "../services/authService";
-import { authKeys } from "./keys";
 
 export type AuthSignupFormErrorHandler = (
 	message: string | null,
@@ -19,7 +18,7 @@ export const useAuthSignup = (onError: AuthSignupFormErrorHandler) => {
 	return useMutation({
 		mutationFn: authService.signup,
 		onSuccess() {
-			client.invalidateQueries({ queryKey: authKeys.signup });
+			client.clear();
 		},
 		onError(errors) {
 			onError(
