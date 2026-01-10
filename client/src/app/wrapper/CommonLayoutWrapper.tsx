@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 
-import { handleError } from "@/shared/api/utils/handleError";
+import { useCurrentUser } from "@/features/user/data/currentUser";
 import { Spinner } from "@/shared/ui/spinner";
 import { toast } from "sonner";
 
@@ -9,7 +9,6 @@ import { SidebarProvider } from "@shared/ui/sidebar";
 import { getCleanUrl } from "@shared/utils/baseUtils";
 
 import { useAuth } from "@features/auth/context/AuthContext";
-import { fetchCurrentUser } from "@features/user/services/userService";
 
 import Header from "../navbar/Header";
 import { NAVBAR_RESTRICTED_PATHS } from "../navbar/NavBarConfig";
@@ -22,36 +21,31 @@ export const CommonLayoutWrapper = ({
 }) => {
 	const { initialize, user } = useAuth();
 
+	const { data, isLoading, isError, isSuccess } = useCurrentUser();
+
 	const location = useLocation();
 
+	// Since we need to wait for the user to be set in the auth context
+	// we use a local state to manage the pending state and initialize the state as true. In order to avoid renavigating to the login page before setting the user in the auth context.
 	const [isPending, setPending] = useState(true);
 
 	const url = getCleanUrl(location.pathname);
 
 	const isRestricted = NAVBAR_RESTRICTED_PATHS.includes(url);
 
-	const getCurrentUser = async () => {
-		try {
-			if (user) return;
-
-			setPending(true);
-			const { data, error } = await fetchCurrentUser();
-
-			if (!error) {
-				initialize(data.user);
-			} else {
-				toast.info("Your session expired. Please login again");
-			}
-		} catch (err) {
-			toast.error(handleError(err));
-		} finally {
-			setPending(false);
-		}
-	};
-
 	useEffect(() => {
-		getCurrentUser();
-	}, []);
+		if (isLoading) return;
+
+		if (isSuccess && data) {
+			setPending(false);
+			initialize(data.data.user);
+		}
+
+		if (isError) {
+			setPending(false);
+			toast.error("Your session expired. Please login again.");
+		}
+	}, [data, isSuccess, initialize, isLoading, isError]);
 
 	if (isPending) {
 		return (

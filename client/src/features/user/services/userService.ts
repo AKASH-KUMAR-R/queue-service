@@ -1,15 +1,14 @@
+import type { User } from "@/entities/user/types/user";
 import api from "@/shared/api";
-import { handleError } from "@/shared/api/utils/handleError";
 
-export const fetchCurrentUser = async () => {
-	try {
-		const response = await api.get("/api/dashboard/user/me");
+export type FetchCurrentUserResponse = {
+	data: {
+		user: User;
+	};
+	error: null | string;
+};
+export const fetchCurrentUser = async (): Promise<FetchCurrentUserResponse> => {
+	const response = await api.get("/api/dashboard/user/me");
 
-		return { data: response.data, error: null };
-	} catch (err) {
-		return {
-			data: null,
-			error: handleError(err),
-		};
-	}
+	return { data: response.data, error: null };
 };
