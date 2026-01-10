@@ -13,6 +13,7 @@ import {
 	RadixFormMessage,
 } from "@/shared/ui/radix-form";
 import { Spinner } from "@/shared/ui/spinner";
+import { mapServerFieldErrorToFormFields } from "@/shared/utils/formUtils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import z from "zod";
@@ -44,15 +45,8 @@ const LoginPage = () => {
 	const [showPassword, setShowPassword] = useState(false);
 
 	const handleFormError: AuthLoginFormErrorHandler = (message, errors) => {
-		const values = form.getValues();
-
 		if (errors) {
-			Object.entries(errors).forEach(([field, message]) => {
-				form.setError(field as keyof typeof values, {
-					type: "server",
-					message,
-				});
-			});
+			mapServerFieldErrorToFormFields(form.setError, errors);
 		}
 
 		if (message) {

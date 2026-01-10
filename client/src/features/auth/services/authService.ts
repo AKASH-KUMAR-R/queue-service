@@ -19,6 +19,14 @@ type LoginResponse = {
 	};
 	error: string | null;
 };
+type SignupResponse = {
+	data: {
+		user: User;
+		success: Boolean;
+		message: string;
+	};
+	error: string | null;
+};
 
 type SignupRequestPayload = {
 	name: string;
@@ -31,20 +39,10 @@ const login = async (data: LoginRequestPayload): Promise<LoginResponse> => {
 	return { data: response.data, error: null };
 };
 
-const signup = async (data: SignupRequestPayload) => {
-	try {
-		const response = await api.post("/api/auth/signup", data);
+const signup = async (data: SignupRequestPayload): Promise<SignupResponse> => {
+	const response = await api.post("/api/auth/signup", data);
 
-		return { data: response.data, error: null };
-	} catch (err: unknown) {
-		return {
-			data: null,
-			error: handleError(err),
-			validationErrors: prettifyFieldErrors(
-				err instanceof AxiosError ? err.response?.data : null,
-			),
-		};
-	}
+	return { data: response.data, error: null };
 };
 
 export default {

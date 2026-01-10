@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-import { handleError } from "@/shared/api/utils/handleError";
-import { useMultiLoading } from "@/shared/hooks/useMultiLoading";
 import { Button } from "@/shared/ui/button";
 import { Form } from "@/shared/ui/form";
 import { Input } from "@/shared/ui/input";
@@ -15,11 +13,12 @@ import {
 	RadixFormMessage,
 } from "@/shared/ui/radix-form";
 import { Spinner } from "@/shared/ui/spinner";
+import { mapServerFieldErrorToFormFields } from "@/shared/utils/formUtils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import z from "zod";
 
-import authService from "../services/authService";
+import { useAuthSignup } from "../data/authSIgnupForm";
 
 const signUpSchema = z.object({
 	email: z.string().email("Please enter a valid email address"),
@@ -27,12 +26,8 @@ const signUpSchema = z.object({
 	password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
-const LOADING_STATES = {
-	signingUp: "signingUp",
-};
-
 const SignupPage = () => {
-	const { isLoading, startLoading, stopLoading } = useMultiLoading();
+	const navigate = useNavigate();
 
 	const form = useForm({
 		resolver: zodResolver(signUpSchema),
@@ -45,37 +40,36 @@ const SignupPage = () => {
 
 	const [showPassword, setShowPassword] = useState(false);
 
-	const handleSignup = async () => {
-		try {
-			const values = form.getValues();
+	const handleFormError = (
+		message: string | null,
+		errors: Record<string, string> | null,
+	) => {
+		if (message) {
+			toast.error(message);
+		}
+		if (errors) {
+			mapServerFieldErrorToFormFields(form.setError, errors);
+		}
+	};
 
-			startLoading(LOADING_STATES.signingUp);
-			const { error, validationErrors } = await authService.signup({
+	const { mutate, isPending: isLoading } = useAuthSignup(handleFormError);
+
+	const handleSignup = async () => {
+		const values = form.getValues();
+
+		mutate(
+			{
 				email: values.email,
 				name: values.name,
 				password: values.password,
-			});
-
-			if (!error) {
-				toast.success("Account created successfully!");
-			} else {
-				if (validationErrors) {
-					Object.entries(validationErrors).forEach(
-						([field, message]) => {
-							form.setError(field as keyof typeof values, {
-								type: "server",
-								message,
-							});
-						},
-					);
-				}
-				toast.error(error);
-			}
-		} catch (err) {
-			toast.error(handleError(err));
-		} finally {
-			stopLoading(LOADING_STATES.signingUp);
-		}
+			},
+			{
+				onSuccess: () => {
+					toast.success("Signup successful! Please log in.");
+					navigate("/");
+				},
+			},
+		);
 	};
 
 	return (
@@ -213,11 +207,9 @@ const SignupPage = () => {
 								<Button
 									type="submit"
 									className="w-full"
-									disabled={isLoading(
-										LOADING_STATES.signingUp,
-									)}
+									disabled={isLoading}
 								>
-									{isLoading(LOADING_STATES.signingUp) ? (
+									{isLoading ? (
 										<Spinner size="sm" />
 									) : (
 										"Sign Up"
