@@ -6,7 +6,7 @@ import userService from "@services/user/user.service";
 import { hashToken } from "@utils/crypto.util";
 import { handleError } from "@utils/error.util";
 import { generateToken, verifyToken } from "@utils/jwt.util";
-import { prisma } from "@utils/prisma.util";
+import { getEnhancedPrisma, prisma } from "@utils/prisma.util";
 
 import { VERIFY_JWT_STATUS } from "../types/jwt";
 
@@ -64,6 +64,7 @@ export const authMiddleware = async (
 		}
 
 		req.user = user;
+		req.db = getEnhancedPrisma(user);
 		next();
 	} catch (err) {
 		handleError(res, err, 500);
