@@ -14,12 +14,15 @@ type ProjectContextType = {
 	setCurrentProject: (project: Project) => void;
 	addProject: (project: Project) => void;
 	initializeProjects: (initialProjects: Project[]) => void;
+	isProjectsLoading: boolean;
+	setIsProjectsLoading: (isLoading: boolean) => void;
 };
 
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
 export function ProjectProvider({ children }: { children: ReactNode }) {
 	const [currentProject, setCurrentProject] = useState<Project | null>(null);
 	const [projects, setProjects] = useState<Project[]>([]);
+	const [isProjectsLoading, setIsProjectsLoading] = useState<boolean>(true);
 
 	const initializeProjects = useCallback((initialProjects: Project[]) => {
 		setProjects(initialProjects);
@@ -46,6 +49,8 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
 				setCurrentProject: changeCurrentProject,
 				addProject,
 				initializeProjects,
+				isProjectsLoading,
+				setIsProjectsLoading,
 			}}
 		>
 			{children}
