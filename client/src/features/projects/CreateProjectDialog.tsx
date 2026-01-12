@@ -1,17 +1,20 @@
 import { useForm } from "react-hook-form";
 
+import type { Project } from "@/entities/project/types";
+import { Button } from "@/shared/ui/button";
+import { mapServerFieldErrorToFormFields } from "@/shared/utils/formUtils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
 import { z } from "zod";
 
-import { Dialog, DialogContent } from "@shared/ui/dialog";
-import { Input } from "@shared/ui/form/Input";
 import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@shared/ui/form/Select";
+	Dialog,
+	DialogContent,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@shared/ui/dialog";
+import { Input } from "@shared/ui/form/Input";
 import {
 	RadixForm,
 	RadixFormControl,
@@ -22,8 +25,13 @@ import {
 	RadixFormMessage,
 } from "@shared/ui/radix-form";
 
+import {
+	type ProjectCreateFormErrorHandler,
+	useProjectCreate,
+} from "./data/projectCreateForm";
+
 const createProjectSchema = z.object({
-	name: z
+	label: z
 		.string()
 		.min(1, "Project name is required")
 		.max(50, "Project name cannot exceed 50 characters")
@@ -35,43 +43,62 @@ const createProjectSchema = z.object({
 			(val) => !val.startsWith("-") && !val.endsWith("-"),
 			"Project name cannot start or end with a hyphen",
 		),
-	environment: z.enum(["production", "staging", "development"], {
-		required_error: "Environment is required",
-		invalid_type_error: "Please select a valid environment",
-	}),
-	region: z.string().min(1, "Region is required"),
+
+	description: z
+		.string()
+		.max(200, "Description cannot exceed 200 characters")
+		.optional(),
 });
 
 export type CreateProjectFormData = z.infer<typeof createProjectSchema>;
 
-interface CreateProjectDialogProps {
+type CreateProjectDialogProps = {
 	open: boolean;
 	onClose: () => void;
-	onSubmit: (data: CreateProjectFormData) => void;
-	organization: string;
-}
+	onSubmit: (data: Project) => void;
+};
 
 export function CreateProjectDialog({
 	open,
 	onClose,
 	onSubmit,
-	organization,
 }: CreateProjectDialogProps) {
 	const form = useForm<CreateProjectFormData>({
 		resolver: zodResolver(createProjectSchema),
 		defaultValues: {
-			name: "",
-			environment: "development",
-			region: "us-east-1",
+			label: "",
+			description: "",
 		},
 	});
 
 	const { handleSubmit, control, reset } = form;
 
+	const handleProjectCreateError: ProjectCreateFormErrorHandler = (
+		message,
+		errors,
+	) => {
+		if (message) {
+			toast.error(message);
+		}
+
+		if (errors) {
+			mapServerFieldErrorToFormFields(form.setError, errors);
+		}
+	};
+
+	const { mutate: createProject } = useProjectCreate(
+		handleProjectCreateError,
+	);
+
 	const handleFormSubmit = (data: CreateProjectFormData) => {
-		onSubmit(data);
-		reset();
-		onClose();
+		createProject(data, {
+			onSuccess: (newProjectRes) => {
+				toast.success("Project created successfully!");
+				onSubmit(newProjectRes.data);
+				reset();
+				onClose();
+			},
+		});
 	};
 
 	const handleOpenChange = (isOpen: boolean) => {
@@ -84,17 +111,21 @@ export function CreateProjectDialog({
 	return (
 		<Dialog open={open} onOpenChange={handleOpenChange}>
 			<DialogContent
+				showCloseButton={false}
 				title="Create New Project"
-				description={`Create a new project in organization: ${organization}`}
 				aria-describedby="create-project-description"
 			>
+				<DialogHeader>
+					<DialogTitle>Create New Project</DialogTitle>
+				</DialogHeader>
+
 				<RadixForm {...form}>
 					<form onSubmit={handleSubmit(handleFormSubmit)}>
 						<div className="p-6 space-y-4">
 							{/* Project Name Field */}
 							<RadixFormField
 								control={control}
-								name="name"
+								name="label"
 								render={({ field }) => (
 									<RadixFormItem>
 										<RadixFormLabel>
@@ -114,132 +145,45 @@ export function CreateProjectDialog({
 									</RadixFormItem>
 								)}
 							/>
-
-							{/* Environment Field */}
 							<RadixFormField
 								control={control}
-								name="environment"
+								name="description"
 								render={({ field }) => (
 									<RadixFormItem>
 										<RadixFormLabel>
-											Environment
+											Project Description
 										</RadixFormLabel>
-										<Select
-											onValueChange={field.onChange}
-											defaultValue={field.value}
-										>
-											<RadixFormControl>
-												<SelectTrigger>
-													<SelectValue placeholder="Select environment" />
-												</SelectTrigger>
-											</RadixFormControl>
-											<SelectContent>
-												<SelectItem value="development">
-													Development
-												</SelectItem>
-												<SelectItem value="staging">
-													Staging
-												</SelectItem>
-												<SelectItem value="production">
-													Production
-												</SelectItem>
-											</SelectContent>
-										</Select>
+										<RadixFormControl>
+											<Input
+												placeholder="my-project-description"
+												{...field}
+											/>
+										</RadixFormControl>
+										<RadixFormDescription>
+											Use lowercase letters, numbers, and
+											hyphens only
+										</RadixFormDescription>
 										<RadixFormMessage />
 									</RadixFormItem>
 								)}
 							/>
-
-							{/* Region Field */}
-							<RadixFormField
-								control={control}
-								name="region"
-								render={({ field }) => (
-									<RadixFormItem>
-										<RadixFormLabel>Region</RadixFormLabel>
-										<Select
-											onValueChange={field.onChange}
-											defaultValue={field.value}
-										>
-											<RadixFormControl>
-												<SelectTrigger>
-													<SelectValue placeholder="Select region" />
-												</SelectTrigger>
-											</RadixFormControl>
-											<SelectContent>
-												<SelectItem value="us-east-1">
-													US East (N. Virginia)
-												</SelectItem>
-												<SelectItem value="us-west-2">
-													US West (Oregon)
-												</SelectItem>
-												<SelectItem value="eu-west-1">
-													EU (Ireland)
-												</SelectItem>
-												<SelectItem value="eu-central-1">
-													EU (Frankfurt)
-												</SelectItem>
-												<SelectItem value="ap-southeast-1">
-													Asia Pacific (Singapore)
-												</SelectItem>
-												<SelectItem value="ap-northeast-1">
-													Asia Pacific (Tokyo)
-												</SelectItem>
-											</SelectContent>
-										</Select>
-										<RadixFormMessage />
-									</RadixFormItem>
-								)}
-							/>
-
-							{/* Default Configuration Summary */}
-							<div className="bg-neutral-50 border border-neutral-200 rounded p-4">
-								<h4 className="text-sm text-neutral-900 mb-2">
-									Default Configuration
-								</h4>
-								<div className="space-y-1 text-xs text-neutral-600">
-									<div>
-										Max Attempts:{" "}
-										<span className="text-neutral-900">
-											3
-										</span>
-									</div>
-									<div>
-										Timeout:{" "}
-										<span className="text-neutral-900">
-											30s
-										</span>
-									</div>
-									<div>
-										Retry Delay:{" "}
-										<span className="text-neutral-900">
-											60s
-										</span>
-									</div>
-								</div>
-								<p className="text-xs text-neutral-500 mt-2">
-									These can be customized in project settings
-									after creation
-								</p>
-							</div>
 						</div>
-
 						{/* Footer Actions */}
-						<div className="flex items-center justify-end gap-3 p-6 border-t border-neutral-200 sticky bottom-0 bg-white">
-							<button
+						<DialogFooter className="flex items-center justify-end gap-3 p-6 ">
+							<Button
 								type="button"
 								onClick={() => handleOpenChange(false)}
-								className="px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100 rounded transition-colors"
+								className="px-4 py-2 text-sm text-neutral-700  rounded transition-colors"
 							>
 								Cancel
-							</button>
-							<button
+							</Button>
+							<Button
 								type="submit"
-								className="px-4 py-2 text-sm bg-neutral-900 text-white rounded hover:bg-neutral-800 transition-colors"
+								className="px-4 py-2 text-sm bg-neutral-900 rounded  transition-colors"
 							>
 								Create Project
-							</button>
-						</div>
+							</Button>
+						</DialogFooter>
 					</form>
 				</RadixForm>
 			</DialogContent>

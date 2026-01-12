@@ -1,8 +1,8 @@
-export interface Project {
-  id: string;
-  name: string;
-  environment: 'production' | 'staging' | 'development';
-  region: string;
-  organization: string;
-  createdAt: string;
-}
+export type Project = {
+	id: string;
+	label: string;
+	description: string;
+	userId: string;
+	createdAt: string;
+	updatedAt: string;
+};

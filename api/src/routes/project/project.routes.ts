@@ -29,7 +29,7 @@ router.put(
 	authMiddleware,
 	validateId,
 	validationMiddleware(ProjectUpdateRequest),
-	commonController.upsert,
+	commonController.update,
 );
 router.delete("/:id", authMiddleware, validateId, commonController.remove);
 
