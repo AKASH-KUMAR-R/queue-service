@@ -25,7 +25,8 @@ model Job extends Base {
     job_events JobEvents[] @relation("Job Events")
 
     @@index([queue_id, status, priority, created_at]) // For fetching next job to process
-     
+
+    @@allow('all', auth() != null && auth().id == project.user_id) //If the multiple user model is implemented, change this to check project ownership
 }
 
 enum JobStatus {

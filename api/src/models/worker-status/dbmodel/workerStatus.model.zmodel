@@ -16,4 +16,6 @@ model WorkerStatus extends Base {
     metadata Json?
 
     @@index([queue_id, last_seen(sort: Desc)]) // For fetching active workers of a queue based on last seen time
+
+    @@allow('all', auth() != null && auth().id == queue.project.user_id) //If the multiple user model is implemented, change this to check project ownership
 }
