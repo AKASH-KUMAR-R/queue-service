@@ -1,11 +1,13 @@
+import { Button } from "@/shared/ui/button";
+
 import type { ApiKey } from "../model/types";
-import { ApiKeyDisplay } from "./ApiKeyDisplay";
 import { ApiKeyStatusBadge } from "./ApiKeyStatusBadge";
 
-interface ApiKeyRowProps {
+type ApiKeyRowProps = {
 	apiKey: ApiKey;
 	onRevoke: (apiKey: ApiKey) => void;
-}
+	siNo: number;
+};
 
 function formatRelativeTime(dateString: string): string {
 	const date = new Date(dateString);
@@ -27,29 +29,12 @@ function formatRelativeTime(dateString: string): string {
 	}
 }
 
-export function ApiKeyRow({ apiKey, onRevoke }: ApiKeyRowProps) {
+export function ApiKeyRow({ apiKey, onRevoke, siNo }: ApiKeyRowProps) {
 	return (
 		<tr className="border-b border-border hover:bg-accent">
-			{/* Name & Description */}
+			<td className="py-3 px-4">{siNo}</td>
 			<td className="py-3 px-4">
-				<div>
-					<div className="text-sm text-foreground">{apiKey.name}</div>
-					{apiKey.description && (
-						<div className="text-xs text-muted-foreground mt-1">
-							{apiKey.description}
-						</div>
-					)}
-				</div>
-			</td>
-
-			{/* Key */}
-			<td className="py-3 px-4">
-				<ApiKeyDisplay prefix={apiKey.prefix} suffix={apiKey.suffix} />
-			</td>
-
-			{/* Status */}
-			<td className="py-3 px-4">
-				<ApiKeyStatusBadge status={apiKey.status} />
+				<ApiKeyStatusBadge isRevoked={apiKey.revoked} />
 			</td>
 
 			{/* Created */}
@@ -57,24 +42,16 @@ export function ApiKeyRow({ apiKey, onRevoke }: ApiKeyRowProps) {
 				{formatRelativeTime(apiKey.createdAt)}
 			</td>
 
-			{/* Last Used */}
-			<td className="py-3 px-4 text-sm text-muted-foreground">
-				{apiKey.lastUsedAt ? (
-					formatRelativeTime(apiKey.lastUsedAt)
-				) : (
-					<span className="text-muted-foreground">Never</span>
-				)}
-			</td>
-
 			{/* Actions */}
 			<td className="py-3 px-4">
-				{apiKey.status === "active" ? (
-					<button
+				{!apiKey.revoked ? (
+					<Button
+						type="button"
 						onClick={() => onRevoke(apiKey)}
 						className="text-sm text-red-600 hover:text-red-700 hover:underline"
 					>
 						Revoke
-					</button>
+					</Button>
 				) : (
 					<span className="text-sm text-muted-foreground">—</span>
 				)}

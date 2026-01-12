@@ -72,10 +72,7 @@ export function ApiKeysList({
 					<thead className="bg-muted border-b border-border">
 						<tr>
 							<th className="py-3 px-4 text-left text-xs text-muted-foreground uppercase tracking-wider">
-								Name
-							</th>
-							<th className="py-3 px-4 text-left text-xs text-muted-foreground uppercase tracking-wider">
-								Key
+								SI
 							</th>
 							<th className="py-3 px-4 text-left text-xs text-muted-foreground uppercase tracking-wider">
 								Status
@@ -84,17 +81,15 @@ export function ApiKeysList({
 								Created
 							</th>
 							<th className="py-3 px-4 text-left text-xs text-muted-foreground uppercase tracking-wider">
-								Last Used
-							</th>
-							<th className="py-3 px-4 text-left text-xs text-muted-foreground uppercase tracking-wider">
 								Actions
 							</th>
 						</tr>
 					</thead>
 					<tbody>
-						{apiKeys.map((apiKey) => (
+						{apiKeys.map((apiKey, index) => (
 							<ApiKeyRow
 								key={apiKey.id}
+								siNo={index + 1}
 								apiKey={apiKey}
 								onRevoke={onRevoke}
 							/>

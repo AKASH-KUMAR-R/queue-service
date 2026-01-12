@@ -1,15 +1,25 @@
+import { Button } from "@/shared/ui/button";
+import { Spinner } from "@/shared/ui/spinner";
+import { formatDateTime } from "@/shared/utils/dateAndTimeUtils";
 import { AlertTriangle } from "lucide-react";
+import { toast } from "sonner";
 
-import { type ApiKey } from "../../entities/api-key/model/types";
-import { ApiKeyDisplay } from "../../entities/api-key/ui/ApiKeyDisplay";
-import { Dialog, DialogContent } from "../../shared/ui/dialog";
+import { Dialog, DialogContent } from "@shared/ui/dialog";
 
-interface RevokeApiKeyDialogProps {
+import { type ApiKey } from "@entities/api-key/model/types";
+import { ApiKeyStatusBadge } from "@entities/api-key/ui/ApiKeyStatusBadge";
+
+import {
+	type RevokeApiKeyFormErrorHandler,
+	useRevokeApiKeyForm,
+} from "./data/revokeApiKeyForm";
+
+type RevokeApiKeyDialogProps = {
 	open: boolean;
 	onClose: () => void;
 	onConfirm: () => void;
 	apiKey: ApiKey | null;
-}
+};
 
 export function RevokeApiKeyDialog({
 	open,
@@ -19,27 +29,60 @@ export function RevokeApiKeyDialog({
 }: RevokeApiKeyDialogProps) {
 	if (!apiKey) return null;
 
+	const handleAPIKeyRevokeError: RevokeApiKeyFormErrorHandler = (message) => {
+		if (message) {
+			toast.error(message);
+		}
+	};
+
+	const { mutate: revokeApiKey, isPending: isRevoking } = useRevokeApiKeyForm(
+		handleAPIKeyRevokeError,
+	);
+
+	const handleRevokeClick = () => {
+		revokeApiKey(
+			{ apiKeyId: apiKey.id },
+			{
+				onSuccess() {
+					toast.success("API Key revoked successfully.");
+					onConfirm();
+				},
+			},
+		);
+	};
+
 	return (
 		<Dialog open={open} onOpenChange={onClose}>
 			<DialogContent
 				title="Revoke API Key?"
-				description="This action cannot be undone and will immediately revoke access"
 				aria-describedby="revoke-api-key-description"
+				showCloseButton={false}
 			>
 				<div className="p-6 space-y-4">
 					<p className="text-sm text-neutral-700">
 						Are you sure you want to revoke this API key?
 					</p>
 
-					{/* Key Info */}
-					<div className="p-3 bg-neutral-50 border border-neutral-200 rounded space-y-2">
-						<div className="text-sm text-neutral-900">
-							{apiKey.name}
+					<div className="space-y-3">
+						<h4 className="text-sm text-neutral-900">
+							Key Details
+						</h4>
+						<div className="space-y-2 text-sm">
+							<div className="flex items-start justify-between">
+								<span className="text-neutral-600">
+									Created:
+								</span>
+								<span className="text-neutral-900">
+									{formatDateTime(apiKey.createdAt)}
+								</span>
+							</div>
+							<div className="flex items-start justify-between">
+								<span className="text-neutral-600">
+									Status:
+								</span>
+								<ApiKeyStatusBadge isRevoked={apiKey.revoked} />
+							</div>
 						</div>
-						<ApiKeyDisplay
-							prefix={apiKey.prefix}
-							suffix={apiKey.suffix}
-						/>
 					</div>
 
 					{/* Warning */}
@@ -55,19 +98,22 @@ export function RevokeApiKeyDialog({
 				</div>
 
 				{/* Footer */}
-				<div className="flex items-center justify-end gap-3 p-6 border-t border-neutral-200 sticky bottom-0 bg-white">
-					<button
+				<div className="flex items-center justify-end gap-3 p-6 border-t  sticky bottom-0 ">
+					<Button
+						type="button"
 						onClick={onClose}
-						className="px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100 rounded transition-colors"
+						className="px-4 py-2 text-sm text-neutral-700  rounded transition-colors"
 					>
 						Cancel
-					</button>
-					<button
-						onClick={onConfirm}
+					</Button>
+					<Button
+						type="button"
+						onClick={handleRevokeClick}
 						className="px-4 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+						disabled={isRevoking}
 					>
-						Revoke Key
-					</button>
+						{isRevoking ? <Spinner /> : "Revoke Key"}
+					</Button>
 				</div>
 			</DialogContent>
 		</Dialog>
