@@ -12,4 +12,5 @@ model ApiKey extends Base {
 
     @@index([project_id, revoked]) // for quick lookup of API keys by project_id
     
+    @@allow('all', auth() != null && auth().id == project.user_id) //If the multiple user model is implemented, change this to check project ownership
 }

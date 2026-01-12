@@ -12,5 +12,6 @@ model User extends Base {
 
     @@allow('create', true)
     @@allow('read', auth() == this)
+    @@allow('update', auth() == this)
 }
 

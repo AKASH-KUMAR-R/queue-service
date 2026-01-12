@@ -10,4 +10,5 @@ model QueueRateLimiter extends Base {
     queue Queue @relation("QueueRateLimiter", fields: [queue_id], references: [id])
     queue_id String @unique
 
-}
+    @@allow('all', auth() != null && auth().id == queue.project.user_id) //If the multiple user model is implemented, change this to check project ownership
+}   
