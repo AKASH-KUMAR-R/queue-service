@@ -34,10 +34,7 @@ export const updateProject = async (
 	projectId: string,
 	data: UpdateProjectFormData,
 ): Promise<UpdateProjectResponse> => {
-	const response = await api.put(
-		`/api/dashboard/project/update/${projectId}`,
-		data,
-	);
+	const response = await api.put(`/api/dashboard/project/${projectId}`, data);
 
 	return { data: response.data };
 };
