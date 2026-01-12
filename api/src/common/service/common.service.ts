@@ -55,14 +55,14 @@ const findMany = async <M extends ModelName>(
 ) => {
 	const filters = { where: query, skip: (page - 1) * limit, take: limit };
 
-	const result = await (db[model] as any).findMany(filters);
+	const results = await (db[model] as any).findMany(filters);
 	const total = await (db[model] as any).count({ where: query });
 
 	const paginationResult = {
 		page,
 		limit,
 		totalPages: Math.ceil(total / limit),
-		result,
+		results,
 	};
 
 	return paginationResult;
