@@ -161,7 +161,7 @@ model WorkerStatus {
 model ApiKey {
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt()
-    id String @id() @default(cuid())
+    id String @id() @default(uuid())
     secret String @unique()
     revoked Boolean @default(false)
     revoked_at DateTime?

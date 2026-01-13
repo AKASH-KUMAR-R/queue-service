@@ -2,7 +2,7 @@ import "../../base/base.model.zmodel";
 import "../../project/dbmodel/project.model.zmodel";
 
 model ApiKey extends Base {
-    id String @id @default(cuid())
+    id String @id @default(uuid())
     secret String @unique
     revoked Boolean @default(false)
     revoked_at DateTime?
