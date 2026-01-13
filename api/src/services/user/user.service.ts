@@ -7,6 +7,7 @@ const createUser = async (db: PrismaClient, data: Prisma.UserCreateInput) => {
 			password: true,
 		},
 	});
+
 	return user;
 };
 

@@ -1,4 +1,9 @@
 import type { ApiKey, ApiKeyWithSecret } from "@/entities/api-key/model/types";
+import {
+	toApiKey,
+	toApiKeyList,
+	toApiKeyWithSecret,
+} from "@/entities/api-key/utils/transform";
 import api from "@/shared/api";
 import type { PaginatedResult } from "@/shared/types/utils";
 
@@ -7,22 +12,16 @@ export type ApiKeyCreateData = {
 };
 
 type ApiKeyCreateResponse = {
-	data: {
-		data: ApiKeyWithSecret;
-	};
+	data: ApiKeyWithSecret;
 };
 
 type ApiKeyListResponse = {
-	data: {
-		data: PaginatedResult<ApiKey>;
-	};
+	data: PaginatedResult<ApiKey>;
 };
 
 type ApiKeyRevokeResponse = {
-	data: {
-		data: ApiKey;
-		success: boolean;
-	};
+	data: ApiKey;
+	success: boolean;
 };
 
 export const create = async (
@@ -30,7 +29,7 @@ export const create = async (
 ): Promise<ApiKeyCreateResponse> => {
 	const response = await api.post("/api/dashboard/api-key/create", data);
 
-	return { data: response.data };
+	return { data: toApiKeyWithSecret(response.data.data) };
 };
 
 export const list = async (projectId: string): Promise<ApiKeyListResponse> => {
@@ -40,7 +39,12 @@ export const list = async (projectId: string): Promise<ApiKeyListResponse> => {
 		`/api/dashboard/api-key/search?${urlParams.toString()}`,
 	);
 
-	return { data: response.data };
+	return {
+		data: {
+			...response.data.data,
+			results: toApiKeyList(response.data.data.results),
+		},
+	};
 };
 
 export const revoke = async (
@@ -48,5 +52,8 @@ export const revoke = async (
 ): Promise<ApiKeyRevokeResponse> => {
 	const response = await api.put(`/api/dashboard/api-key/revoke/${apiKeyId}`);
 
-	return { data: response.data };
+	return {
+		data: toApiKey(response.data.data),
+		success: response.data.data.success,
+	};
 };

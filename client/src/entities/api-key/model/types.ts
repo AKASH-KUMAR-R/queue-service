@@ -12,16 +12,29 @@ export type ApiKey = {
 	revokedAt?: string; // ISO 8601 (only if revoked)
 };
 
+export type RawApiResponseApiKey = {
+	id: string;
+	project_id: string;
+	revoked: boolean;
+	created_at: string;
+	updated_at: string;
+	revoked_at?: string;
+};
+
 export type ApiKeyWithSecret = ApiKey & {
 	unhashedKey: string; // Only available on creation
 };
 
-export interface CreateApiKeyRequest {
+export type RawApiResponseApiKeyWithSecret = RawApiResponseApiKey & {
+	unhashed_key: string; // Only available on creation
+};
+
+export type CreateApiKeyRequest = {
 	name: string;
 	description?: string;
-}
+};
 
-export interface CreateApiKeyResponse {
-	apiKey: ApiKeyWithSecret; // Includes full key
-	warning: string; // Warning message to display
-}
+export type CreateApiKeyResponse = {
+	apiKey: ApiKeyWithSecret;
+	warning: string;
+};
