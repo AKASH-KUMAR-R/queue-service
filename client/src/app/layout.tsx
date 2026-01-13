@@ -12,12 +12,10 @@ import { QueuesPage } from "@pages/QueuesPage";
 import { WorkersPage } from "@pages/WorkersPage";
 import { ProjectApiKeysPage } from "@pages/project/ProjectApiKeysPage";
 
-import { useProject } from "./ProjectContext";
 import { CommonLayoutWrapper } from "./wrapper/CommonLayoutWrapper";
+import ProjectExistenceWrapper from "./wrapper/ProjectExistenceWrapper";
 
 export function AppLayout() {
-	const { currentProject } = useProject();
-
 	return (
 		<div className=" h-screen overflow-auto">
 			{/* <main className="flex-1 overflow-auto"> */}
@@ -28,57 +26,58 @@ export function AppLayout() {
 					path="*"
 					element={
 						<CommonLayoutWrapper>
-							<Routes>
-								<Route
-									path="/queues"
-									element={<QueuesPage />}
-								/>
-								<Route path="/jobs" element={<JobsPage />} />
-								<Route
-									path="/jobs/:queueId"
-									element={<JobsPage />}
-								/>
-								<Route
-									path="/workers"
-									element={<WorkersPage />}
-								/>
-								<Route
-									path="/metrics"
-									element={<MetricsPage />}
-								/>
+							<ProjectExistenceWrapper>
+								<Routes>
+									<Route
+										path="/queues"
+										element={<QueuesPage />}
+									/>
+									<Route
+										path="/jobs"
+										element={<JobsPage />}
+									/>
+									<Route
+										path="/jobs/:queueId"
+										element={<JobsPage />}
+									/>
+									<Route
+										path="/workers"
+										element={<WorkersPage />}
+									/>
+									<Route
+										path="/metrics"
+										element={<MetricsPage />}
+									/>
 
-								<Route
-									path="/project/statistics"
-									element={<ProjectStatisticsPage />}
-								/>
-								<Route
-									path="/project/api-keys"
-									element={
-										<ProjectApiKeysPage
-											projectId={currentProject?.id!}
-										/>
-									}
-								/>
-								<Route
-									path="/project/settings"
-									element={<ProjectSettingsPage />}
-								/>
+									<Route
+										path="/project/statistics"
+										element={<ProjectStatisticsPage />}
+									/>
+									<Route
+										path="/project/api-keys"
+										element={<ProjectApiKeysPage />}
+									/>
+									<Route
+										path="/project/settings"
+										element={<ProjectSettingsPage />}
+									/>
 
-								<Route
-									path="/settings/appearance"
-									element={<AppearanceSettingsPage />}
-								/>
+									<Route
+										path="/settings/appearance"
+										element={<AppearanceSettingsPage />}
+									/>
 
-								<Route
-									path="/settings"
-									element={
-										<Navigate
-											to="/project/settings"
-											replace
-										/>
-									}
-								/>
-							</Routes>
+									<Route
+										path="/settings"
+										element={
+											<Navigate
+												to="/project/settings"
+												replace
+											/>
+										}
+									/>
+								</Routes>
+							</ProjectExistenceWrapper>
 						</CommonLayoutWrapper>
 					}
 				/>

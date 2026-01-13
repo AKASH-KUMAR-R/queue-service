@@ -1,43 +1,32 @@
 import { useState } from "react";
 
+import { useProject } from "@/app/ProjectContext";
+import { useApiKeyList } from "@/features/api-keys/data/listApiKeys";
+import { Spinner } from "@/shared/ui/spinner";
 import { ApiKeysList } from "@widgets/api-keys/ApiKeysList";
 import { Plus } from "lucide-react";
 
-import {
-	generateMockApiKey,
-	mockApiKeys,
-} from "@entities/api-key/model/mockData";
-import type {
-	ApiKey,
-	ApiKeyWithSecret,
-	CreateApiKeyRequest,
-} from "@entities/api-key/model/types";
+import type { ApiKey, ApiKeyWithSecret } from "@entities/api-key/model/types";
 
 import { ApiKeyCreatedDialog } from "@features/api-keys/ApiKeyCreatedDialog";
 import { CreateApiKeyDialog } from "@features/api-keys/CreateApiKeyDialog";
 import { RevokeApiKeyDialog } from "@features/api-keys/RevokeApiKeyDialog";
 
-interface ProjectApiKeysPageProps {
-	projectId: string;
-}
+export function ProjectApiKeysPage() {
+	const { currentProject } = useProject();
 
-export function ProjectApiKeysPage({ projectId }: ProjectApiKeysPageProps) {
-	const [apiKeys, setApiKeys] = useState<ApiKey[]>(mockApiKeys);
+	const { data: apiKeysList, isPending: isLoadingKeysList } = useApiKeyList(
+		currentProject?.id!,
+	);
+
 	const [showCreateDialog, setShowCreateDialog] = useState(false);
 	const [showCreatedDialog, setShowCreatedDialog] = useState(false);
 	const [showRevokeDialog, setShowRevokeDialog] = useState(false);
 	const [createdKey, setCreatedKey] = useState<ApiKeyWithSecret | null>(null);
 	const [selectedKey, setSelectedKey] = useState<ApiKey | null>(null);
 
-	const handleCreateApiKey = (data: CreateApiKeyRequest) => {
-		// Generate mock API key
-		const newKey = generateMockApiKey(data.name, data.description);
-
-		// Add to list
-		setApiKeys((prev) => [newKey, ...prev]);
-
-		// Show created dialog with full key
-		setCreatedKey(newKey);
+	const handleCreateApiKey = (data: ApiKeyWithSecret) => {
+		setCreatedKey(data);
 		setShowCreatedDialog(true);
 	};
 
@@ -48,19 +37,6 @@ export function ProjectApiKeysPage({ projectId }: ProjectApiKeysPageProps) {
 
 	const handleRevokeConfirm = () => {
 		if (!selectedKey) return;
-
-		// Update key status to revoked
-		setApiKeys((prev) =>
-			prev.map((key) =>
-				key.id === selectedKey.id
-					? {
-							...key,
-							status: "revoked" as const,
-							revokedAt: new Date().toISOString(),
-						}
-					: key,
-			),
-		);
 
 		// Close dialog and reset
 		setShowRevokeDialog(false);
@@ -76,6 +52,10 @@ export function ProjectApiKeysPage({ projectId }: ProjectApiKeysPageProps) {
 		setShowCreatedDialog(false);
 		setCreatedKey(null);
 	};
+
+	if (!currentProject) {
+		return <div>Loading project...</div>;
+	}
 
 	return (
 		<div className="p-8">
@@ -98,9 +78,10 @@ export function ProjectApiKeysPage({ projectId }: ProjectApiKeysPageProps) {
 				</p>
 			</div>
 
+			{isLoadingKeysList && <Spinner size="lg" />}
 			{/* API Keys List */}
 			<ApiKeysList
-				apiKeys={apiKeys}
+				apiKeys={apiKeysList?.data.data.results || []}
 				onRevoke={handleRevokeClick}
 				onCreateClick={() => setShowCreateDialog(true)}
 			/>
@@ -110,6 +91,7 @@ export function ProjectApiKeysPage({ projectId }: ProjectApiKeysPageProps) {
 				open={showCreateDialog}
 				onClose={() => setShowCreateDialog(false)}
 				onSubmit={handleCreateApiKey}
+				projectId={currentProject!.id}
 			/>
 
 			<ApiKeyCreatedDialog

@@ -22,20 +22,13 @@ const SideNavbar = () => {
 
 	const { isMobile, setOpenMobile } = useSidebar();
 
-	const {
-		data: projectList,
-		isLoading: isProjectListLoading,
-		isError: isProjectListError,
-		isSuccess: isProjectListSuccess,
-	} = useProjectList();
-
 	const handleNavBarItemClick = (event: MouseEvent<HTMLButtonElement>) => {
 		const link = event.currentTarget.dataset.link;
 		navigate(link || "/");
 		setOpenMobile(false);
 	};
 
-	const { currentProject, projects, setCurrentProject, initializeProjects } =
+	const { currentProject, projects, setCurrentProject, isProjectsLoading } =
 		useProject();
 	const [showCreateDialog, setShowCreateDialog] = useState(false);
 
@@ -54,30 +47,11 @@ const SideNavbar = () => {
 		setCurrentProject(newProject);
 	};
 
-	useEffect(() => {
-		if (isProjectListLoading) return;
-
-		if (isProjectListSuccess) {
-			console.log("Fetched projects:", projectList.data);
-			initializeProjects(projectList.data || []);
-		}
-
-		if (isProjectListError) {
-			toast.error("Failed to load projects. Please try again.");
-		}
-	}, [
-		projectList,
-		isProjectListLoading,
-		isProjectListError,
-		isProjectListSuccess,
-		initializeProjects,
-	]);
-
 	return (
 		<>
 			<Sidebar className=" z-50 w-64 border-r shadow-sm h-screen">
 				<SidebarContent className="p-0">
-					{isProjectListLoading ? (
+					{isProjectsLoading ? (
 						<Spinner />
 					) : (
 						<ProjectSwitcher

@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/shared/utils/dateAndTimeUtils";
 import { AlertTriangle } from "lucide-react";
 
 import { type ApiKeyWithSecret } from "../../entities/api-key/model/types";
@@ -11,18 +12,6 @@ interface ApiKeyCreatedDialogProps {
 	apiKey: ApiKeyWithSecret | null;
 }
 
-function formatDateTime(dateString: string): string {
-	const date = new Date(dateString);
-	return date.toLocaleString("en-US", {
-		month: "short",
-		day: "numeric",
-		year: "numeric",
-		hour: "numeric",
-		minute: "2-digit",
-		hour12: true,
-	});
-}
-
 export function ApiKeyCreatedDialog({
 	open,
 	onClose,
@@ -34,7 +23,6 @@ export function ApiKeyCreatedDialog({
 		<Dialog open={open} onOpenChange={onClose}>
 			<DialogContent
 				title="API Key Created Successfully"
-				description="Please copy your API key now as you won't be able to see it again"
 				className="max-w-lg"
 				aria-describedby="api-key-created-description"
 			>
@@ -58,9 +46,7 @@ export function ApiKeyCreatedDialog({
 							Your API Key
 						</label>
 						<ApiKeyDisplay
-							suffix="hello"
-							prefix="world"
-							fullKey={apiKey.fullKey}
+							fullKey={apiKey.unhashedKey}
 							showCopyButton={true}
 						/>
 					</div>
@@ -71,22 +57,6 @@ export function ApiKeyCreatedDialog({
 							Key Details
 						</h4>
 						<div className="space-y-2 text-sm">
-							<div className="flex items-start justify-between">
-								<span className="text-neutral-600">Name:</span>
-								<span className="text-neutral-900 text-right">
-									{apiKey.name}
-								</span>
-							</div>
-							{apiKey.description && (
-								<div className="flex items-start justify-between">
-									<span className="text-neutral-600">
-										Description:
-									</span>
-									<span className="text-neutral-900 text-right max-w-xs">
-										{apiKey.description}
-									</span>
-								</div>
-							)}
 							<div className="flex items-start justify-between">
 								<span className="text-neutral-600">
 									Created:
@@ -99,7 +69,7 @@ export function ApiKeyCreatedDialog({
 								<span className="text-neutral-600">
 									Status:
 								</span>
-								<ApiKeyStatusBadge status={apiKey.status} />
+								<ApiKeyStatusBadge isRevoked={apiKey.revoked} />
 							</div>
 						</div>
 					</div>

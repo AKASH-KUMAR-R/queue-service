@@ -13,7 +13,7 @@ import apiKeyController from "@controllers/api-key/apiKey.controller";
 
 const router = Router();
 
-router.get("/list", authMiddleware, commonController.list);
+router.get("/search", authMiddleware, commonController.search);
 router.get("/:id", authMiddleware, validateId, commonController.getById);
 
 router.put("/revoke/:id", authMiddleware, validateId, apiKeyController.revoke);
