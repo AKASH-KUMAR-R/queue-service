@@ -89,7 +89,7 @@ export function ApiKeysList({
 						{apiKeys.map((apiKey, index) => (
 							<ApiKeyRow
 								key={apiKey.id}
-								siNo={index + 1}
+								rowNumber={index + 1}
 								apiKey={apiKey}
 								onRevoke={onRevoke}
 							/>

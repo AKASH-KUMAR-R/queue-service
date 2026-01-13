@@ -19,7 +19,6 @@ export function ProjectApiKeysPage() {
 		currentProject?.id!,
 	);
 
-	// const [apiKeys, setApiKeys] = useState<ApiKey[]>(mockApiKeys);
 	const [showCreateDialog, setShowCreateDialog] = useState(false);
 	const [showCreatedDialog, setShowCreatedDialog] = useState(false);
 	const [showRevokeDialog, setShowRevokeDialog] = useState(false);

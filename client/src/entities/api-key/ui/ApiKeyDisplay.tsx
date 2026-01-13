@@ -29,4 +29,6 @@ export function ApiKeyDisplay({
 	//     {prefix}...{suffix}
 	//   </code>
 	// );
+
+	return null;
 }

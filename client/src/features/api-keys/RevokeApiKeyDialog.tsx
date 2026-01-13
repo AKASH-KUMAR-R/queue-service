@@ -27,8 +27,6 @@ export function RevokeApiKeyDialog({
 	onConfirm,
 	apiKey,
 }: RevokeApiKeyDialogProps) {
-	if (!apiKey) return null;
-
 	const handleAPIKeyRevokeError: RevokeApiKeyFormErrorHandler = (message) => {
 		if (message) {
 			toast.error(message);
@@ -40,6 +38,8 @@ export function RevokeApiKeyDialog({
 	);
 
 	const handleRevokeClick = () => {
+		if (!apiKey) return;
+
 		revokeApiKey(
 			{ apiKeyId: apiKey.id },
 			{
@@ -50,6 +50,10 @@ export function RevokeApiKeyDialog({
 			},
 		);
 	};
+
+	if (!apiKey) {
+		return null;
+	}
 
 	return (
 		<Dialog open={open} onOpenChange={onClose}>

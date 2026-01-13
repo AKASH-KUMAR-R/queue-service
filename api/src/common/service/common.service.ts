@@ -1,5 +1,7 @@
 import type { Prisma, PrismaClient } from "@prisma/client";
 
+import { PaginationParams, PaginationResults } from "@utils/pagination.util";
+
 import type { ModelName } from "../types/model";
 
 const create = async <M extends ModelName>(
@@ -53,19 +55,23 @@ const findMany = async <M extends ModelName>(
 	limit: number,
 	query = {},
 ) => {
-	const filters = { where: query, skip: (page - 1) * limit, take: limit };
+	const paginationParams = new PaginationParams(page, limit);
+
+	const filters = {
+		where: query,
+		skip: paginationParams.offset,
+		take: paginationParams.limit,
+	};
 
 	const results = await (db[model] as any).findMany(filters);
 	const total = await (db[model] as any).count({ where: query });
 
-	const paginationResult = {
-		page,
-		limit,
-		totalPages: Math.ceil(total / limit),
+	return new PaginationResults(
 		results,
-	};
-
-	return paginationResult;
+		paginationParams.page,
+		paginationParams.limit,
+		total,
+	);
 };
 
 export default {

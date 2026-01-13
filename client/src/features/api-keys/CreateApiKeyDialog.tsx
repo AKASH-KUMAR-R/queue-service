@@ -44,10 +44,10 @@ export function CreateApiKeyDialog({
 				onSuccess({ data: resData }) {
 					toast.success("API Key created successfully.");
 					onSubmit(resData.data);
+					onClose();
 				},
 			},
 		);
-		onClose();
 	};
 
 	const handleOpenChange = (isOpen: boolean) => {
@@ -64,7 +64,6 @@ export function CreateApiKeyDialog({
 				aria-describedby="create-api-key-description"
 				showCloseButton={false}
 			>
-				<h2>Generate API Key</h2>
 				<div className="flex items-center justify-end gap-3 p-6 border-t  sticky bottom-0 ">
 					<Button
 						type="button"

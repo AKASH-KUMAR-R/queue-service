@@ -6,7 +6,7 @@ import { ApiKeyStatusBadge } from "./ApiKeyStatusBadge";
 type ApiKeyRowProps = {
 	apiKey: ApiKey;
 	onRevoke: (apiKey: ApiKey) => void;
-	siNo: number;
+	rowNumber: number;
 };
 
 function formatRelativeTime(dateString: string): string {
@@ -29,10 +29,10 @@ function formatRelativeTime(dateString: string): string {
 	}
 }
 
-export function ApiKeyRow({ apiKey, onRevoke, siNo }: ApiKeyRowProps) {
+export function ApiKeyRow({ apiKey, onRevoke, rowNumber }: ApiKeyRowProps) {
 	return (
 		<tr className="border-b border-border hover:bg-accent">
-			<td className="py-3 px-4">{siNo}</td>
+			<td className="py-3 px-4">{rowNumber}</td>
 			<td className="py-3 px-4">
 				<ApiKeyStatusBadge isRevoked={apiKey.revoked} />
 			</td>
