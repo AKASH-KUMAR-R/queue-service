@@ -1,12 +1,27 @@
-export type QueueStatus = "active" | "paused" | "disabled";
+import type { Base, RawApiResponseBase } from "@shared/types/types";
 
-export interface Queue {
+export type QueueStatus = "ACTIVE" | "PAUSED" | "DELETED";
+
+export type Queue = Base & {
 	id: string;
-	name: string;
+	label: string;
+	description?: string;
+	projectId: string;
+
+	rateLimitCount?: number;
+	rateLimitWindowMs?: number;
+
 	status: QueueStatus;
-	pending: number;
-	inProgress: number;
-	failed: number;
-	rateLimit: string;
-	lastProcessed: string;
-}
+};
+
+export type RawApiResponseQueue = RawApiResponseBase & {
+	id: string;
+	label: string;
+	description?: string;
+	project_id: string;
+
+	rate_limit_count?: number;
+	rate_limit_window_ms?: number;
+
+	status: QueueStatus;
+};
