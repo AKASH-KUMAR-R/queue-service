@@ -92,15 +92,17 @@ export function CreateQueueDialog({
 	return (
 		<Dialog open={open} onOpenChange={handleOpenChange}>
 			<DialogContent
+				className=" w-full max-w-lg"
 				title="Create New Queue"
 				aria-describedby="create-queue-description"
+				showCloseButton={false}
 			>
 				<RadixForm {...form}>
 					<form onSubmit={handleSubmit(handleFormSubmit)}>
 						<div className="p-6 space-y-6">
 							{/* Basic Information */}
 							<div>
-								<h3 className="text-base font-medium text-neutral-900 mb-4">
+								<h3 className="text-base font-medium  mb-4">
 									Basic Information
 								</h3>
 								<div className="space-y-4">
@@ -151,11 +153,11 @@ export function CreateQueueDialog({
 
 							{/* Rate Limiting */}
 							<div>
-								<h3 className="text-base font-medium text-neutral-900 mb-4">
+								<h3 className="text-base font-medium  mb-4">
 									Rate Limiting
 								</h3>
 								<div className="grid grid-cols-12 gap-4">
-									<div className="col-span-8">
+									<div className="col-span-6">
 										<RadixFormField
 											control={control}
 											name="rateLimitCount"
@@ -182,17 +184,28 @@ export function CreateQueueDialog({
 											)}
 										/>
 									</div>
-									<div className="col-span-4">
+									<div className="col-span-6">
 										<RadixFormField
 											control={control}
 											name="rateLimitWindowMs"
 											render={({ field }) => (
 												<RadixFormItem>
 													<RadixFormLabel>
-														Rate Limit Unit
+														Rate Limit Unit( in ms)
 													</RadixFormLabel>
 													<RadixFormControl>
-														<Input {...field} />
+														<Input
+															type="number"
+															{...field}
+															onChange={(
+																event,
+															) => {
+																field.onChange(
+																	event.target
+																		.valueAsNumber,
+																);
+															}}
+														/>
 													</RadixFormControl>
 													<RadixFormMessage />
 												</RadixFormItem>
@@ -200,23 +213,21 @@ export function CreateQueueDialog({
 										/>
 									</div>
 								</div>
-								<p className="text-xs text-neutral-500 mt-2">
+								<p className="text-xs  mt-2">
 									Maximum number of jobs to process per time
 									unit
 								</p>
 							</div>
 
 							{/* Summary */}
-							<div className="bg-neutral-50 border border-neutral-200 rounded p-4">
-								<h4 className="text-sm font-medium text-neutral-900 mb-3">
+							<div className="rounded p-4">
+								<h4 className="text-sm font-medium  mb-3">
 									Configuration Summary
 								</h4>
 								<div className="grid grid-cols-2 gap-x-8 gap-y-2 text-xs">
 									<div className="flex justify-between">
-										<span className="text-neutral-600">
-											Rate Limit:
-										</span>
-										<span className="font-mono text-neutral-900">
+										<span className="">Rate Limit:</span>
+										<span className="font-mono ">
 											{formValues.rateLimitCount}/
 											{formValues.rateLimitWindowMs}
 										</span>
@@ -225,17 +236,17 @@ export function CreateQueueDialog({
 							</div>
 						</div>
 
-						<div className="flex items-center justify-end gap-3 p-6 border-t border-neutral-200 sticky bottom-0 bg-white">
+						<div className="flex items-center justify-end gap-3 p-6 border-t">
 							<Button
 								type="button"
 								onClick={() => handleOpenChange(false)}
-								className="px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100 rounded transition-colors"
+								className="px-4 py-2 text-sm  rounded transition-colors"
 							>
 								Cancel
 							</Button>
 							<Button
 								type="submit"
-								className="px-4 py-2 text-sm bg-neutral-900 text-white rounded hover:bg-neutral-800 transition-colors"
+								className="px-4 py-2 text-sm  rounded transition-colors"
 								disabled={isCreating}
 							>
 								{isCreating ? <Spinner /> : "Create Queue"}

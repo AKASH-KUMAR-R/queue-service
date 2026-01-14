@@ -14,6 +14,30 @@ export type Queue = Base & {
 	status: QueueStatus;
 };
 
+export type QueueMetrics = Base & {
+	id: string;
+	queueId: string;
+	activeJobs: number;
+	failedJobs: number;
+	completedJobs: number;
+};
+
+export type QueueWithMetrics = Queue & {
+	queueMetrics: QueueMetrics | null;
+};
+
+export type RawQueueWithMetrics = RawApiResponseQueue & {
+	queue_metrics: RawQueueMetrics | null;
+};
+
+export type RawQueueMetrics = RawApiResponseBase & {
+	id: string;
+	queue_id: string;
+	active_jobs: number;
+	failed_jobs: number;
+	completed_jobs: number;
+};
+
 export type RawApiResponseQueue = RawApiResponseBase & {
 	id: string;
 	label: string;

@@ -9,7 +9,10 @@ import type {
 	UpdateQueueResponse,
 } from "@entities/queue/types/apiTypes";
 import type { RawQueueSearchParams } from "@entities/queue/types/types";
-import { toQueue, toQueueList } from "@entities/queue/utils/transform";
+import {
+	toQueue,
+	toQueueWithMetricList,
+} from "@entities/queue/utils/transform";
 
 export const create = async (
 	data: CreateQueueData,
@@ -37,8 +40,8 @@ export const search = async (
 
 	return {
 		data: {
-			...response.data.data,
-			results: toQueueList(response.data.data.results),
+			...response.data,
+			results: toQueueWithMetricList(response.data.results),
 		},
 	};
 };

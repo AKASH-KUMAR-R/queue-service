@@ -4,14 +4,15 @@ import { ExternalLink } from "lucide-react";
 
 import { Button } from "@shared/ui/button";
 
-import { StatusBadge } from "../../../entities/StatusBadge";
-import type { Queue } from "../../../entities/queue/types/types";
+import { StatusBadge } from "@entities/StatusBadge";
+import type { QueueWithMetrics } from "@entities/queue/types/types";
+
 import { PauseQueueButton } from "./PauseQueueButton";
 import { ResumeQueueButton } from "./ResumeQueueButton";
 
-interface QueueTableRowProps {
-	queue: Queue;
-}
+type QueueTableRowProps = {
+	queue: QueueWithMetrics;
+};
 
 export function QueueTableRow({ queue }: QueueTableRowProps) {
 	const navigate = useNavigate();
@@ -31,27 +32,23 @@ export function QueueTableRow({ queue }: QueueTableRowProps) {
 			<td className="px-4 py-3">
 				<StatusBadge status={queue.status} type="queue" />
 			</td>
-			{/* <td className="px-4 py-3">
+			<td className="px-4 py-3">
 				<span className="text-sm text-neutral-700">
-					{queue.pending.toLocaleString()}
+					{queue.queueMetrics?.activeJobs ?? 0}
 				</span>
 			</td>
 			<td className="px-4 py-3">
 				<span className="text-sm text-blue-600">
-					{queue.inProgress}
+					{queue.queueMetrics?.completedJobs ?? 0}
 				</span>
 			</td>
 			<td className="px-4 py-3">
 				<div className="flex items-center gap-2">
-					<span className="text-sm text-red-600">{queue.failed}</span>
-					{queue.failed > 0 && (
-						<AlertCircle
-							className="w-4 h-4 text-red-600"
-							title="Jobs in dead-letter queue"
-						/>
-					)}
+					<span className="text-sm text-red-600">
+						{queue.queueMetrics?.failedJobs ?? 0}
+					</span>
 				</div>
-			</td> */}
+			</td>
 			<td className="px-4 py-3">
 				<span className="text-xs font-mono text-neutral-700">
 					{queue.rateLimitCount

@@ -1,9 +1,9 @@
-import type { Queue } from "../entities/queue/types/types";
+import type { QueueWithMetrics } from "../entities/queue/types/types";
 import { QueueTableRow } from "../features/queues/components/QueueTableRow";
 
-interface QueueTableProps {
-	queues: Queue[];
-}
+type QueueTableProps = {
+	queues: QueueWithMetrics[];
+};
 
 export function QueueTable({ queues }: QueueTableProps) {
 	return (
@@ -18,15 +18,15 @@ export function QueueTable({ queues }: QueueTableProps) {
 							<th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
 								Status
 							</th>
-							{/* <th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
-								Pending
+							<th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
+								Active
 							</th>
 							<th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
-								In Progress
+								Completed
 							</th>
 							<th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
 								Failed
-							</th> */}
+							</th>
 							<th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
 								Rate Limit Per Unit
 							</th>

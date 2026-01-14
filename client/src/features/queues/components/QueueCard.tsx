@@ -3,15 +3,15 @@ import { MoreVertical, RefreshCw } from "lucide-react";
 import { Button } from "@shared/ui/button";
 
 import { StatusBadge } from "@entities/StatusBadge";
-import type { Queue } from "@entities/queue/types/types";
+import type { QueueWithMetrics } from "@entities/queue/types/types";
 
 import { PauseQueueButton } from "./PauseQueueButton";
 import { ResumeQueueButton } from "./ResumeQueueButton";
 
-interface QueueCardProps {
-	queue: Queue;
+type QueueCardProps = {
+	queue: QueueWithMetrics;
 	onSelectQueue: (queueId: string) => void;
-}
+};
 
 export function QueueCard({ queue, onSelectQueue }: QueueCardProps) {
 	return (
@@ -33,28 +33,38 @@ export function QueueCard({ queue, onSelectQueue }: QueueCardProps) {
 				</button>
 			</div>
 
-			{/* <div className="grid grid-cols-3 gap-4 mb-4 pb-4 border-b border-neutral-100">
-				<div>
-					<div className="text-xs text-neutral-500 mb-1">Pending</div>
-					<div className="text-xl font-semibold text-neutral-700">
-						{queue.pending.toLocaleString()}
-					</div>
-				</div>
-				<div>
-					<div className="text-xs text-neutral-500 mb-1">
-						In Progress
-					</div>
-					<div className="text-xl font-semibold text-blue-600">
-						{queue.inProgress}
-					</div>
-				</div>
-				<div>
-					<div className="text-xs text-neutral-500 mb-1">Failed</div>
-					<div className="text-xl font-semibold text-red-600">
-						{queue.failed}
-					</div>
-				</div>
-			</div> */}
+			<div className="grid grid-cols-3 gap-4 mb-4 pb-4 border-b border-neutral-100">
+				{queue.queueMetrics ? (
+					<>
+						<div>
+							<div className="text-xs text-neutral-500 mb-1">
+								Active
+							</div>
+							<div className="text-xl font-semibold text-blue-700">
+								{queue.queueMetrics.activeJobs}
+							</div>
+						</div>
+						<div>
+							<div className="text-xs text-neutral-500 mb-1">
+								Completed
+							</div>
+							<div className="text-xl font-semibold text-neutral-600">
+								{queue.queueMetrics.completedJobs}
+							</div>
+						</div>
+						<div>
+							<div className="text-xs text-neutral-500 mb-1">
+								Failed
+							</div>
+							<div className="text-xl font-semibold text-red-600">
+								{queue.queueMetrics.failedJobs}
+							</div>
+						</div>
+					</>
+				) : (
+					<div>No metrics available</div>
+				)}
+			</div>
 
 			<div className="flex items-center justify-between text-xs text-neutral-500 mb-4">
 				<div>

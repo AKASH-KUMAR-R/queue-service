@@ -1,6 +1,6 @@
 import type { PaginatedResult } from "@shared/types/utils";
 
-import type { Queue } from "./types";
+import type { Queue, QueueWithMetrics } from "./types";
 
 export type CreateQueueData = {
 	label: string;
@@ -29,5 +29,5 @@ export type UpdateQueueResponse = {
 };
 
 export type SearchQueueResponse = {
-	data: PaginatedResult<Queue>;
+	data: PaginatedResult<QueueWithMetrics>;
 };

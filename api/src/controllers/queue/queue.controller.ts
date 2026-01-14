@@ -41,7 +41,7 @@ const searchQueues = async (req: Request, res: Response) => {
 			parseInt(query.limit as string) || 10,
 		);
 
-		res.status(200).json(results);
+		res.status(200).json(enhancedSerialize(results));
 	} catch (err) {
 		handleError(res, err);
 	}
