@@ -25,3 +25,15 @@ export type RawApiResponseQueue = RawApiResponseBase & {
 
 	status: QueueStatus;
 };
+
+export type QueueSearchParams = {
+	label?: string;
+	projectId?: string;
+	status?: QueueStatus;
+};
+
+export type RawQueueSearchParams = {
+	label?: string;
+	project_id?: string;
+	status?: QueueStatus;
+};

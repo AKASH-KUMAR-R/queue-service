@@ -3,7 +3,12 @@ import type {
 	QueueUpdateSchemaType,
 } from "../schema/queueSchema";
 import type { CreateQueueData, UpdateQueueData } from "../types/apiTypes";
-import type { Queue, RawApiResponseQueue } from "../types/types";
+import type {
+	Queue,
+	QueueSearchParams,
+	RawApiResponseQueue,
+	RawQueueSearchParams,
+} from "../types/types";
 
 export const toQueue = (data: RawApiResponseQueue): Queue => {
 	return {
@@ -31,9 +36,9 @@ export const toCreateQueueRequest = (
 	return {
 		label: data.label,
 		description: data.description,
-		project_id: data.project_id,
-		rate_limit_count: data.rate_limit_count,
-		rate_limit_window_ms: data.rate_limit_window_ms,
+		project_id: data.projectId,
+		rate_limit_count: data.rateLimitCount,
+		rate_limit_window_ms: data.rateLimitWindowMs,
 	};
 };
 
@@ -43,8 +48,18 @@ export const toUpdateQueueRequest = (
 	return {
 		label: data.label,
 		description: data.description,
-		project_id: data.project_id,
-		rate_limit_count: data.rate_limit_count,
-		rate_limit_window_ms: data.rate_limit_window_ms,
+		project_id: data.projectId,
+		rate_limit_count: data.rateLimitCount,
+		rate_limit_window_ms: data.rateLimitWindowMs,
+	};
+};
+
+export const toSearchQueueRequestParams = (
+	data: QueueSearchParams,
+): RawQueueSearchParams => {
+	return {
+		label: data.label,
+		project_id: data.projectId,
+		status: data.status,
 	};
 };
