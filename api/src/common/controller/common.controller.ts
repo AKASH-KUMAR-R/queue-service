@@ -22,7 +22,7 @@ const models: Record<string, ModelName> = {
 const queryFields: Record<string, string[]> = {
 	user: ["id", "name", "email"],
 	project: ["id", "title", "description"],
-	queue: ["id", "status", "created_at"],
+	queue: ["id", "status", "created_at", "project_id"],
 	job: ["id", "status", "queue_id"],
 	"api-key": ["project_id"],
 	"job-events": [
