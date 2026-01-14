@@ -54,6 +54,6 @@ export const revoke = async (
 
 	return {
 		data: toApiKey(response.data.data),
-		success: response.data.data.success,
+		success: response.data.success,
 	};
 };
