@@ -30,6 +30,23 @@ const addQueue = async (req: Request, res: Response) => {
 	}
 };
 
+const searchQueues = async (req: Request, res: Response) => {
+	try {
+		const query = req.validQuery;
+
+		const results = await queueService.findQueues(
+			req.db,
+			query,
+			parseInt(query.page as string) || 1,
+			parseInt(query.limit as string) || 10,
+		);
+
+		res.status(200).json(results);
+	} catch (err) {
+		handleError(res, err);
+	}
+};
+
 const getQueueJobs = async (req: Request, res: Response) => {
 	try {
 		const queueId = req.params.id as string;
@@ -81,6 +98,7 @@ const getQueueRelatedWorkers = async (req: Request, res: Response) => {
 
 export default {
 	addQueue,
+	searchQueues,
 	getQueueJobs,
 	getQueueMetrics,
 	getQueueRelatedWorkers,
