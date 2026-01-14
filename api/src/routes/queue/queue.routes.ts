@@ -10,6 +10,7 @@ import {
 
 import { QueueCreateRequest } from "@models/queue/requests/QueueCreateRequest";
 import { QueueJobsListRequest } from "@models/queue/requests/QueueJobsListRequest";
+import { QueueSearchRequest } from "@models/queue/requests/QueueSearchRequest";
 import { QueueUpdateRequest } from "@models/queue/requests/QueueUpdateRequest";
 
 import queueController from "@controllers/queue/queue.controller";
@@ -17,7 +18,12 @@ import queueController from "@controllers/queue/queue.controller";
 const router = Router();
 
 router.get("/list", authMiddleware, commonController.list);
-router.get("/search", authMiddleware, commonController.search);
+router.get(
+	"/search",
+	authMiddleware,
+	queryValidationMiddleware(QueueSearchRequest),
+	queueController.searchQueues,
+);
 router.get("/:id", authMiddleware, validateId, commonController.getById);
 
 router.get(
