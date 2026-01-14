@@ -2,10 +2,10 @@ import { useNavigate } from "react-router-dom";
 
 import { AlertCircle, ExternalLink } from "lucide-react";
 
-import { PauseQueueButton } from "../../features/queues/PauseQueueButton";
-import { ResumeQueueButton } from "../../features/queues/ResumeQueueButton";
-import { StatusBadge } from "../StatusBadge";
-import type { Queue } from "./types";
+import { StatusBadge } from "../../../entities/StatusBadge";
+import type { Queue } from "../../../entities/queue/types";
+import { PauseQueueButton } from "./PauseQueueButton";
+import { ResumeQueueButton } from "./ResumeQueueButton";
 
 interface QueueTableRowProps {
 	queue: Queue;

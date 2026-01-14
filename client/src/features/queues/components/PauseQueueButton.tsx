@@ -2,8 +2,8 @@ import { useState } from "react";
 
 import { Pause } from "lucide-react";
 
-import type { Queue } from "../../entities/queue/types";
-import { ConfirmDialog } from "../../shared/ui/ConfirmDialog";
+import type { Queue } from "../../../entities/queue/types";
+import { ConfirmDialog } from "../../../shared/ui/ConfirmDialog";
 
 interface PauseQueueButtonProps {
 	queue: Queue;

@@ -11,11 +11,11 @@ import { EmptyState } from "@shared/ui/EmptyState";
 
 import type { Queue } from "@entities/queue/types";
 
-import { CreateQueueButton } from "@features/queues/CreateQueueButton";
+import { CreateQueueButton } from "@features/queues/components/CreateQueueButton";
 import {
 	CreateQueueDialog,
 	type CreateQueueFormData,
-} from "@features/queues/CreateQueueDialog";
+} from "@features/queues/components/CreateQueueDialog";
 
 export function QueuesPage() {
 	const [viewMode, setViewMode] = useState<QueueViewMode>("card");

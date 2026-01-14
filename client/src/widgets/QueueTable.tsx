@@ -1,5 +1,5 @@
-import { QueueTableRow } from "../entities/queue/QueueTableRow";
 import type { Queue } from "../entities/queue/types";
+import { QueueTableRow } from "../features/queues/components/QueueTableRow";
 
 interface QueueTableProps {
 	queues: Queue[];
