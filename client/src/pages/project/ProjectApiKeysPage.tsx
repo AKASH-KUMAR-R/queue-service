@@ -81,7 +81,7 @@ export function ProjectApiKeysPage() {
 			{isLoadingKeysList && <Spinner size="lg" />}
 			{/* API Keys List */}
 			<ApiKeysList
-				apiKeys={apiKeysList?.data.data.results || []}
+				apiKeys={apiKeysList?.data.results || []}
 				onRevoke={handleRevokeClick}
 				onCreateClick={() => setShowCreateDialog(true)}
 			/>

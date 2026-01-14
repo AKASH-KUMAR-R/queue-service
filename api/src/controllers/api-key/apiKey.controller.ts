@@ -18,7 +18,7 @@ const create = async (req: Request, res: Response) => {
 		});
 		return res
 			.status(201)
-			.json({ data: { ...result, unhashedKey: secret }, success: true });
+			.json({ data: { ...result, unhashed_key: secret }, success: true });
 	} catch (error) {
 		return handleError(res, error);
 	}

@@ -20,7 +20,7 @@ export const useRevokeApiKeyForm = (onError: RevokeApiKeyFormErrorHandler) => {
 		mutationFn: (data: { apiKeyId: string }) => revoke(data.apiKeyId),
 		onSuccess({ data: resData }) {
 			client.invalidateQueries({
-				queryKey: apiKeys.projectKeys(resData.data.projectId),
+				queryKey: apiKeys.projectKeys(resData.projectId),
 			});
 		},
 		onError(err) {
