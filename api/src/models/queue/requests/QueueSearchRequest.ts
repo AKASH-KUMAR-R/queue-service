@@ -6,8 +6,8 @@ const QueueSearchRequest = zod
 		label: zod.string().optional(),
 		status: zod.enum(QueueStatus).optional(),
 		project_id: zod.string().optional(),
-		page: zod.string().optional(),
-		limit: zod.string().optional(),
+		page: zod.number().optional(),
+		limit: zod.number().optional(),
 	})
 	.strip()
 	.transform((data) => {
@@ -22,8 +22,8 @@ const QueueSearchRequest = zod
 			whereClause.project_id = data.project_id;
 		}
 
-		if (data.page) whereClause.page = parseInt(data.page);
-		if (data.limit) whereClause.limit = parseInt(data.limit);
+		if (data.page) whereClause.page = data.page;
+		if (data.limit) whereClause.limit = data.limit;
 
 		return whereClause;
 	});
