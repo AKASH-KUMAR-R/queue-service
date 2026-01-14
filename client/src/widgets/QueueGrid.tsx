@@ -1,11 +1,12 @@
 import { useNavigate } from "react-router-dom";
 
-import type { Queue } from "../entities/queue/types";
-import { QueueCard } from "../features/queues/components/QueueCard";
+import type { Queue } from "@entities/queue/types/types";
 
-interface QueueGridProps {
+import { QueueCard } from "@features/queues/components/QueueCard";
+
+type QueueGridProps = {
 	queues: Queue[];
-}
+};
 
 export function QueueGrid({ queues }: QueueGridProps) {
 	const navigate = useNavigate();

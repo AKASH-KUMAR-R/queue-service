@@ -1,4 +1,4 @@
-import type { Queue } from "../entities/queue/types";
+import type { Queue } from "../entities/queue/types/types";
 import { QueueTableRow } from "../features/queues/components/QueueTableRow";
 
 interface QueueTableProps {
@@ -18,7 +18,7 @@ export function QueueTable({ queues }: QueueTableProps) {
 							<th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
 								Status
 							</th>
-							<th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
+							{/* <th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
 								Pending
 							</th>
 							<th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
@@ -26,13 +26,13 @@ export function QueueTable({ queues }: QueueTableProps) {
 							</th>
 							<th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
 								Failed
-							</th>
+							</th> */}
 							<th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
-								Rate Limit
+								Rate Limit Per Unit
 							</th>
-							<th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
+							{/* <th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
 								Last Processed
-							</th>
+							</th> */}
 							<th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
 								Actions
 							</th>

@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom";
 
-import { AlertCircle, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
+
+import { Button } from "@shared/ui/button";
 
 import { StatusBadge } from "../../../entities/StatusBadge";
-import type { Queue } from "../../../entities/queue/types";
+import type { Queue } from "../../../entities/queue/types/types";
 import { PauseQueueButton } from "./PauseQueueButton";
 import { ResumeQueueButton } from "./ResumeQueueButton";
 
@@ -19,7 +21,7 @@ export function QueueTableRow({ queue }: QueueTableRowProps) {
 			<td className="px-4 py-3">
 				<div>
 					<div className="text-sm font-medium text-neutral-900 mb-1">
-						{queue.name}
+						{queue.label}
 					</div>
 					<div className="text-xs font-mono text-neutral-500">
 						{queue.id}
@@ -29,7 +31,7 @@ export function QueueTableRow({ queue }: QueueTableRowProps) {
 			<td className="px-4 py-3">
 				<StatusBadge status={queue.status} type="queue" />
 			</td>
-			<td className="px-4 py-3">
+			{/* <td className="px-4 py-3">
 				<span className="text-sm text-neutral-700">
 					{queue.pending.toLocaleString()}
 				</span>
@@ -49,31 +51,33 @@ export function QueueTableRow({ queue }: QueueTableRowProps) {
 						/>
 					)}
 				</div>
-			</td>
+			</td> */}
 			<td className="px-4 py-3">
 				<span className="text-xs font-mono text-neutral-700">
-					{queue.rateLimit}
+					{queue.rateLimitCount
+						? `${queue.rateLimitCount} per ${queue.rateLimitWindowMs} ms`
+						: "No limit"}
 				</span>
 			</td>
-			<td className="px-4 py-3">
+			{/* <td className="px-4 py-3">
 				<span className="text-xs text-neutral-600">
 					{queue.lastProcessed}
 				</span>
-			</td>
+			</td> */}
 			<td className="px-4 py-3">
 				<div className="flex items-center gap-2">
-					{queue.status === "active" ? (
+					{queue.status === "ACTIVE" ? (
 						<PauseQueueButton queue={queue} compact />
 					) : (
 						<ResumeQueueButton queue={queue} compact />
 					)}
-					<button
+					<Button
 						onClick={() => navigate(`/jobs/${queue.id}`)}
 						className="text-neutral-400 hover:text-neutral-600"
 						title="View jobs"
 					>
 						<ExternalLink className="w-4 h-4" />
-					</button>
+					</Button>
 				</div>
 			</td>
 		</tr>

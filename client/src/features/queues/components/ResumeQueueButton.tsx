@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { Play } from "lucide-react";
 
-import type { Queue } from "../../../entities/queue/types";
+import type { Queue } from "../../../entities/queue/types/types";
 import { ConfirmDialog } from "../../../shared/ui/ConfirmDialog";
 
 interface ResumeQueueButtonProps {

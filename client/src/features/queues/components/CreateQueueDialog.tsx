@@ -1,18 +1,12 @@
 import { useForm } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { toast } from "sonner";
 
-import { Dialog, DialogContent } from "../../../shared/ui/dialog";
-import { Input } from "../../../shared/ui/form/Input";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "../../../shared/ui/form/Select";
-import { Textarea } from "../../../shared/ui/form/Textarea";
+import { Button } from "@shared/ui/button";
+import { Dialog, DialogContent } from "@shared/ui/dialog";
+import { Input } from "@shared/ui/form/Input";
+import { Textarea } from "@shared/ui/form/Textarea";
 import {
 	RadixForm,
 	RadixFormControl,
@@ -21,65 +15,71 @@ import {
 	RadixFormItem,
 	RadixFormLabel,
 	RadixFormMessage,
-} from "../../../shared/ui/radix-form";
+} from "@shared/ui/radix-form";
+import { Spinner } from "@shared/ui/spinner";
+import { mapServerFieldErrorToFormFields } from "@shared/utils/formUtils";
 
-const createQueueSchema = z.object({
-	name: z
-		.string()
-		.min(1, "Queue name is required")
-		.regex(
-			/^[a-z0-9-]+$/,
-			"Queue name must contain only lowercase letters, numbers, and hyphens",
-		),
-	description: z.string().optional(),
-	rateLimit: z.number().min(1, "Rate limit must be at least 1"),
-	rateLimitUnit: z.enum(["second", "minute", "hour"]),
-	maxAttempts: z
-		.number()
-		.min(1, "Max attempts must be at least 1")
-		.max(10, "Max attempts cannot exceed 10"),
-	timeout: z.number().min(1, "Timeout must be at least 1 second"),
-	retryDelay: z.number().min(0, "Retry delay cannot be negative"),
-	priority: z
-		.number()
-		.min(1, "Priority must be at least 1")
-		.max(10, "Priority cannot exceed 10"),
-});
+import {
+	QueueCreateSchema,
+	type QueueCreateSchemaType,
+} from "@entities/queue/schema/queueSchema";
+import type { Queue } from "@entities/queue/types/types";
+import { toCreateQueueRequest } from "@entities/queue/utils/transform";
 
-export type CreateQueueFormData = z.infer<typeof createQueueSchema>;
+import {
+	type QueueCreateFormErrorHandler,
+	useQueueCreate,
+} from "../data/queueCreateForm";
 
-interface CreateQueueDialogProps {
+type CreateQueueDialogProps = {
 	open: boolean;
+	projectId: string;
 	onClose: () => void;
-	onSubmit: (data: CreateQueueFormData) => void;
-}
+	onSubmit: (data: Queue) => void;
+};
 
 export function CreateQueueDialog({
 	open,
 	onClose,
+	projectId,
 	onSubmit,
 }: CreateQueueDialogProps) {
-	const form = useForm<CreateQueueFormData>({
-		resolver: zodResolver(createQueueSchema),
+	const form = useForm<QueueCreateSchemaType>({
+		resolver: zodResolver(QueueCreateSchema),
 		defaultValues: {
-			name: "",
+			label: "",
 			description: "",
-			rateLimit: 100,
-			rateLimitUnit: "minute",
-			maxAttempts: 3,
-			timeout: 30,
-			retryDelay: 60,
-			priority: 5,
+			projectId,
+			rateLimitCount: undefined,
+			rateLimitWindowMs: undefined,
 		},
 	});
 
 	const { handleSubmit, control, reset, watch } = form;
 	const formValues = watch();
 
-	const handleFormSubmit = (data: CreateQueueFormData) => {
-		onSubmit(data);
-		reset();
-		onClose();
+	const handleFormErrors: QueueCreateFormErrorHandler = (message, errors) => {
+		if (message) {
+			toast.error(message);
+		}
+
+		if (errors) {
+			mapServerFieldErrorToFormFields(form.setError, errors);
+		}
+	};
+
+	const { mutate: createQueue, isPending: isCreating } =
+		useQueueCreate(handleFormErrors);
+
+	const handleFormSubmit = (data: QueueCreateSchemaType) => {
+		createQueue(toCreateQueueRequest(data), {
+			onSuccess: (newQueue) => {
+				onSubmit(newQueue.data);
+				reset();
+				onClose();
+				toast.success("Queue created successfully");
+			},
+		});
 	};
 
 	const handleOpenChange = (isOpen: boolean) => {
@@ -93,7 +93,6 @@ export function CreateQueueDialog({
 		<Dialog open={open} onOpenChange={handleOpenChange}>
 			<DialogContent
 				title="Create New Queue"
-				description="Configure a new job queue for processing tasks"
 				aria-describedby="create-queue-description"
 			>
 				<RadixForm {...form}>
@@ -107,11 +106,11 @@ export function CreateQueueDialog({
 								<div className="space-y-4">
 									<RadixFormField
 										control={control}
-										name="name"
+										name="label"
 										render={({ field }) => (
 											<RadixFormItem>
 												<RadixFormLabel>
-													Queue Name
+													Queue Label
 												</RadixFormLabel>
 												<RadixFormControl>
 													<Input
@@ -159,11 +158,11 @@ export function CreateQueueDialog({
 									<div className="col-span-8">
 										<RadixFormField
 											control={control}
-											name="rateLimit"
+											name="rateLimitCount"
 											render={({ field }) => (
 												<RadixFormItem>
 													<RadixFormLabel>
-														Rate Limit
+														Rate Limit Count
 													</RadixFormLabel>
 													<RadixFormControl>
 														<Input
@@ -186,37 +185,15 @@ export function CreateQueueDialog({
 									<div className="col-span-4">
 										<RadixFormField
 											control={control}
-											name="rateLimitUnit"
+											name="rateLimitWindowMs"
 											render={({ field }) => (
 												<RadixFormItem>
 													<RadixFormLabel>
-														Unit
+														Rate Limit Unit
 													</RadixFormLabel>
-													<Select
-														onValueChange={
-															field.onChange
-														}
-														defaultValue={
-															field.value
-														}
-													>
-														<RadixFormControl>
-															<SelectTrigger>
-																<SelectValue placeholder="Select a unit" />
-															</SelectTrigger>
-														</RadixFormControl>
-														<SelectContent>
-															<SelectItem value="second">
-																per second
-															</SelectItem>
-															<SelectItem value="minute">
-																per minute
-															</SelectItem>
-															<SelectItem value="hour">
-																per hour
-															</SelectItem>
-														</SelectContent>
-													</Select>
+													<RadixFormControl>
+														<Input {...field} />
+													</RadixFormControl>
 													<RadixFormMessage />
 												</RadixFormItem>
 											)}
@@ -227,143 +204,6 @@ export function CreateQueueDialog({
 									Maximum number of jobs to process per time
 									unit
 								</p>
-							</div>
-
-							{/* Job Configuration */}
-							<div>
-								<h3 className="text-base font-medium text-neutral-900 mb-4">
-									Job Configuration
-								</h3>
-								<div className="grid grid-cols-12 gap-4">
-									<div className="col-span-6">
-										<RadixFormField
-											control={control}
-											name="maxAttempts"
-											render={({ field }) => (
-												<RadixFormItem>
-													<RadixFormLabel>
-														Max Attempts
-													</RadixFormLabel>
-													<RadixFormControl>
-														<Input
-															type="number"
-															min="1"
-															max="10"
-															{...field}
-															onChange={(e) =>
-																field.onChange(
-																	e.target
-																		.valueAsNumber,
-																)
-															}
-														/>
-													</RadixFormControl>
-													<RadixFormDescription>
-														Number of retry attempts
-													</RadixFormDescription>
-													<RadixFormMessage />
-												</RadixFormItem>
-											)}
-										/>
-									</div>
-
-									<div className="col-span-6">
-										<RadixFormField
-											control={control}
-											name="priority"
-											render={({ field }) => (
-												<RadixFormItem>
-													<RadixFormLabel>
-														Default Priority
-													</RadixFormLabel>
-													<RadixFormControl>
-														<Input
-															type="number"
-															min="1"
-															max="10"
-															{...field}
-															onChange={(e) =>
-																field.onChange(
-																	e.target
-																		.valueAsNumber,
-																)
-															}
-														/>
-													</RadixFormControl>
-													<RadixFormDescription>
-														1 (lowest) to 10
-														(highest)
-													</RadixFormDescription>
-													<RadixFormMessage />
-												</RadixFormItem>
-											)}
-										/>
-									</div>
-
-									<div className="col-span-6">
-										<RadixFormField
-											control={control}
-											name="timeout"
-											render={({ field }) => (
-												<RadixFormItem>
-													<RadixFormLabel>
-														Timeout (seconds)
-													</RadixFormLabel>
-													<RadixFormControl>
-														<Input
-															type="number"
-															min="1"
-															{...field}
-															onChange={(e) =>
-																field.onChange(
-																	e.target
-																		.valueAsNumber,
-																)
-															}
-														/>
-													</RadixFormControl>
-													<RadixFormDescription>
-														Max execution time per
-														job
-													</RadixFormDescription>
-													<RadixFormMessage />
-												</RadixFormItem>
-											)}
-										/>
-									</div>
-
-									<div className="col-span-6">
-										<RadixFormField
-											control={control}
-											name="retryDelay"
-											render={({ field }) => (
-												<RadixFormItem>
-													<RadixFormLabel>
-														Retry Delay (seconds)
-													</RadixFormLabel>
-													<RadixFormControl>
-														<Input
-															type="number"
-															min="0"
-															{...field}
-															onChange={(e) =>
-																field.onChange(
-																	e.target
-																		.valueAsNumber,
-																)
-															}
-														/>
-													</RadixFormControl>
-													<RadixFormDescription>
-														Delay before retry
-														attempt
-													</RadixFormDescription>
-													<RadixFormMessage />
-												</RadixFormItem>
-											)}
-										/>
-									</div>
-								</div>
 							</div>
 
 							{/* Summary */}
@@ -377,40 +217,8 @@ export function CreateQueueDialog({
 											Rate Limit:
 										</span>
 										<span className="font-mono text-neutral-900">
-											{formValues.rateLimit}/
-											{formValues.rateLimitUnit}
-										</span>
-									</div>
-									<div className="flex justify-between">
-										<span className="text-neutral-600">
-											Max Attempts:
-										</span>
-										<span className="font-mono text-neutral-900">
-											{formValues.maxAttempts}
-										</span>
-									</div>
-									<div className="flex justify-between">
-										<span className="text-neutral-600">
-											Timeout:
-										</span>
-										<span className="font-mono text-neutral-900">
-											{formValues.timeout}s
-										</span>
-									</div>
-									<div className="flex justify-between">
-										<span className="text-neutral-600">
-											Retry Delay:
-										</span>
-										<span className="font-mono text-neutral-900">
-											{formValues.retryDelay}s
-										</span>
-									</div>
-									<div className="flex justify-between">
-										<span className="text-neutral-600">
-											Priority:
-										</span>
-										<span className="font-mono text-neutral-900">
-											{formValues.priority}
+											{formValues.rateLimitCount}/
+											{formValues.rateLimitWindowMs}
 										</span>
 									</div>
 								</div>
@@ -418,19 +226,20 @@ export function CreateQueueDialog({
 						</div>
 
 						<div className="flex items-center justify-end gap-3 p-6 border-t border-neutral-200 sticky bottom-0 bg-white">
-							<button
+							<Button
 								type="button"
 								onClick={() => handleOpenChange(false)}
 								className="px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100 rounded transition-colors"
 							>
 								Cancel
-							</button>
-							<button
+							</Button>
+							<Button
 								type="submit"
 								className="px-4 py-2 text-sm bg-neutral-900 text-white rounded hover:bg-neutral-800 transition-colors"
+								disabled={isCreating}
 							>
-								Create Queue
-							</button>
+								{isCreating ? <Spinner /> : "Create Queue"}
+							</Button>
 						</div>
 					</form>
 				</RadixForm>

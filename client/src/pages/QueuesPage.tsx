@@ -1,5 +1,6 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
+import { useProject } from "@app/ProjectContext";
 import { QueueGrid } from "@widgets/QueueGrid";
 import { QueueTable } from "@widgets/QueueTable";
 import {
@@ -9,82 +10,33 @@ import {
 
 import { EmptyState } from "@shared/ui/EmptyState";
 
-import type { Queue } from "@entities/queue/types";
+import type { Queue, QueueSearchParams } from "@entities/queue/types/types";
 
 import { CreateQueueButton } from "@features/queues/components/CreateQueueButton";
-import {
-	CreateQueueDialog,
-	type CreateQueueFormData,
-} from "@features/queues/components/CreateQueueDialog";
+import { CreateQueueDialog } from "@features/queues/components/CreateQueueDialog";
+import { useQueueList } from "@features/queues/data/listQueue";
 
 export function QueuesPage() {
+	const { currentProject } = useProject();
 	const [viewMode, setViewMode] = useState<QueueViewMode>("card");
-	const [searchQuery, setSearchQuery] = useState("");
+	const [filters, setFilters] = useState<QueueSearchParams>({
+		label: "",
+		projectId: currentProject?.id || "",
+		status: undefined,
+	});
+
 	const [showCreateDialog, setShowCreateDialog] = useState(false);
 
-	// Mock data - in real app, this would come from API
-	const allQueues: Queue[] = [
-		{
-			id: "queue_a8f3k2",
-			name: "email-notifications",
-			status: "active",
-			pending: 1247,
-			inProgress: 8,
-			failed: 3,
-			rateLimit: "100/min",
-			lastProcessed: "2 seconds ago",
-		},
-		{
-			id: "queue_b9j2m1",
-			name: "image-processing",
-			status: "active",
-			pending: 523,
-			inProgress: 12,
-			failed: 0,
-			rateLimit: "50/min",
-			lastProcessed: "5 seconds ago",
-		},
-		{
-			id: "queue_c7n4p8",
-			name: "data-export",
-			status: "paused",
-			pending: 89,
-			inProgress: 0,
-			failed: 2,
-			rateLimit: "10/min",
-			lastProcessed: "3 hours ago",
-		},
-		{
-			id: "queue_d1k8v5",
-			name: "webhook-delivery",
-			status: "active",
-			pending: 0,
-			inProgress: 2,
-			failed: 15,
-			rateLimit: "200/min",
-			lastProcessed: "1 minute ago",
-		},
-	];
+	const { data, isLoading: isQueueLoading } = useQueueList({
+		...filters,
+		projectId: currentProject?.id || "",
+	});
 
-	// Filter queues based on search query
-	const filteredQueues = useMemo(() => {
-		if (!searchQuery.trim()) {
-			return allQueues;
-		}
-
-		const query = searchQuery.toLowerCase();
-		return allQueues.filter(
-			(queue) =>
-				queue.name.toLowerCase().includes(query) ||
-				queue.id.toLowerCase().includes(query),
-		);
-	}, [searchQuery]);
-
-	const handleCreateQueue = (formData: CreateQueueFormData) => {
-		console.log("Creating queue:", formData);
-		// In real app, this would call an API
-		// Then refresh the queues list
+	const handleCreateQueue = (newQueue: Queue) => {
+		console.log("Creating queue:", newQueue);
 	};
+
+	const filteredQueues = data?.data.results || [];
 
 	return (
 		<div className="p-8">
@@ -103,21 +55,31 @@ export function QueuesPage() {
 			<QueueViewControls
 				viewMode={viewMode}
 				onViewModeChange={setViewMode}
-				searchQuery={searchQuery}
-				onSearchChange={setSearchQuery}
+				searchQuery={filters.label || ""}
+				onSearchChange={(label) =>
+					setFilters((prev) => ({ ...prev, label }))
+				}
 			/>
 
 			{filteredQueues.length === 0 ? (
 				<EmptyState
-					title="No queues found"
-					description={
-						searchQuery
-							? `No queues match "${searchQuery}". Try a different search term.`
-							: "No queues available. Create a queue to get started."
+					title={
+						isQueueLoading ? "Fetching Queues" : "No queues found"
 					}
-					actionLabel={!searchQuery ? "Create Queue" : undefined}
+					description={
+						isQueueLoading
+							? "Please wait while we load your queues."
+							: filters.label
+								? `No queues match "${filters.label}". Try a different search term.`
+								: "No queues available. Create a queue to get started."
+					}
+					actionLabel={
+						!filters.label && !isQueueLoading
+							? "Create Queue"
+							: undefined
+					}
 					onAction={
-						!searchQuery
+						!filters.label
 							? () => setShowCreateDialog(true)
 							: undefined
 					}
@@ -132,6 +94,7 @@ export function QueuesPage() {
 				<CreateQueueDialog
 					open={showCreateDialog}
 					onClose={() => setShowCreateDialog(false)}
+					projectId={currentProject?.id || ""}
 					onSubmit={handleCreateQueue}
 				/>
 			)}

@@ -2,8 +2,10 @@ import { useState } from "react";
 
 import { Pause } from "lucide-react";
 
-import type { Queue } from "../../../entities/queue/types";
-import { ConfirmDialog } from "../../../shared/ui/ConfirmDialog";
+import { ConfirmDialog } from "@shared/ui/ConfirmDialog";
+import { Button } from "@shared/ui/button";
+
+import type { Queue } from "@entities/queue/types/types";
 
 interface PauseQueueButtonProps {
 	queue: Queue;
@@ -23,19 +25,19 @@ export function PauseQueueButton({
 	if (compact) {
 		return (
 			<>
-				<button
+				<Button
 					onClick={() => setShowConfirm(true)}
 					className="text-neutral-400 hover:text-neutral-600"
 					title="Pause queue"
 				>
 					<Pause className="w-4 h-4" />
-				</button>
+				</Button>
 
 				<ConfirmDialog
 					open={showConfirm}
 					onOpenChange={setShowConfirm}
 					title="Pause Queue"
-					message={`Are you sure you want to pause "${queue.name}"? In-progress jobs will complete, but no new jobs will be processed.`}
+					message={`Are you sure you want to pause "${queue.label}"? In-progress jobs will complete, but no new jobs will be processed.`}
 					confirmLabel="Pause Queue"
 					onConfirm={handlePause}
 					variant="warning"
@@ -46,19 +48,19 @@ export function PauseQueueButton({
 
 	return (
 		<>
-			<button
+			<Button
 				onClick={() => setShowConfirm(true)}
-				className="flex items-center gap-2 px-3 py-2 text-sm text-neutral-700 bg-neutral-100 hover:bg-neutral-200 rounded transition-colors"
+				className="flex items-center gap-2 px-3 py-2 text-sm text-neutral-700 rounded transition-colors"
 			>
 				<Pause className="w-4 h-4" />
 				Pause
-			</button>
+			</Button>
 
 			<ConfirmDialog
 				open={showConfirm}
 				onOpenChange={setShowConfirm}
 				title="Pause Queue"
-				message={`Are you sure you want to pause "${queue.name}"? In-progress jobs will complete, but no new jobs will be processed.`}
+				message={`Are you sure you want to pause "${queue.label}"? In-progress jobs will complete, but no new jobs will be processed.`}
 				confirmLabel="Pause Queue"
 				onConfirm={handlePause}
 				variant="warning"

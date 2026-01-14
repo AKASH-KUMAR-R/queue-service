@@ -1,4 +1,5 @@
 import api from "@shared/api";
+import { generateQueryParams } from "@shared/api/utils/requestUtils";
 
 import type {
 	CreateQueueData,
@@ -7,6 +8,7 @@ import type {
 	UpdateQueueData,
 	UpdateQueueResponse,
 } from "@entities/queue/types/apiTypes";
+import type { RawQueueSearchParams } from "@entities/queue/types/types";
 import { toQueue, toQueueList } from "@entities/queue/utils/transform";
 
 export const create = async (
@@ -24,8 +26,14 @@ export const update = async (
 	return { data: toQueue(response.data.data) };
 };
 
-export const search = async (): Promise<SearchQueueResponse> => {
-	const response = await api.get("/api/dashboard/queue/search");
+export const search = async (
+	params: RawQueueSearchParams,
+): Promise<SearchQueueResponse> => {
+	const urlParams = generateQueryParams(params);
+
+	const response = await api.get(
+		`/api/dashboard/queue/search?${urlParams.toString()}`,
+	);
 
 	return {
 		data: {
