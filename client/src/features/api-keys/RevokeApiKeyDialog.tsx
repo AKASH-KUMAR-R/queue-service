@@ -1,10 +1,10 @@
-import { Button } from "@/shared/ui/button";
-import { Spinner } from "@/shared/ui/spinner";
-import { formatDateTime } from "@/shared/utils/dateAndTimeUtils";
 import { AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 
+import { Button } from "@shared/ui/button";
 import { Dialog, DialogContent } from "@shared/ui/dialog";
+import { Spinner } from "@shared/ui/spinner";
+import { formatDateTime } from "@shared/utils/dateAndTimeUtils";
 
 import { type ApiKey } from "@entities/api-key/model/types";
 import { ApiKeyStatusBadge } from "@entities/api-key/ui/ApiKeyStatusBadge";

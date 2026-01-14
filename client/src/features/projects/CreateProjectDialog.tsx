@@ -1,12 +1,10 @@
 import { useForm } from "react-hook-form";
 
-import type { Project } from "@/entities/project/types";
-import { Button } from "@/shared/ui/button";
-import { mapServerFieldErrorToFormFields } from "@/shared/utils/formUtils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { Button } from "@shared/ui/button";
 import {
 	Dialog,
 	DialogContent,
@@ -24,6 +22,9 @@ import {
 	RadixFormLabel,
 	RadixFormMessage,
 } from "@shared/ui/radix-form";
+import { mapServerFieldErrorToFormFields } from "@shared/utils/formUtils";
+
+import type { Project } from "@entities/project/types";
 
 import {
 	type ProjectCreateFormErrorHandler,

@@ -1,5 +1,6 @@
-import type { User } from "@/entities/user/types/user";
-import api from "@/shared/api";
+import api from "@shared/api";
+
+import type { User } from "@entities/user/types/user";
 
 type LoginRequestPayload = {
 	identifier: string;

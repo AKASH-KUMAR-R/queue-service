@@ -1,8 +1,10 @@
 import { useEffect } from "react";
 
-import { useProjectList } from "@/features/projects/data/listProject";
-import { Spinner } from "@/shared/ui/spinner";
 import { toast } from "sonner";
+
+import { Spinner } from "@shared/ui/spinner";
+
+import { useProjectList } from "@features/projects/data/listProject";
 
 import { useProject } from "../ProjectContext";
 

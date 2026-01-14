@@ -1,6 +1,7 @@
-import type { User } from "@/entities/user/types/user";
-import { toUser } from "@/entities/user/utils/transform";
-import api from "@/shared/api";
+import api from "@shared/api";
+
+import type { User } from "@entities/user/types/user";
+import { toUser } from "@entities/user/utils/transform";
 
 export type FetchCurrentUserResponse = {
 	data: {

@@ -2,21 +2,22 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 
-import { Button } from "@/shared/ui/button";
-import { Form } from "@/shared/ui/form";
-import { Input } from "@/shared/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+import z from "zod";
+
+import { Button } from "@shared/ui/button";
+import { Form } from "@shared/ui/form";
+import { Input } from "@shared/ui/input";
 import {
 	RadixFormControl,
 	RadixFormField,
 	RadixFormItem,
 	RadixFormLabel,
 	RadixFormMessage,
-} from "@/shared/ui/radix-form";
-import { Spinner } from "@/shared/ui/spinner";
-import { mapServerFieldErrorToFormFields } from "@/shared/utils/formUtils";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
-import z from "zod";
+} from "@shared/ui/radix-form";
+import { Spinner } from "@shared/ui/spinner";
+import { mapServerFieldErrorToFormFields } from "@shared/utils/formUtils";
 
 import { useAuth } from "../context/AuthContext";
 import {

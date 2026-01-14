@@ -1,5 +1,6 @@
-import { formatDateTime } from "@/shared/utils/dateAndTimeUtils";
 import { AlertTriangle } from "lucide-react";
+
+import { formatDateTime } from "@shared/utils/dateAndTimeUtils";
 
 import { type ApiKeyWithSecret } from "../../entities/api-key/model/types";
 import { ApiKeyDisplay } from "../../entities/api-key/ui/ApiKeyDisplay";

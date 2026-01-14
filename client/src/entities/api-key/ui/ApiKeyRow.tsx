@@ -1,4 +1,4 @@
-import { Button } from "@/shared/ui/button";
+import { Button } from "@shared/ui/button";
 
 import type { ApiKey } from "../model/types";
 import { ApiKeyStatusBadge } from "./ApiKeyStatusBadge";

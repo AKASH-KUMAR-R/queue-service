@@ -1,16 +1,17 @@
 import { useState } from "react";
 
-import { useProject } from "@/app/ProjectContext";
-import { useApiKeyList } from "@/features/api-keys/data/listApiKeys";
-import { Spinner } from "@/shared/ui/spinner";
+import { useProject } from "@app/ProjectContext";
 import { ApiKeysList } from "@widgets/api-keys/ApiKeysList";
 import { Plus } from "lucide-react";
+
+import { Spinner } from "@shared/ui/spinner";
 
 import type { ApiKey, ApiKeyWithSecret } from "@entities/api-key/model/types";
 
 import { ApiKeyCreatedDialog } from "@features/api-keys/ApiKeyCreatedDialog";
 import { CreateApiKeyDialog } from "@features/api-keys/CreateApiKeyDialog";
 import { RevokeApiKeyDialog } from "@features/api-keys/RevokeApiKeyDialog";
+import { useApiKeyList } from "@features/api-keys/data/listApiKeys";
 
 export function ProjectApiKeysPage() {
 	const { currentProject } = useProject();
