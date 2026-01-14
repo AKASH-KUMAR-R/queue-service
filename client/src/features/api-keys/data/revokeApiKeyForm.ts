@@ -1,9 +1,10 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+
 import {
 	handleError,
 	prettifyFieldErrors,
-} from "@/shared/api/utils/handleError";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
+} from "@shared/api/utils/handleError";
 
 import { revoke } from "../services/apiKeyService";
 import { apiKeys } from "./keys";

@@ -1,10 +1,12 @@
-import type { UpdateProjectFormData } from "@/pages/ProjectSettingsPage";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+
 import {
 	handleError,
 	prettifyFieldErrors,
-} from "@/shared/api/utils/handleError";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
+} from "@shared/api/utils/handleError";
+
+import type { UpdateProjectFormData } from "@pages/ProjectSettingsPage";
 
 import { updateProject } from "../services/projectService";
 import { projectKeys } from "./keys";

@@ -1,6 +1,7 @@
-import { Button } from "@/shared/ui/button";
-import { Spinner } from "@/shared/ui/spinner";
 import { toast } from "sonner";
+
+import { Button } from "@shared/ui/button";
+import { Spinner } from "@shared/ui/spinner";
 
 import { type ApiKeyWithSecret } from "../../entities/api-key/model/types";
 import { Dialog, DialogContent } from "../../shared/ui/dialog";

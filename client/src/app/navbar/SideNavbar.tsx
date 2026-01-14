@@ -1,16 +1,18 @@
 import { type MouseEvent, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import type { Project } from "@/entities/project/types";
-import { CreateProjectDialog } from "@/features/projects/CreateProjectDialog";
-import { ProjectSwitcher } from "@/features/projects/components/ProjectSwitcher";
-import { useProjectList } from "@/features/projects/data/listProject";
-import { Spinner } from "@/shared/ui/spinner";
 import { LogOut } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@shared/ui/button";
 import { Sidebar, SidebarContent, useSidebar } from "@shared/ui/sidebar";
+import { Spinner } from "@shared/ui/spinner";
+
+import type { Project } from "@entities/project/types";
+
+import { CreateProjectDialog } from "@features/projects/CreateProjectDialog";
+import { ProjectSwitcher } from "@features/projects/components/ProjectSwitcher";
+import { useProjectList } from "@features/projects/data/listProject";
 
 import { useProject } from "../ProjectContext";
 import { getExpandedStateForRoute, navGroups } from "./NavBarConfig";

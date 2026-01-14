@@ -1,11 +1,12 @@
-import type { ApiKey, ApiKeyWithSecret } from "@/entities/api-key/model/types";
+import api from "@shared/api";
+import type { PaginatedResult } from "@shared/types/utils";
+
+import type { ApiKey, ApiKeyWithSecret } from "@entities/api-key/model/types";
 import {
 	toApiKey,
 	toApiKeyList,
 	toApiKeyWithSecret,
-} from "@/entities/api-key/utils/transform";
-import api from "@/shared/api";
-import type { PaginatedResult } from "@/shared/types/utils";
+} from "@entities/api-key/utils/transform";
 
 export type ApiKeyCreateData = {
 	project_id: string;

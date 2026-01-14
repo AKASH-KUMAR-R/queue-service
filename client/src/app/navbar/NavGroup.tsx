@@ -1,5 +1,7 @@
 import { useLocation } from "react-router-dom";
 
+import { ChevronDown } from "lucide-react";
+
 import {
 	SidebarGroup,
 	SidebarGroupContent,
@@ -7,9 +9,8 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
-} from "@/shared/ui/sidebar";
-import { getCleanUrl } from "@/shared/utils/baseUtils";
-import { ChevronDown } from "lucide-react";
+} from "@shared/ui/sidebar";
+import { getCleanUrl } from "@shared/utils/baseUtils";
 
 import type { NavGroup as NavGroupType, NavItem } from "./NavBarConfig";
 

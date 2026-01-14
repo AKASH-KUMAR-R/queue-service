@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 
-import { useCurrentUser } from "@/features/user/data/currentUser";
-import { Spinner } from "@/shared/ui/spinner";
 import { toast } from "sonner";
 
 import { SidebarProvider } from "@shared/ui/sidebar";
+import { Spinner } from "@shared/ui/spinner";
 import { getCleanUrl } from "@shared/utils/baseUtils";
 
 import { useAuth } from "@features/auth/context/AuthContext";
+import { useCurrentUser } from "@features/user/data/currentUser";
 
 import Header from "../navbar/Header";
 import { NAVBAR_RESTRICTED_PATHS } from "../navbar/NavBarConfig";

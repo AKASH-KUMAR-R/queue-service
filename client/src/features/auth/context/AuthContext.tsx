@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 
-import type { User } from "@/entities/user/types/user";
+import type { User } from "@entities/user/types/user";
 
 type AuthContextType = {
 	user: User | null;

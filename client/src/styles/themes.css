@@ -14,46 +14,46 @@
 
 :root,
 .light {
-  /* Base colors */
-  --background: 250 250 250;           /* #fafafa - neutral-50 */
-  --foreground: 23 23 23;              /* #171717 - neutral-900 */
+	/* Base colors */
+	--background: 250 250 250; /* #fafafa - neutral-50 */
+	--foreground: 23 23 23; /* #171717 - neutral-900 */
 
-  /* Card colors */
-  --card: 255 255 255;                 /* #ffffff - white */
-  --card-foreground: 23 23 23;         /* #171717 - neutral-900 */
+	/* Card colors */
+	--card: 255 255 255; /* #ffffff - white */
+	--card-foreground: 23 23 23; /* #171717 - neutral-900 */
 
-  /* Border colors */
-  --border: 229 229 229;               /* #e5e5e5 - neutral-200 */
-  --input: 229 229 229;                /* #e5e5e5 - neutral-200 */
+	/* Border colors */
+	--border: 229 229 229; /* #e5e5e5 - neutral-200 */
+	--input: 229 229 229; /* #e5e5e5 - neutral-200 */
 
-  /* Muted colors (for secondary text, backgrounds) */
-  --muted: 245 245 245;                /* #f5f5f5 - neutral-100 */
-  --muted-foreground: 115 115 115;     /* #737373 - neutral-500 */
+	/* Muted colors (for secondary text, backgrounds) */
+	--muted: 245 245 245; /* #f5f5f5 - neutral-100 */
+	--muted-foreground: 115 115 115; /* #737373 - neutral-500 */
 
-  /* Accent colors (for hover states, highlights) */
-  --accent: 245 245 245;               /* #f5f5f5 - neutral-100 */
-  --accent-foreground: 23 23 23;       /* #171717 - neutral-900 */
+	/* Accent colors (for hover states, highlights) */
+	--accent: 245 245 245; /* #f5f5f5 - neutral-100 */
+	--accent-foreground: 23 23 23; /* #171717 - neutral-900 */
 
-  /* Primary action colors */
-  --primary: 23 23 23;                 /* #171717 - neutral-900 */
-  --primary-foreground: 250 250 250;   /* #fafafa - neutral-50 */
+	/* Primary action colors */
+	--primary: 23 23 23; /* #171717 - neutral-900 */
+	--primary-foreground: 250 250 250; /* #fafafa - neutral-50 */
 
-  /* Secondary action colors */
-  --secondary: 245 245 245;            /* #f5f5f5 - neutral-100 */
-  --secondary-foreground: 23 23 23;    /* #171717 - neutral-900 */
+	/* Secondary action colors */
+	--secondary: 245 245 245; /* #f5f5f5 - neutral-100 */
+	--secondary-foreground: 23 23 23; /* #171717 - neutral-900 */
 
-  /* Destructive action colors */
-  --destructive: 220 38 38;            /* #dc2626 - red-600 */
-  --destructive-foreground: 250 250 250; /* #fafafa - neutral-50 */
+	/* Destructive action colors */
+	--destructive: 220 38 38; /* #dc2626 - red-600 */
+	--destructive-foreground: 250 250 250; /* #fafafa - neutral-50 */
 
-  /* Ring color for focus states */
-  --ring: 23 23 23;                    /* #171717 - neutral-900 */
+	/* Ring color for focus states */
+	--ring: 23 23 23; /* #171717 - neutral-900 */
 
-  /* Border radius */
-  --radius: 0.5rem;                    /* 8px */
+	/* Border radius */
+	--radius: 0.5rem; /* 8px */
 
-  /* Color scheme for native controls */
-  color-scheme: light;
+	/* Color scheme for native controls */
+	color-scheme: light;
 }
 
 /* ============================================================================
@@ -61,43 +61,43 @@
    ============================================================================ */
 
 .dark {
-  /* Base colors */
-  --background: 10 10 10;              /* #0a0a0a - neutral-950 */
-  --foreground: 250 250 250;           /* #fafafa - neutral-50 */
+	/* Base colors */
+	--background: 10 10 10; /* #0a0a0a - neutral-950 */
+	--foreground: 250 250 250; /* #fafafa - neutral-50 */
 
-  /* Card colors */
-  --card: 23 23 23;                    /* #171717 - neutral-900 */
-  --card-foreground: 250 250 250;      /* #fafafa - neutral-50 */
+	/* Card colors */
+	--card: 23 23 23; /* #171717 - neutral-900 */
+	--card-foreground: 250 250 250; /* #fafafa - neutral-50 */
 
-  /* Border colors */
-  --border: 38 38 38;                  /* #262626 - neutral-800 */
-  --input: 38 38 38;                   /* #262626 - neutral-800 */
+	/* Border colors */
+	--border: 38 38 38; /* #262626 - neutral-800 */
+	--input: 38 38 38; /* #262626 - neutral-800 */
 
-  /* Muted colors (for secondary text, backgrounds) */
-  --muted: 23 23 23;                   /* #171717 - neutral-900 */
-  --muted-foreground: 163 163 163;     /* #a3a3a3 - neutral-400 */
+	/* Muted colors (for secondary text, backgrounds) */
+	--muted: 23 23 23; /* #171717 - neutral-900 */
+	--muted-foreground: 163 163 163; /* #a3a3a3 - neutral-400 */
 
-  /* Accent colors (for hover states, highlights) */
-  --accent: 38 38 38;                  /* #262626 - neutral-800 */
-  --accent-foreground: 250 250 250;    /* #fafafa - neutral-50 */
+	/* Accent colors (for hover states, highlights) */
+	--accent: 38 38 38; /* #262626 - neutral-800 */
+	--accent-foreground: 250 250 250; /* #fafafa - neutral-50 */
 
-  /* Primary action colors */
-  --primary: 250 250 250;              /* #fafafa - neutral-50 */
-  --primary-foreground: 23 23 23;      /* #171717 - neutral-900 */
+	/* Primary action colors */
+	--primary: 250 250 250; /* #fafafa - neutral-50 */
+	--primary-foreground: 23 23 23; /* #171717 - neutral-900 */
 
-  /* Secondary action colors */
-  --secondary: 38 38 38;               /* #262626 - neutral-800 */
-  --secondary-foreground: 250 250 250; /* #fafafa - neutral-50 */
+	/* Secondary action colors */
+	--secondary: 38 38 38; /* #262626 - neutral-800 */
+	--secondary-foreground: 250 250 250; /* #fafafa - neutral-50 */
 
-  /* Destructive action colors */
-  --destructive: 239 68 68;            /* #ef4444 - red-500 (lighter for dark) */
-  --destructive-foreground: 250 250 250; /* #fafafa - neutral-50 */
+	/* Destructive action colors */
+	--destructive: 239 68 68; /* #ef4444 - red-500 (lighter for dark) */
+	--destructive-foreground: 250 250 250; /* #fafafa - neutral-50 */
 
-  /* Ring color for focus states */
-  --ring: 212 212 212;                 /* #d4d4d4 - neutral-300 */
+	/* Ring color for focus states */
+	--ring: 212 212 212; /* #d4d4d4 - neutral-300 */
 
-  /* Color scheme for native controls */
-  color-scheme: dark;
+	/* Color scheme for native controls */
+	color-scheme: dark;
 }
 
 /* ============================================================================
@@ -105,29 +105,29 @@
    ============================================================================ */
 
 :root {
-  /* Success / Completed (Green) */
-  --success: 22 163 74;                /* #16a34a - green-600 */
-  --success-foreground: 255 255 255;   /* #ffffff - white */
+	/* Success / Completed (Green) */
+	--success: 22 163 74; /* #16a34a - green-600 */
+	--success-foreground: 255 255 255; /* #ffffff - white */
 
-  /* Error / Failed (Red) */
-  --error: 220 38 38;                  /* #dc2626 - red-600 */
-  --error-foreground: 255 255 255;     /* #ffffff - white */
+	/* Error / Failed (Red) */
+	--error: 220 38 38; /* #dc2626 - red-600 */
+	--error-foreground: 255 255 255; /* #ffffff - white */
 
-  /* Warning / Pending (Orange) */
-  --warning: 234 88 12;                /* #ea580c - orange-600 */
-  --warning-foreground: 255 255 255;   /* #ffffff - white */
+	/* Warning / Pending (Orange) */
+	--warning: 234 88 12; /* #ea580c - orange-600 */
+	--warning-foreground: 255 255 255; /* #ffffff - white */
 
-  /* Info / Active (Blue) */
-  --info: 37 99 235;                   /* #2563eb - blue-600 */
-  --info-foreground: 255 255 255;      /* #ffffff - white */
+	/* Info / Active (Blue) */
+	--info: 37 99 235; /* #2563eb - blue-600 */
+	--info-foreground: 255 255 255; /* #ffffff - white */
 }
 
 .dark {
-  /* Slightly lighter semantic colors for dark theme visibility */
-  --success: 34 197 94;                /* #22c55e - green-500 */
-  --error: 239 68 68;                  /* #ef4444 - red-500 */
-  --warning: 251 146 60;               /* #fb923c - orange-400 */
-  --info: 59 130 246;                  /* #3b82f6 - blue-500 */
+	/* Slightly lighter semantic colors for dark theme visibility */
+	--success: 34 197 94; /* #22c55e - green-500 */
+	--error: 239 68 68; /* #ef4444 - red-500 */
+	--warning: 251 146 60; /* #fb923c - orange-400 */
+	--info: 59 130 246; /* #3b82f6 - blue-500 */
 }
 
 /* ============================================================================
@@ -135,27 +135,27 @@
    ============================================================================ */
 
 * {
-  transition-property: background-color, border-color, color, fill, stroke;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 200ms;
+	transition-property: background-color, border-color, color, fill, stroke;
+	transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+	transition-duration: 200ms;
 }
 
 /* Disable transitions for specific elements that shouldn't animate */
 *:focus-visible,
 *:active {
-  transition: none;
+	transition: none;
 }
 
 /* Respect user's motion preferences */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
 }
 
 /* ============================================================================
@@ -163,6 +163,6 @@
    ============================================================================ */
 
 body {
-  background-color: rgb(var(--background));
-  color: rgb(var(--foreground));
+	background-color: rgb(var(--background));
+	color: rgb(var(--foreground));
 }

@@ -1,23 +1,24 @@
 import { useForm } from "react-hook-form";
 
-import { useProject } from "@/app/ProjectContext";
-import {
-	type ProjectUpdateFormErrorHandler,
-	useProjectUpdate,
-} from "@/features/projects/data/projectUpdateForm";
-import { Form } from "@/shared/ui/form";
+import { useProject } from "@app/ProjectContext";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+import { z } from "zod";
+
+import { Form } from "@shared/ui/form";
+import { Input } from "@shared/ui/form/Input";
 import {
 	RadixFormField,
 	RadixFormItem,
 	RadixFormLabel,
 	RadixFormMessage,
-} from "@/shared/ui/radix-form";
-import { mapServerFieldErrorToFormFields } from "@/shared/utils/formUtils";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
-import { z } from "zod";
+} from "@shared/ui/radix-form";
+import { mapServerFieldErrorToFormFields } from "@shared/utils/formUtils";
 
-import { Input } from "@shared/ui/form/Input";
+import {
+	type ProjectUpdateFormErrorHandler,
+	useProjectUpdate,
+} from "@features/projects/data/projectUpdateForm";
 
 const settingsSchema = z.object({
 	label: z

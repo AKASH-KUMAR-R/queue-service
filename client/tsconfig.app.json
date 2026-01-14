@@ -23,16 +23,15 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    "baseUrl": ".",
+    "baseUrl": "./src",
     "paths": {
-      "@/*": ["src/*"],
-      "@app/*": ["src/app/*"],
-      "@shared/*": ["src/shared/*"],
-      "@features/*": ["src/features/*"],
-      "@entities/*": ["src/entities/*"],
-      "@widgets/*": ["src/widgets/*"],
-      "@pages/*": ["src/pages/*"]
+      "@app/*": ["app/*"],
+      "@shared/*": ["shared/*"],
+      "@features/*": ["features/*"],
+      "@entities/*": ["entities/*"],
+      "@widgets/*": ["widgets/*"],
+      "@pages/*": ["pages/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src/**/*"]
 }
