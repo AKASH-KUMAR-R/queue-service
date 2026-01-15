@@ -1,9 +1,10 @@
-import { QueueTableRow } from "../entities/queue/QueueTableRow";
-import type { Queue } from "../entities/queue/types";
+import type { QueueWithMetrics } from "@entities/queue/types/types";
 
-interface QueueTableProps {
-	queues: Queue[];
-}
+import { QueueTableRow } from "@features/queues/components/QueueTableRow";
+
+type QueueTableProps = {
+	queues: QueueWithMetrics[];
+};
 
 export function QueueTable({ queues }: QueueTableProps) {
 	return (
@@ -19,20 +20,20 @@ export function QueueTable({ queues }: QueueTableProps) {
 								Status
 							</th>
 							<th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
-								Pending
+								Active
 							</th>
 							<th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
-								In Progress
+								Completed
 							</th>
 							<th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
 								Failed
 							</th>
 							<th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
-								Rate Limit
+								Rate Limit Per Unit
 							</th>
-							<th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
+							{/* <th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
 								Last Processed
-							</th>
+							</th> */}
 							<th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
 								Actions
 							</th>

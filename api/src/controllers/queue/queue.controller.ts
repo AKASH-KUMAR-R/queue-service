@@ -24,7 +24,7 @@ const addQueue = async (req: Request, res: Response) => {
 			data.rate_limit_count ? { job_count: 0 } : undefined,
 		);
 
-		res.status(201).json({ queue: newQueue });
+		res.status(201).json({ data: newQueue });
 	} catch (err) {
 		handleError(res, err);
 	}
@@ -41,7 +41,7 @@ const searchQueues = async (req: Request, res: Response) => {
 			parseInt(query.limit as string) || 10,
 		);
 
-		res.status(200).json(results);
+		res.status(200).json(enhancedSerialize(results));
 	} catch (err) {
 		handleError(res, err);
 	}
