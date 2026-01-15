@@ -4,6 +4,7 @@ import { JobsPage } from "@pages/JobsPage";
 import { QueuesPage } from "@pages/QueuesPage";
 import { WorkersPage } from "@pages/WorkersPage";
 
+// TODO: Think about a way to use the queue label instead of ID in the URL, Also, the consisitant project id query params across the app
 const QueueRoutes = () => {
 	return (
 		<Routes>
