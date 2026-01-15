@@ -4,7 +4,7 @@ import { CancelJobButton } from "../../features/jobs/CancelJobButton";
 import { RetryJobButton } from "../../features/jobs/RetryJobButton";
 import { copyToClipboard } from "../../shared/utils/clipboard";
 import { StatusBadge } from "../StatusBadge";
-import type { Job } from "./types";
+import type { Job } from "./types/types";
 
 interface JobRowProps {
 	job: Job;

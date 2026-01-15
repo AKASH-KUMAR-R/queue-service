@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { JobRow } from "../entities/job/JobRow";
-import type { Job } from "../entities/job/types";
+import type { Job } from "../entities/job/types/types";
 import { EmptyState } from "../shared/ui/EmptyState";
 
 interface JobsTableProps {
