@@ -1,5 +1,6 @@
-import type { QueueWithMetrics } from "../entities/queue/types/types";
-import { QueueTableRow } from "../features/queues/components/QueueTableRow";
+import type { QueueWithMetrics } from "@entities/queue/types/types";
+
+import { QueueTableRow } from "@features/queues/components/QueueTableRow";
 
 type QueueTableProps = {
 	queues: QueueWithMetrics[];

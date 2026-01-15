@@ -1,8 +1,8 @@
 import { Plus } from "lucide-react";
 
-interface CreateQueueButtonProps {
+type CreateQueueButtonProps = {
 	onClick: () => void;
-}
+};
 
 export function CreateQueueButton({ onClick }: CreateQueueButtonProps) {
 	return (

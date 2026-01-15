@@ -2,13 +2,14 @@ import { useState } from "react";
 
 import { Play } from "lucide-react";
 
-import type { Queue } from "../../../entities/queue/types/types";
-import { ConfirmDialog } from "../../../shared/ui/ConfirmDialog";
+import { ConfirmDialog } from "@shared/ui/ConfirmDialog";
 
-interface ResumeQueueButtonProps {
+import type { Queue } from "@entities/queue/types/types";
+
+type ResumeQueueButtonProps = {
 	queue: Queue;
 	compact?: boolean;
-}
+};
 
 export function ResumeQueueButton({
 	queue,
@@ -35,7 +36,7 @@ export function ResumeQueueButton({
 					open={showConfirm}
 					onOpenChange={setShowConfirm}
 					title="Resume Queue"
-					message={`Are you sure you want to resume "${queue.name}"? The queue will start processing pending jobs.`}
+					message={`Are you sure you want to resume "${queue.label}"? The queue will start processing pending jobs.`}
 					confirmLabel="Resume Queue"
 					onConfirm={handleResume}
 					variant="primary"
@@ -58,7 +59,7 @@ export function ResumeQueueButton({
 				open={showConfirm}
 				onOpenChange={setShowConfirm}
 				title="Resume Queue"
-				message={`Are you sure you want to resume "${queue.name}"? The queue will start processing pending jobs.`}
+				message={`Are you sure you want to resume "${queue.label}"? The queue will start processing pending jobs.`}
 				confirmLabel="Resume Queue"
 				onConfirm={handleResume}
 				variant="primary"
