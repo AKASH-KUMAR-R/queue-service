@@ -69,7 +69,7 @@ export function QueueTableRow({ queue }: QueueTableRowProps) {
 						<ResumeQueueButton queue={queue} compact />
 					)}
 					<Button
-						onClick={() => navigate(`/jobs/${queue.id}`)}
+						onClick={() => navigate(`/queues/${queue.id}/jobs`)}
 						className="text-neutral-400 hover:text-neutral-600"
 						title="View jobs"
 					>

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { JobsTable } from "@widgets/JobsTable";
@@ -6,9 +5,18 @@ import { JobsTable } from "@widgets/JobsTable";
 import { EmptyState } from "@shared/ui/EmptyState";
 import { LoadingState } from "@shared/ui/LoadingState";
 
+import { useJobsList } from "@features/jobs/data/listJobs";
+
+type JobPageParams = {
+	queueId: string;
+};
 export function JobsPage() {
-	const { queueId } = useParams<{ queueId: string }>();
-	const [isLoading] = useState(false);
+	const { queueId } = useParams<JobPageParams>();
+
+	const { data: jobs, isLoading: isJobListLoading } = useJobsList(
+		queueId ?? "",
+		{},
+	);
 
 	if (!queueId) {
 		return (
@@ -29,7 +37,7 @@ export function JobsPage() {
 		);
 	}
 
-	if (isLoading) {
+	if (isJobListLoading) {
 		return (
 			<div className="p-8">
 				<div className="mb-6">
@@ -42,6 +50,8 @@ export function JobsPage() {
 		);
 	}
 
+	const jobList = jobs?.data.results ?? [];
+
 	return (
 		<div className="p-8">
 			<div className="mb-6">
@@ -51,7 +61,7 @@ export function JobsPage() {
 				</p>
 			</div>
 
-			<JobsTable queueId={queueId} />
+			<JobsTable jobs={jobList} />
 		</div>
 	);
 }

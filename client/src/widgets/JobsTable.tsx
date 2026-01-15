@@ -1,82 +1,15 @@
 import { useState } from "react";
 
-import { JobRow } from "../entities/job/JobRow";
 import type { Job } from "../entities/job/types/types";
+import { JobRow } from "../features/jobs/components/JobRow";
 import { EmptyState } from "../shared/ui/EmptyState";
 
-interface JobsTableProps {
-	queueId: string;
-}
+type JobsTableProps = {
+	jobs: Job[];
+};
 
-export function JobsTable({ queueId }: JobsTableProps) {
+export function JobsTable({ jobs }: JobsTableProps) {
 	const [expandedJob, setExpandedJob] = useState<string | null>(null);
-
-	const jobs: Job[] = [
-		{
-			id: "job_x9k2m4a3",
-			status: "in-progress",
-			attempts: 1,
-			maxAttempts: 3,
-			priority: 10,
-			scheduledAt: "2026-01-03T14:32:15Z",
-			startedAt: "2026-01-03T14:32:18Z",
-			completedAt: null,
-			payload: {
-				userId: "usr_123",
-				emailType: "welcome",
-				template: "v2",
-			},
-		},
-		{
-			id: "job_b4n7p1k9",
-			status: "completed",
-			attempts: 1,
-			maxAttempts: 3,
-			priority: 5,
-			scheduledAt: "2026-01-03T14:30:02Z",
-			startedAt: "2026-01-03T14:30:05Z",
-			completedAt: "2026-01-03T14:30:12Z",
-			payload: { userId: "usr_456", emailType: "notification" },
-		},
-		{
-			id: "job_c8v3j2m1",
-			status: "failed",
-			attempts: 3,
-			maxAttempts: 3,
-			priority: 8,
-			scheduledAt: "2026-01-03T14:28:45Z",
-			startedAt: "2026-01-03T14:28:48Z",
-			completedAt: null,
-			payload: { userId: "usr_789", emailType: "reminder" },
-			error: "SMTP connection timeout after 30s",
-		},
-		{
-			id: "job_d2k8n5p7",
-			status: "pending",
-			attempts: 0,
-			maxAttempts: 3,
-			priority: 3,
-			scheduledAt: "2026-01-03T14:35:00Z",
-			startedAt: null,
-			completedAt: null,
-			payload: {
-				userId: "usr_101",
-				emailType: "digest",
-				frequency: "daily",
-			},
-		},
-		{
-			id: "job_e5m1k9n3",
-			status: "scheduled",
-			attempts: 0,
-			maxAttempts: 3,
-			priority: 7,
-			scheduledAt: "2026-01-03T16:00:00Z",
-			startedAt: null,
-			completedAt: null,
-			payload: { userId: "usr_202", emailType: "scheduled-report" },
-		},
-	];
 
 	if (jobs.length === 0) {
 		return (
