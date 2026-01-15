@@ -24,7 +24,7 @@ const addQueue = async (req: Request, res: Response) => {
 			data.rate_limit_count ? { job_count: 0 } : undefined,
 		);
 
-		res.status(201).json({ queue: newQueue });
+		res.status(201).json({ data: newQueue });
 	} catch (err) {
 		handleError(res, err);
 	}

@@ -16,6 +16,10 @@ import { CreateQueueButton } from "@features/queues/components/CreateQueueButton
 import { CreateQueueDialog } from "@features/queues/components/CreateQueueDialog";
 import { useQueueList } from "@features/queues/data/listQueue";
 
+const isAnyFilterActive = (filters: QueueSearchParams) => {
+	return filters.label?.trim() !== "" || filters.status !== undefined;
+};
+
 export function QueuesPage() {
 	const { currentProject } = useProject();
 	const [viewMode, setViewMode] = useState<QueueViewMode>("card");
@@ -74,12 +78,12 @@ export function QueuesPage() {
 								: "No queues available. Create a queue to get started."
 					}
 					actionLabel={
-						!filters.label && !isQueueLoading
+						!isAnyFilterActive(filters) && !isQueueLoading
 							? "Create Queue"
 							: undefined
 					}
 					onAction={
-						!filters.label
+						!isAnyFilterActive(filters)
 							? () => setShowCreateDialog(true)
 							: undefined
 					}
