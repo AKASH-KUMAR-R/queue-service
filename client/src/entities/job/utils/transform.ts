@@ -1,4 +1,9 @@
-import type { Job, RawApiResponseJob } from "../types/types";
+import type {
+	Job,
+	JobSearchParams,
+	RawApiResponseJob,
+	RawJobSearchParams,
+} from "../types/types";
 
 export const toJob = (data: RawApiResponseJob): Job => {
 	return {
@@ -20,4 +25,16 @@ export const toJob = (data: RawApiResponseJob): Job => {
 
 export const toJobList = (data: RawApiResponseJob[]): Job[] => {
 	return data.map((job) => toJob(job));
+};
+
+export const toSearchJobRequestParams = (
+	data: JobSearchParams,
+): RawJobSearchParams => {
+	return {
+		queue_id: data.queueId,
+		project_id: data.projectId,
+		status: data.status,
+		page: data.page,
+		limit: data.limit,
+	};
 };

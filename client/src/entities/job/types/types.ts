@@ -12,7 +12,7 @@ export type Job = Base & {
 	priority: number;
 	timeoutMs: number | null;
 	startedAt: string | null;
-	scheduledAt: string;
+	scheduledAt: string | null;
 	heartbeatAt: string | null;
 };
 
@@ -26,6 +26,22 @@ export type RawApiResponseJob = RawApiResponseBase & {
 	priority: number;
 	timeout_ms: number | null;
 	started_at: string | null;
-	scheduled_at: string;
+	scheduled_at: string | null;
 	heartbeat_at: string | null;
+};
+
+export type JobSearchParams = {
+	queueId?: string;
+	projectId?: string;
+	status?: JobStatus;
+	limit?: number;
+	page?: number;
+};
+
+export type RawJobSearchParams = {
+	queue_id?: string;
+	project_id?: string;
+	status?: JobStatus;
+	limit?: number;
+	page?: number;
 };

@@ -131,18 +131,18 @@ export const navGroups: NavGroup[] = [
 				icon: Layers,
 				description: "View and manage all queues",
 			},
-			{
-				path: "/jobs",
-				label: "Jobs",
-				icon: Briefcase,
-				description: "Monitor and manage jobs",
-			},
-			{
-				path: "/workers",
-				label: "Workers",
-				icon: Users,
-				description: "Track worker health and status",
-			},
+			// {
+			// 	path: "/jobs",
+			// 	label: "Jobs",
+			// 	icon: Briefcase,
+			// 	description: "Monitor and manage jobs",
+			// },
+			// {
+			// 	path: "/workers",
+			// 	label: "Workers",
+			// 	icon: Users,
+			// 	description: "Track worker health and status",
+			// },
 			{
 				path: "/metrics",
 				label: "Metrics",
