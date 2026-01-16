@@ -33,7 +33,7 @@ export type RawApiResponseJob = RawApiResponseBase & {
 export type JobSearchParams = {
 	queueId?: string;
 	projectId?: string;
-	status?: JobStatus;
+	status?: JobStatus | "ALL";
 	limit?: number;
 	page?: number;
 };

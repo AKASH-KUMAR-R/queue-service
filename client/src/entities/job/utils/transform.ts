@@ -33,7 +33,7 @@ export const toSearchJobRequestParams = (
 	return {
 		queue_id: data.queueId,
 		project_id: data.projectId,
-		status: data.status,
+		status: data.status === "ALL" ? undefined : data.status,
 		page: data.page,
 		limit: data.limit,
 	};
