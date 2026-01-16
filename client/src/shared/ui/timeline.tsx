@@ -9,7 +9,8 @@ export function Timeline({
 }: React.HTMLAttributes<HTMLDivElement>) {
 	return (
 		<div
-			className={cn("relative flex flex-col gap-6", className)}
+			data-slot="timeline"
+			className={cn("relative flex flex-col ", className)}
 			{...props}
 		/>
 	);
@@ -19,7 +20,16 @@ export function TimelineItem({
 	className,
 	...props
 }: React.HTMLAttributes<HTMLDivElement>) {
-	return <div className={cn("relative flex gap-4 ", className)} {...props} />;
+	return (
+		<div
+			data-slot="timeline-item"
+			className={cn(
+				'relative flex gap-4 last:**:data-[slot="timeline-line"]:hidden ',
+				className,
+			)}
+			{...props}
+		/>
+	);
 }
 
 export function TimelineIndicator({
@@ -27,15 +37,19 @@ export function TimelineIndicator({
 	...props
 }: React.HTMLAttributes<HTMLDivElement>) {
 	return (
-		<div className="relative flex flex-col items-center">
+		<div
+			data-slot="timeline-indicator"
+			className="relative flex flex-col items-center"
+		>
 			<div
+				data-slot="timeline-dot"
 				className={cn(
 					" z-10  h-3 w-3 rounded-full flex justify-center items-center bg-primary",
 					className,
 				)}
 				{...props}
 			/>
-			<div className=" z-0 flex-1 border" />
+			<div data-slot="timeline-line" className=" z-0 flex-1 border" />
 		</div>
 	);
 }
@@ -45,7 +59,11 @@ export function TimelineHeader({
 	...props
 }: React.HTMLAttributes<HTMLDivElement>) {
 	return (
-		<div className={cn("font-medium leading-none", className)} {...props} />
+		<div
+			data-slot="timeline-header"
+			className={cn("font-medium leading-none", className)}
+			{...props}
+		/>
 	);
 }
 
@@ -55,6 +73,7 @@ export function TimelineContent({
 }: React.HTMLAttributes<HTMLDivElement>) {
 	return (
 		<div
+			data-slot="timeline-content"
 			className={cn("text-sm text-muted-foreground", className)}
 			{...props}
 		/>
