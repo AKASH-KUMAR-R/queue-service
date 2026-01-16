@@ -76,6 +76,11 @@ const ViewJobDialog: React.FC<ViewJobDialogProps> = ({
 					showCloseButton={false}
 					className=" w-full md:max-w-6xl"
 				>
+					<DialogTrigger className=" absolute right-0 top-0">
+						<Button type="button" size="sm">
+							<X />
+						</Button>
+					</DialogTrigger>
 					<div className="flex items-center justify-center h-48">
 						<p>Loading...</p>
 						<Spinner size="lg" />
@@ -93,6 +98,11 @@ const ViewJobDialog: React.FC<ViewJobDialogProps> = ({
 					showCloseButton={false}
 					className=" w-full max-w-4xl"
 				>
+					<DialogTrigger className=" absolute right-0 top-0">
+						<Button type="button" size="sm">
+							<X />
+						</Button>
+					</DialogTrigger>
 					<div className="flex items-center justify-center h-48">
 						<p>Job not found.</p>
 					</div>
