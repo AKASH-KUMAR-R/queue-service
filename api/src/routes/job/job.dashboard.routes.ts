@@ -15,6 +15,7 @@ const router = Router();
 
 router.get("/list", authMiddleware, commonController.list);
 router.get("/search", authMiddleware, commonController.search);
+router.get("/:id", authMiddleware, validateId, commonController.getById);
 
 router.get(
 	"/:id/events",
