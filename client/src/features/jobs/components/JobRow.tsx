@@ -1,5 +1,6 @@
 import { ChevronDown, ChevronRight, Copy, ExternalLink } from "lucide-react";
 
+import { Button } from "@shared/ui/button";
 import { copyToClipboard } from "@shared/utils/clipboard";
 import { formatDateTime } from "@shared/utils/dateAndTimeUtils";
 
@@ -12,15 +13,27 @@ import { RetryJobButton } from "./RetryJobButton";
 interface JobRowProps {
 	job: Job;
 	isExpanded: boolean;
+	onViewClick?: (jobId: string) => void;
 	onToggleExpand: () => void;
 }
 
-export function JobRow({ job, isExpanded, onToggleExpand }: JobRowProps) {
+export function JobRow({
+	job,
+	isExpanded,
+	onToggleExpand,
+	onViewClick,
+}: JobRowProps) {
 	const handleCopy = async (text: string) => {
 		const success = await copyToClipboard(text);
 		if (!success) {
 			// Optionally show a toast or error message
 			console.error("Failed to copy to clipboard");
+		}
+	};
+
+	const handleViewClick = () => {
+		if (onViewClick) {
+			onViewClick(job.id);
 		}
 	};
 
@@ -86,12 +99,14 @@ export function JobRow({ job, isExpanded, onToggleExpand }: JobRowProps) {
 							job.status === "IN_PROGRESS") && (
 							<CancelJobButton jobId={job.id} />
 						)}
-						<button
+						<Button
+							type="button"
 							className="text-neutral-400 hover:text-neutral-600"
 							title="View details"
+							onClick={handleViewClick}
 						>
 							<ExternalLink className="w-3 h-3" />
-						</button>
+						</Button>
 					</div>
 				</td>
 			</tr>

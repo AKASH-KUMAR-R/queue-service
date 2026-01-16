@@ -6,9 +6,10 @@ import { EmptyState } from "../shared/ui/EmptyState";
 
 type JobsTableProps = {
 	jobs: Job[];
+	onViewClick?: (jobId: string) => void;
 };
 
-export function JobsTable({ jobs }: JobsTableProps) {
+export function JobsTable({ jobs, onViewClick }: JobsTableProps) {
 	const [expandedJob, setExpandedJob] = useState<string | null>(null);
 
 	if (jobs.length === 0) {
@@ -61,6 +62,7 @@ export function JobsTable({ jobs }: JobsTableProps) {
 										expandedJob === job.id ? null : job.id,
 									)
 								}
+								onViewClick={onViewClick}
 							/>
 						))}
 					</tbody>

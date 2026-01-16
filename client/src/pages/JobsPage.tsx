@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 
 import { JobsTable } from "@widgets/JobsTable";
 
@@ -9,13 +9,16 @@ import { LoadingState } from "@shared/ui/LoadingState";
 import type { JobSearchParams } from "@entities/job/types/types";
 
 import { JobViewControls } from "@features/jobs/components/JobViewControls";
+import ViewJobDialog from "@features/jobs/components/dialogs/ViewJobDialoag";
 import { useJobsList } from "@features/jobs/data/listJobs";
 
 type JobPageParams = {
 	queueId: string;
 };
+
 export function JobsPage() {
 	const { queueId } = useParams<JobPageParams>();
+	const [searchQuery, setSearchQuery] = useSearchParams();
 
 	const [filters, setFilters] = useState<JobSearchParams>({
 		status: "ALL",
@@ -59,8 +62,15 @@ export function JobsPage() {
 
 	const jobList = jobs?.data.results ?? [];
 
+	const handleJobViewClick = (jobId: string) => {
+		setSearchQuery((prev) => {
+			prev.set("jobId", jobId);
+			return prev;
+		});
+	};
+
 	return (
-		<div className="p-8">
+		<div className="p-8 overflow-y-auto ">
 			<div className="mb-6">
 				<h1 className="text-2xl font-semibold text-foreground">Jobs</h1>
 				<p className="text-sm text-muted-foreground mt-1">
@@ -73,7 +83,18 @@ export function JobsPage() {
 					setFilters((prev) => ({ ...prev, [field]: value }))
 				}
 			/>
-			<JobsTable jobs={jobList} />
+			<JobsTable jobs={jobList} onViewClick={handleJobViewClick} />
+
+			<ViewJobDialog
+				jobId={searchQuery.get("jobId")}
+				isOpen={!!searchQuery.get("jobId")}
+				onClose={() => {
+					setSearchQuery((prev) => {
+						prev.delete("jobId");
+						return prev;
+					});
+				}}
+			/>
 		</div>
 	);
 }
