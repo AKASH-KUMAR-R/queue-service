@@ -1,35 +1,39 @@
 import { ChevronDown, ChevronRight, Copy, ExternalLink } from "lucide-react";
 
-import { CancelJobButton } from "../../features/jobs/CancelJobButton";
-import { RetryJobButton } from "../../features/jobs/RetryJobButton";
-import { copyToClipboard } from "../../shared/utils/clipboard";
-import { StatusBadge } from "../StatusBadge";
-import type { Job } from "./types";
+import { Button } from "@shared/ui/button";
+import { copyToClipboard } from "@shared/utils/clipboard";
+import { formatDateTime } from "@shared/utils/dateAndTimeUtils";
+
+import { StatusBadge } from "@entities/StatusBadge";
+import type { Job } from "@entities/job/types/types";
+
+import { CancelJobButton } from "./CancelJobButton";
+import { RetryJobButton } from "./RetryJobButton";
 
 interface JobRowProps {
 	job: Job;
 	isExpanded: boolean;
+	onViewClick?: (jobId: string) => void;
 	onToggleExpand: () => void;
 }
 
-export function JobRow({ job, isExpanded, onToggleExpand }: JobRowProps) {
-	const formatTimestamp = (timestamp: string | null) => {
-		if (!timestamp) return "—";
-		const date = new Date(timestamp);
-		return date.toLocaleString("en-US", {
-			month: "short",
-			day: "numeric",
-			hour: "2-digit",
-			minute: "2-digit",
-			second: "2-digit",
-		});
-	};
-
+export function JobRow({
+	job,
+	isExpanded,
+	onToggleExpand,
+	onViewClick,
+}: JobRowProps) {
 	const handleCopy = async (text: string) => {
 		const success = await copyToClipboard(text);
 		if (!success) {
 			// Optionally show a toast or error message
 			console.error("Failed to copy to clipboard");
+		}
+	};
+
+	const handleViewClick = () => {
+		if (onViewClick) {
+			onViewClick(job.id);
 		}
 	};
 
@@ -66,7 +70,7 @@ export function JobRow({ job, isExpanded, onToggleExpand }: JobRowProps) {
 				</td>
 				<td className="px-4 py-3">
 					<span className="text-sm text-neutral-700">
-						{job.attempts} / {job.maxAttempts}
+						{job.attempts} / 5
 					</span>
 				</td>
 				<td className="px-4 py-3">
@@ -76,31 +80,33 @@ export function JobRow({ job, isExpanded, onToggleExpand }: JobRowProps) {
 				</td>
 				<td className="px-4 py-3">
 					<span className="text-xs text-neutral-600">
-						{formatTimestamp(job.scheduledAt)}
+						{job.scheduledAt
+							? formatDateTime(job.scheduledAt)
+							: "—"}
 					</span>
 				</td>
 				<td className="px-4 py-3">
 					<span className="text-xs text-neutral-600">
-						{formatTimestamp(job.startedAt)}
+						{job.startedAt ? formatDateTime(job.startedAt) : "—"}
 					</span>
 				</td>
 				<td className="px-4 py-3">
 					<div className="flex items-center gap-2">
-						{(job.status === "failed" ||
-							job.status === "timed-out") && (
+						{job.status === "FAILED" && (
 							<RetryJobButton jobId={job.id} />
 						)}
-						{(job.status === "pending" ||
-							job.status === "scheduled" ||
-							job.status === "in-progress") && (
+						{(job.status === "PENDING" ||
+							job.status === "IN_PROGRESS") && (
 							<CancelJobButton jobId={job.id} />
 						)}
-						<button
+						<Button
+							type="button"
 							className="text-neutral-400 hover:text-neutral-600"
 							title="View details"
+							onClick={handleViewClick}
 						>
 							<ExternalLink className="w-3 h-3" />
-						</button>
+						</Button>
 					</div>
 				</td>
 			</tr>
@@ -116,22 +122,6 @@ export function JobRow({ job, isExpanded, onToggleExpand }: JobRowProps) {
 									{JSON.stringify(job.payload, null, 2)}
 								</pre>
 							</div>
-							{job.error && (
-								<div>
-									<div className="text-xs font-medium text-neutral-600 mb-2">
-										Error
-									</div>
-									<div className="font-mono text-xs text-red-700 bg-red-50 border border-red-200 rounded p-3">
-										{job.error}
-									</div>
-								</div>
-							)}
-							{job.completedAt && (
-								<div className="text-xs text-neutral-500">
-									Completed:{" "}
-									{formatTimestamp(job.completedAt)}
-								</div>
-							)}
 						</div>
 					</td>
 				</tr>

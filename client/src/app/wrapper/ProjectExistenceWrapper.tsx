@@ -58,7 +58,7 @@ const ProjectExistenceWrapper: React.FC<ProjectExistenceWrapperProps> = ({
 
 	if (!currentProject) {
 		return (
-			<div className="flex items-center justify-center h-full">
+			<div className="flex items-center justify-center">
 				<p className="text-lg text-muted-foreground">
 					No project selected. Please create or select a project to
 					continue.

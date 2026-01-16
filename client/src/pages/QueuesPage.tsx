@@ -59,9 +59,9 @@ export function QueuesPage() {
 			<QueueViewControls
 				viewMode={viewMode}
 				onViewModeChange={setViewMode}
-				searchQuery={filters.label || ""}
-				onSearchChange={(label) =>
-					setFilters((prev) => ({ ...prev, label }))
+				searchQuery={filters}
+				onSearchChange={(field, value) =>
+					setFilters((prev) => ({ ...prev, [field]: value }))
 				}
 			/>
 

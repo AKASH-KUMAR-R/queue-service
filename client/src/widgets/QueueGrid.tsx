@@ -12,7 +12,7 @@ export function QueueGrid({ queues }: QueueGridProps) {
 	const navigate = useNavigate();
 
 	const handleSelectQueue = (queueId: string) => {
-		navigate(`/jobs/${queueId}`);
+		navigate(`/queues/${queueId}/jobs`);
 	};
 
 	return (

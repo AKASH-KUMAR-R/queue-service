@@ -4,14 +4,13 @@ import LoginPage from "@features/auth/components/LoginPage";
 import SignupPage from "@features/auth/components/SignnupPage";
 
 import { AppearanceSettingsPage } from "@pages/AppearanceSettingsPage";
-import { JobsPage } from "@pages/JobsPage";
 import { MetricsPage } from "@pages/MetricsPage";
 import { ProjectSettingsPage } from "@pages/ProjectSettingsPage";
 import { ProjectStatisticsPage } from "@pages/ProjectStatisticsPage";
-import { QueuesPage } from "@pages/QueuesPage";
 import { WorkersPage } from "@pages/WorkersPage";
 import { ProjectApiKeysPage } from "@pages/project/ProjectApiKeysPage";
 
+import QueueRoutes from "./layouts/QueueRoutes";
 import { CommonLayoutWrapper } from "./wrapper/CommonLayoutWrapper";
 import ProjectExistenceWrapper from "./wrapper/ProjectExistenceWrapper";
 
@@ -29,17 +28,17 @@ export function AppLayout() {
 							<ProjectExistenceWrapper>
 								<Routes>
 									<Route
-										path="/queues"
-										element={<QueuesPage />}
+										path="/queues/*"
+										element={<QueueRoutes />}
 									/>
-									<Route
+									{/* <Route
 										path="/jobs"
 										element={<JobsPage />}
 									/>
 									<Route
 										path="/jobs/:queueId"
 										element={<JobsPage />}
-									/>
+									/> */}
 									<Route
 										path="/workers"
 										element={<WorkersPage />}

@@ -1,36 +1,66 @@
-import { Grid, List, Search } from "lucide-react";
+import { SelectValue } from "@radix-ui/react-select";
 
-import type { QueueSearchParams } from "@entities/queue/types/types";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+} from "@shared/ui/select";
 
-export type QueueViewMode = "card" | "list";
+import type { JobSearchParams } from "@entities/job/types/types";
 
-interface QueueViewControlsProps {
-	viewMode: QueueViewMode;
-	onViewModeChange: (mode: QueueViewMode) => void;
-	searchQuery: QueueSearchParams;
+export type JobViewMode = "card" | "list";
+
+type JobViewProps = {
+	// viewMode: JobViewMode;
+	// onViewModeChange: (mode: JobViewMode) => void;
+	searchQuery: JobSearchParams;
 	onSearchChange: (field: string, query: string) => void;
-}
+};
 
-export function QueueViewControls({
-	viewMode,
-	onViewModeChange,
+export function JobViewControls({
+	// viewMode,
+	// onViewModeChange,
 	searchQuery,
 	onSearchChange,
-}: QueueViewControlsProps) {
+}: JobViewProps) {
 	return (
 		<div className="flex items-center justify-between gap-4 mb-6">
-			<div className="flex-1 max-w-md relative">
+			{/* <div className="flex-1 max-w-md relative">
 				<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-neutral-400" />
-				<input
+				<Input
 					type="text"
-					placeholder="Search queues by name or ID..."
-					value={searchQuery.label || ""}
+					placeholder="Search jobs by name or ID..."
+					value={searchQuery.}
 					onChange={(e) => onSearchChange("query", e.target.value)}
 					className="w-full pl-10 pr-4 py-2 text-sm border border-neutral-200 rounded bg-white text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent"
 				/>
+			</div> */}
+			<div>
+				<Select
+					onValueChange={(value) => {
+						onSearchChange("status", value);
+					}}
+					value={searchQuery.status || ""}
+				>
+					<SelectTrigger>
+						<SelectValue>
+							{searchQuery.status
+								? searchQuery.status.replace("_", " ")
+								: "All Statuses"}
+						</SelectValue>
+					</SelectTrigger>
+					<SelectContent>
+						<SelectItem value="ALL">All Statuses</SelectItem>
+						<SelectItem value="PENDING">Pending</SelectItem>
+						<SelectItem value="IN_PROGRESS">In Progress</SelectItem>
+						<SelectItem value="COMPLETED">Completed</SelectItem>
+						<SelectItem value="FAILED">Failed</SelectItem>
+					</SelectContent>
+				</Select>
 			</div>
 
-			<div className="flex items-center gap-2">
+			{/* <div className="flex items-center gap-2">
 				<span className="text-xs text-neutral-600 mr-2">View:</span>
 				<div className="flex gap-1 bg-neutral-100 rounded p-1">
 					<button
@@ -56,7 +86,7 @@ export function QueueViewControls({
 						List
 					</button>
 				</div>
-			</div>
+			</div> */}
 		</div>
 	);
 }

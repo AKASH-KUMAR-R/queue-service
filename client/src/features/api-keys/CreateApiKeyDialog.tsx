@@ -44,7 +44,7 @@ export function CreateApiKeyDialog({
 			{
 				onSuccess({ data: resData }) {
 					toast.success("API Key created successfully.");
-					onSubmit(resData.data);
+					onSubmit(resData);
 					onClose();
 				},
 			},
