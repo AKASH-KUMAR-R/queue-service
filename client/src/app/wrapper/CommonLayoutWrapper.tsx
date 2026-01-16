@@ -65,9 +65,9 @@ export const CommonLayoutWrapper = ({
 				<div className={` relative w-full overflow-hidden`}>
 					{!isRestricted && <Header />}
 					<div
-						className={` px-2 sm:px-6 pt-6 pb-3  w-full  ${
-							isRestricted ? "h-full" : " h-[calc(100dvh-4rem)]"
-						} overflow-y-auto`}
+						className={` px-2 sm:px-6 pt-6 pb-3  w-full overflow-y-auto  ${
+							isRestricted ? "h-full" : " h-[calc(100%-4rem)]"
+						}`}
 					>
 						{children}
 					</div>
