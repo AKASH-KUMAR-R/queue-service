@@ -121,6 +121,8 @@
 		--font-weight-semibold: 600;
 		--tracking-wider: 0.05em;
 		--animate-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+		--animate-spin: spin 1s linear infinite;
+		--animate-ping: ping 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 		--default-transition-duration: 0.15s;
 		--default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 		--default-font-family: var(--font-sans);
@@ -763,7 +765,9 @@
 	.w-1\/4 {
 		width: 25%;
 	}
-
+	.w-2 {
+		width: calc(var(--spacing) * 2);
+	}
 	.w-3 {
 		width: calc(var(--spacing) * 3);
 	}
@@ -877,6 +881,12 @@
 
 	.animate-pulse {
 		animation: var(--animate-pulse);
+	}
+	.animate-spin {
+		animation: var(--animate-spin);
+	}
+	.animate-ping {
+		animation: var(--animate-ping);
 	}
 
 	.cursor-default {
@@ -1094,7 +1104,10 @@
 		border-bottom-style: var(--tw-border-style);
 		border-bottom-width: 1px;
 	}
-
+	.border-l {
+		border-bottom-style: var(--tw-border-style);
+		border-bottom-width: 1px;
+	}
 	.border-amber-200 {
 		border-color: var(--color-amber-200);
 	}
@@ -1179,6 +1192,14 @@
 
 	.bg-green-100 {
 		background-color: var(--color-green-100);
+	}
+
+	.bg-green-600 {
+		background-color: var(--color-green-600);
+	}
+
+	.bg-green-800 {
+		background-color: var(--color-green-800);
 	}
 
 	.bg-input-background {
