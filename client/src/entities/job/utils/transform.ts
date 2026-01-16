@@ -1,7 +1,9 @@
 import type {
 	Job,
+	JobEvent,
 	JobSearchParams,
 	RawApiResponseJob,
+	RawApiResponseJobEvent,
 	RawJobSearchParams,
 } from "../types/types";
 
@@ -37,4 +39,26 @@ export const toSearchJobRequestParams = (
 		page: data.page,
 		limit: data.limit,
 	};
+};
+
+// Job Event Transformers
+
+export const toJobEvent = (data: RawApiResponseJobEvent): JobEvent => {
+	return {
+		id: data.id,
+		jobId: data.job_id,
+		queueId: data.queue_id,
+		projectId: data.project_id,
+		eventType: data.event_type,
+		prevStatus: data.prev_status,
+		nextStatus: data.next_status,
+		workerId: data.worker_id,
+		metadata: data.metadata,
+		createdAt: data.created_at,
+		updatedAt: data.updated_at,
+	};
+};
+
+export const toJobEventList = (data: RawApiResponseJobEvent[]): JobEvent[] => {
+	return data.map((event) => toJobEvent(event));
 };
