@@ -7,3 +7,10 @@ export type RawApiResponseBase = {
 	created_at: string;
 	updated_at: string;
 };
+
+// Paginated list type
+
+export type PaginationParams = {
+	page?: number;
+	limit?: number;
+};

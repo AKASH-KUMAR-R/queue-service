@@ -1,4 +1,8 @@
-import type { Base, RawApiResponseBase } from "@shared/types/types";
+import type {
+	Base,
+	PaginationParams,
+	RawApiResponseBase,
+} from "@shared/types/types";
 
 export type JobStatus = "PENDING" | "IN_PROGRESS" | "COMPLETED" | "FAILED";
 
@@ -81,3 +85,5 @@ export type RawApiResponseJobEvent = RawApiResponseBase & {
 	worker_id: string;
 	metadata: Record<string, any>;
 };
+
+export type JobEventSearchParams = PaginationParams & {};
