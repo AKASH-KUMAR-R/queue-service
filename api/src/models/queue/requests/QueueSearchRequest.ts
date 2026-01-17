@@ -14,3 +14,9 @@ const QueueSearchRequest = zod
 export { QueueSearchRequest };
 
 export type QueueSearchRequestType = zod.infer<typeof QueueSearchRequest>;
+
+export type QueueFilters = {
+	label?: string;
+	status?: QueueStatus;
+	project_id?: string;
+};

@@ -1,6 +1,9 @@
 import type { Request, Response } from "express";
 
-import type { QueueSearchRequestType } from "@models/queue/requests/QueueSearchRequest";
+import type {
+	QueueFilters,
+	QueueSearchRequestType,
+} from "@models/queue/requests/QueueSearchRequest";
 
 import jobService from "@services/job/job.service";
 import queueMetricsService from "@services/queue-metrics/queueMetrics.service";
@@ -39,7 +42,7 @@ const searchQueues = async (req: Request, res: Response) => {
 
 		const results = await queueService.findQueues(
 			req.db,
-			query,
+			query as QueueFilters,
 			page || 1,
 			limit || 10,
 		);
