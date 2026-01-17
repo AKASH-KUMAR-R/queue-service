@@ -1,5 +1,7 @@
 import { Prisma, type PrismaClient, type Queue } from "@prisma/client";
 
+import type { QueueFilters } from "@models/queue/requests/QueueSearchRequest";
+
 import queueMetricsService from "@services/queue-metrics/queueMetrics.service";
 
 import { PaginationParams, PaginationResults } from "@utils/pagination.util";
@@ -98,14 +100,20 @@ const findByIdWithQueueLimiter = async (
 
 const findQueues = async (
 	db: PrismaClient,
-	query: Prisma.QueueFindManyArgs["where"] = {},
+	query: QueueFilters,
 	page: number,
 	limit: number,
 ) => {
 	const paginationParams = new PaginationParams(page, limit);
 
+	const whereQuery: Prisma.QueueWhereInput = {
+		...(query.label && { label: query.label }),
+		...(query.status && { status: query.status }),
+		...(query.project_id && { project_id: query.project_id }),
+	};
+
 	const results = await db.queue.findMany({
-		where: query,
+		where: whereQuery,
 		orderBy: {
 			created_at: "desc",
 		},
@@ -117,7 +125,7 @@ const findQueues = async (
 	});
 
 	const count = await db.queue.count({
-		where: query,
+		where: whereQuery,
 	});
 
 	return new PaginationResults(results, page, limit, count);

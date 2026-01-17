@@ -2,6 +2,9 @@ import type { Request, Response } from "express";
 
 import { DAY_IN_MILLISECONDS, MINUTES_IN_MILLISECOND } from "lib/time";
 
+import type { UserLoginRequestType } from "@models/user/requests/UserLoginRequest";
+import type { UserSignUpRequestType } from "@models/user/requests/UserSignUpRequest";
+
 import userService from "@services/user/user.service";
 
 import { compareText, hashText } from "@utils/bcrypt.util";
@@ -10,7 +13,7 @@ import { generateToken } from "@utils/jwt.util";
 
 const login = async (req: Request, res: Response) => {
 	try {
-		const { identifier, password } = req.body;
+		const { identifier, password } = req.body as UserLoginRequestType;
 
 		const user = await userService.findUserByEmailWithPassword(
 			req.db,
@@ -78,11 +81,13 @@ const signup = async (req: Request, res: Response) => {
 		// DB will throw error if user with email already exists
 		// Also, in order for the @password directive to work, we need to use enhance from zenstack
 
-		const hashedPassword = await hashText(req.body.password);
+		const body: UserSignUpRequestType = req.body;
+
+		const hashedPassword = await hashText(body.password);
 
 		const newUser = await userService.createUser(req.db, {
-			email: req.body.email,
-			name: req.body.name,
+			email: body.email,
+			name: body.name,
 			password: hashedPassword,
 		});
 

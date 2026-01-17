@@ -8,3 +8,5 @@ const UserLoginRequest = zod
 	.strip();
 
 export { UserLoginRequest };
+
+export type UserLoginRequestType = zod.infer<typeof UserLoginRequest>;

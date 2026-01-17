@@ -7,3 +7,5 @@ const NextJobQueryParams = zod
 	.strip();
 
 export default NextJobQueryParams;
+
+export type NextJobQueryParamsType = zod.infer<typeof NextJobQueryParams>;

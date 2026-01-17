@@ -2,6 +2,8 @@ import type { Request, Response } from "express";
 
 import { JobStatus } from "@prisma/client";
 
+import type { NextJobQueryParamsType } from "@models/job/requests/NextJobQueryParams";
+
 import jobService from "@services/job/job.service";
 import queueService from "@services/queue/queue.service";
 
@@ -101,7 +103,8 @@ const heartBeatCheck = async (req: Request, res: Response) => {
 
 const getNextJobFromQueue = async (req: Request, res: Response) => {
 	try {
-		const queue_label = req.validQuery.queue_label;
+		const queue_label = (req.validQuery as NextJobQueryParamsType)
+			.queue_label;
 
 		if (!req.project) {
 			throw new Error("Project context is missing in request");

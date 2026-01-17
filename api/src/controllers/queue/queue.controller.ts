@@ -1,5 +1,10 @@
 import type { Request, Response } from "express";
 
+import type {
+	QueueFilters,
+	QueueSearchRequestType,
+} from "@models/queue/requests/QueueSearchRequest";
+
 import jobService from "@services/job/job.service";
 import queueMetricsService from "@services/queue-metrics/queueMetrics.service";
 import queueService from "@services/queue/queue.service";
@@ -32,13 +37,14 @@ const addQueue = async (req: Request, res: Response) => {
 
 const searchQueues = async (req: Request, res: Response) => {
 	try {
-		const query = req.validQuery;
+		const { limit, page, ...query } =
+			req.validQuery as QueueSearchRequestType;
 
 		const results = await queueService.findQueues(
 			req.db,
-			query,
-			parseInt(query.page as string) || 1,
-			parseInt(query.limit as string) || 10,
+			query as QueueFilters,
+			page || 1,
+			limit || 10,
 		);
 
 		res.status(200).json(enhancedSerialize(results));
