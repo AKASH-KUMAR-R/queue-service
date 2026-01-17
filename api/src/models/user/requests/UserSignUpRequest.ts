@@ -2,7 +2,7 @@ import zod from "zod";
 
 const UserSignUpRequest = zod
 	.object({
-		name: zod.string().min(1).max(100).optional(),
+		name: zod.string().min(1).max(100),
 		email: zod.email(),
 		password: zod.string().min(8),
 	})
