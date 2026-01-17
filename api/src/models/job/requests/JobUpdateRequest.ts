@@ -9,3 +9,5 @@ const JobUpdateRequest = zod
 	.strip();
 
 export default JobUpdateRequest;
+
+export type JobUpdateRequestType = zod.infer<typeof JobUpdateRequest>;

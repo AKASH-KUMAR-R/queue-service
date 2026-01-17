@@ -28,3 +28,5 @@ const QueueCreateRequest = zod
 	.strip();
 
 export { QueueCreateRequest };
+
+export type QueueCreateRequestType = zod.infer<typeof QueueCreateRequest>;

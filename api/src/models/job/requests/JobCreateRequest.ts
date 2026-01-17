@@ -11,3 +11,5 @@ const JobCreateRequest = zod
 	.strip();
 
 export default JobCreateRequest;
+
+export type JobCreateRequestType = zod.infer<typeof JobCreateRequest>;

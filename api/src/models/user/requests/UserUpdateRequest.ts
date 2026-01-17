@@ -8,3 +8,5 @@ const UserUpdateRequest = zod
 	.strip();
 
 export { UserUpdateRequest };
+
+export type UserUpdateRequestType = zod.infer<typeof UserUpdateRequest>;

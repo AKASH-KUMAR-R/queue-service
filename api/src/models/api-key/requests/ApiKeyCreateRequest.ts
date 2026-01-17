@@ -7,3 +7,5 @@ const ApiKeyCreateRequest = zod
 	.strip();
 
 export default ApiKeyCreateRequest;
+
+export type ApiKeyCreateRequestType = zod.infer<typeof ApiKeyCreateRequest>;

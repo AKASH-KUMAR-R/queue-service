@@ -9,3 +9,5 @@ const UserSignUpRequest = zod
 	.strip();
 
 export { UserSignUpRequest };
+
+export type UserSignUpRequestType = zod.infer<typeof UserSignUpRequest>;

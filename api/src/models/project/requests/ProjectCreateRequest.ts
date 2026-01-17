@@ -8,3 +8,5 @@ const ProjectCreateRequest = zod
 	.strip();
 
 export { ProjectCreateRequest };
+
+export type ProjectCreateRequestType = zod.infer<typeof ProjectCreateRequest>;
