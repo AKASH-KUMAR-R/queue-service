@@ -12,7 +12,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@shared/ui/dialog";
-import { Input } from "@shared/ui/form/Input";
+import { Input } from "@shared/ui/input";
 import {
 	RadixForm,
 	RadixFormControl,

@@ -5,8 +5,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { Button } from "@shared/ui/button";
 import { Form } from "@shared/ui/form";
-import { Input } from "@shared/ui/form/Input";
+import { Input } from "@shared/ui/input";
 import {
 	RadixFormField,
 	RadixFormItem,
@@ -188,18 +189,16 @@ export function ProjectSettingsPage() {
 
 					{/* Actions */}
 					<div className="flex gap-3">
-						<button
-							type="submit"
-							className="px-4 py-2 bg-primary text-primary-foreground text-sm rounded hover:bg-primary/90 transition-colors"
-						>
+						<Button type="submit" className="px-4 py-2  ">
 							Save Changes
-						</button>
-						<button
+						</Button>
+						<Button
 							type="button"
-							className="px-4 py-2 bg-card border border-border text-sm text-foreground rounded hover:bg-accent transition-colors"
+							variant="secondary"
+							className="px-4 py-2  "
 						>
 							Cancel
-						</button>
+						</Button>
 					</div>
 				</form>
 			</Form>

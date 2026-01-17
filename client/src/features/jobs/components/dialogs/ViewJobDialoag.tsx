@@ -116,7 +116,7 @@ const ViewJobDialog: React.FC<ViewJobDialogProps> = ({
 			<DialogContent
 				title="Job Details"
 				showCloseButton={false}
-				className=" w-full max-w-10xl flex flex-col md:flex-row  md:justify-between h-full overflow-y-auto"
+				className=" w-full sm:max-w-7xl flex flex-col md:flex-row  md:justify-between h-full overflow-y-auto"
 			>
 				<DialogTrigger className=" absolute right-0 top-0">
 					<Button type="button" size="sm">

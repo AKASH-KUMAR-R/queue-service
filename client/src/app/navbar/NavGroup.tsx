@@ -35,7 +35,7 @@ const NavGroup = ({
 
 	return (
 		<SidebarGroup key={group.id}>
-			<SidebarGroupLabel className="text-[#800000] font-medium text-base flex justify-between">
+			<SidebarGroupLabel className=" font-medium text-base flex justify-between">
 				{group.label}
 				{group.collapsible && (
 					<button

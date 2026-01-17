@@ -94,11 +94,11 @@ export function QueueCard({ queue, onSelectQueue }: QueueCardProps) {
 				)}
 				<Button
 					onClick={() => onSelectQueue(queue.id)}
-					className="flex-1 px-3 py-2 text-sm text-neutral-700 hover:bg-neutral-100 rounded transition-colors"
+					className="flex-1 px-3 py-2 text-sm "
 				>
 					View Jobs
 				</Button>
-				<Button className="text-neutral-400 hover:text-neutral-600">
+				<Button className="">
 					<RefreshCw className="w-4 h-4" />
 				</Button>
 			</div>

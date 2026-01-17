@@ -27,7 +27,6 @@ export function PauseQueueButton({
 			<>
 				<Button
 					onClick={() => setShowConfirm(true)}
-					className="text-neutral-400 hover:text-neutral-600"
 					title="Pause queue"
 				>
 					<Pause className="w-4 h-4" />
@@ -48,10 +47,7 @@ export function PauseQueueButton({
 
 	return (
 		<>
-			<Button
-				onClick={() => setShowConfirm(true)}
-				className="flex items-center gap-2 px-3 py-2 text-sm text-neutral-700 rounded transition-colors"
-			>
+			<Button onClick={() => setShowConfirm(true)}>
 				<Pause className="w-4 h-4" />
 				Pause
 			</Button>

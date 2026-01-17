@@ -1,11 +1,12 @@
 import { AlertTriangle } from "lucide-react";
 
+import { Button } from "@shared/ui/button";
+import { Dialog, DialogContent, DialogTitle } from "@shared/ui/dialog";
 import { formatDateTime } from "@shared/utils/dateAndTimeUtils";
 
 import { type ApiKeyWithSecret } from "../../entities/api-key/model/types";
 import { ApiKeyDisplay } from "../../entities/api-key/ui/ApiKeyDisplay";
 import { ApiKeyStatusBadge } from "../../entities/api-key/ui/ApiKeyStatusBadge";
-import { Dialog, DialogContent } from "../../shared/ui/dialog";
 
 interface ApiKeyCreatedDialogProps {
 	open: boolean;
@@ -27,10 +28,11 @@ export function ApiKeyCreatedDialog({
 				className="max-w-lg"
 				aria-describedby="api-key-created-description"
 			>
+				<DialogTitle>API Key Created Successfully</DialogTitle>
 				<div className="p-6 space-y-6">
 					{/* Warning Banner */}
-					<div className="flex items-start gap-3 p-4 bg-amber-50 border border-amber-200 rounded">
-						<AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+					<div className="flex items-start gap-3 p-4 rounded">
+						<AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5" />
 						<div>
 							<p className="text-sm text-amber-900">
 								<strong>
@@ -78,12 +80,7 @@ export function ApiKeyCreatedDialog({
 
 				{/* Footer */}
 				<div className="flex items-center justify-end p-6 border-t border-neutral-200 sticky bottom-0 bg-white">
-					<button
-						onClick={onClose}
-						className="px-4 py-2 text-sm bg-neutral-900 text-white rounded hover:bg-neutral-800 transition-colors"
-					>
-						I've copied my key
-					</button>
+					<Button onClick={onClose}>I've copied my key</Button>
 				</div>
 			</DialogContent>
 		</Dialog>

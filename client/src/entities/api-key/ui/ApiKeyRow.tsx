@@ -47,8 +47,8 @@ export function ApiKeyRow({ apiKey, onRevoke, rowNumber }: ApiKeyRowProps) {
 				{!apiKey.revoked ? (
 					<Button
 						type="button"
+						variant="destructive"
 						onClick={() => onRevoke(apiKey)}
-						className="text-sm text-red-600 hover:text-red-700 hover:underline"
 					>
 						Revoke
 					</Button>

@@ -101,7 +101,6 @@ export function JobRow({
 						)}
 						<Button
 							type="button"
-							className="text-neutral-400 hover:text-neutral-600"
 							title="View details"
 							onClick={handleViewClick}
 						>
