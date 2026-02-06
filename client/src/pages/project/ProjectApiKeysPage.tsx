@@ -4,6 +4,7 @@ import { useProject } from "@app/ProjectContext";
 import { ApiKeysList } from "@widgets/api-keys/ApiKeysList";
 import { Plus } from "lucide-react";
 
+import { Button } from "@shared/ui/button";
 import { Spinner } from "@shared/ui/spinner";
 
 import type { ApiKey, ApiKeyWithSecret } from "@entities/api-key/model/types";
@@ -64,13 +65,10 @@ export function ProjectApiKeysPage() {
 			<div className="mb-6">
 				<div className="flex items-center justify-between mb-2">
 					<h1 className="text-2xl text-foreground">API Keys</h1>
-					<button
-						onClick={() => setShowCreateDialog(true)}
-						className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors"
-					>
+					<Button onClick={() => setShowCreateDialog(true)}>
 						<Plus className="w-4 h-4" />
 						Generate API Key
-					</button>
+					</Button>
 				</div>
 				<p className="text-sm text-muted-foreground">
 					API keys allow you to authenticate requests to your
@@ -92,7 +90,7 @@ export function ProjectApiKeysPage() {
 				open={showCreateDialog}
 				onClose={() => setShowCreateDialog(false)}
 				onSubmit={handleCreateApiKey}
-				projectId={currentProject!.id}
+				projectId={currentProject.id}
 			/>
 
 			<ApiKeyCreatedDialog

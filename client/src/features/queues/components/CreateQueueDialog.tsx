@@ -5,8 +5,7 @@ import { toast } from "sonner";
 
 import { Button } from "@shared/ui/button";
 import { Dialog, DialogContent } from "@shared/ui/dialog";
-import { Input } from "@shared/ui/form/Input";
-import { Textarea } from "@shared/ui/form/Textarea";
+import { Input } from "@shared/ui/input";
 import {
 	RadixForm,
 	RadixFormControl,
@@ -17,6 +16,7 @@ import {
 	RadixFormMessage,
 } from "@shared/ui/radix-form";
 import { Spinner } from "@shared/ui/spinner";
+import { Textarea } from "@shared/ui/textarea";
 import { mapServerFieldErrorToFormFields } from "@shared/utils/formUtils";
 
 import {

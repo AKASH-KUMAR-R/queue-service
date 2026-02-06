@@ -1,10 +1,11 @@
 import { toast } from "sonner";
 
 import { Button } from "@shared/ui/button";
+import { Dialog, DialogContent, DialogTitle } from "@shared/ui/dialog";
 import { Spinner } from "@shared/ui/spinner";
 
-import { type ApiKeyWithSecret } from "../../entities/api-key/model/types";
-import { Dialog, DialogContent } from "../../shared/ui/dialog";
+import { type ApiKeyWithSecret } from "@entities/api-key/model/types";
+
 import {
 	type CreateApiKeyFormErrorHandler,
 	useCreateApiKeyForm,
@@ -65,18 +66,20 @@ export function CreateApiKeyDialog({
 				aria-describedby="create-api-key-description"
 				showCloseButton={false}
 			>
+				<DialogTitle>
+					Generate a new API Key for your project
+				</DialogTitle>
 				<div className="flex items-center justify-end gap-3 p-6 border-t  sticky bottom-0 ">
 					<Button
 						type="button"
 						onClick={() => handleOpenChange(false)}
-						className="px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100 rounded transition-colors"
+						variant="secondary"
 					>
 						Cancel
 					</Button>
 					<Button
 						type="button"
 						onClick={handleApiGenerateClick}
-						className="px-4 py-2 text-sm bg-neutral-900 text-white rounded hover:bg-neutral-800 transition-colors"
 						disabled={isApiKeyCreating}
 					>
 						{isApiKeyCreating ? <Spinner /> : "Generate API Key"}

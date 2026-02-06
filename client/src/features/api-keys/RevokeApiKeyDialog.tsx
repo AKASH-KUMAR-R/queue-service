@@ -1,8 +1,9 @@
 import { AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 
+import { Alert, AlertDescription, AlertTitle } from "@shared/ui/alert";
 import { Button } from "@shared/ui/button";
-import { Dialog, DialogContent } from "@shared/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@shared/ui/dialog";
 import { Spinner } from "@shared/ui/spinner";
 import { formatDateTime } from "@shared/utils/dateAndTimeUtils";
 
@@ -62,58 +63,46 @@ export function RevokeApiKeyDialog({
 				aria-describedby="revoke-api-key-description"
 				showCloseButton={false}
 			>
+				<DialogTitle>Revoke API Key ?</DialogTitle>
 				<div className="p-6 space-y-4">
-					<p className="text-sm text-neutral-700">
+					<p className="text-sm ">
 						Are you sure you want to revoke this API key?
 					</p>
 
 					<div className="space-y-3">
-						<h4 className="text-sm text-neutral-900">
-							Key Details
-						</h4>
+						<h4 className="text-sm ">Key Details</h4>
 						<div className="space-y-2 text-sm">
 							<div className="flex items-start justify-between">
-								<span className="text-neutral-600">
-									Created:
-								</span>
-								<span className="text-neutral-900">
-									{formatDateTime(apiKey.createdAt)}
-								</span>
+								<span>Created:</span>
+								<span>{formatDateTime(apiKey.createdAt)}</span>
 							</div>
 							<div className="flex items-start justify-between">
-								<span className="text-neutral-600">
-									Status:
-								</span>
+								<span>Status:</span>
 								<ApiKeyStatusBadge isRevoked={apiKey.revoked} />
 							</div>
 						</div>
 					</div>
 
-					{/* Warning */}
-					<div className="flex items-start gap-3 p-4 bg-amber-50 border border-amber-200 rounded">
-						<AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-						<div>
-							<p className="text-sm text-amber-900">
-								This action cannot be undone. Any applications
-								using this key will immediately lose access.
-							</p>
-						</div>
-					</div>
+					<Alert variant="destructive">
+						<AlertTitle className=" flex ">
+							<AlertTriangle className="w-5 h-5  mr-2" />
+							Warning
+						</AlertTitle>
+						<AlertDescription>
+							This action cannot be undone. Any applications using
+							this key will immediately lose access.
+						</AlertDescription>
+					</Alert>
 				</div>
 
-				{/* Footer */}
 				<div className="flex items-center justify-end gap-3 p-6 border-t  sticky bottom-0 ">
-					<Button
-						type="button"
-						onClick={onClose}
-						className="px-4 py-2 text-sm text-neutral-700  rounded transition-colors"
-					>
+					<Button type="button" variant="secondary" onClick={onClose}>
 						Cancel
 					</Button>
 					<Button
 						type="button"
 						onClick={handleRevokeClick}
-						className="px-4 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+						variant="destructive"
 						disabled={isRevoking}
 					>
 						{isRevoking ? <Spinner /> : "Revoke Key"}

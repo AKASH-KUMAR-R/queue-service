@@ -70,7 +70,6 @@ export function QueueTableRow({ queue }: QueueTableRowProps) {
 					)}
 					<Button
 						onClick={() => navigate(`/queues/${queue.id}/jobs`)}
-						className="text-neutral-400 hover:text-neutral-600"
 						title="View jobs"
 					>
 						<ExternalLink className="w-4 h-4" />

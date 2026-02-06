@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Play } from "lucide-react";
 
 import { ConfirmDialog } from "@shared/ui/ConfirmDialog";
+import { Button } from "@shared/ui/button";
 
 import type { Queue } from "@entities/queue/types/types";
 
@@ -24,13 +25,12 @@ export function ResumeQueueButton({
 	if (compact) {
 		return (
 			<>
-				<button
+				<Button
 					onClick={() => setShowConfirm(true)}
-					className="text-blue-600 hover:text-blue-700"
 					title="Resume queue"
 				>
 					<Play className="w-4 h-4" />
-				</button>
+				</Button>
 
 				<ConfirmDialog
 					open={showConfirm}
@@ -47,13 +47,10 @@ export function ResumeQueueButton({
 
 	return (
 		<>
-			<button
-				onClick={() => setShowConfirm(true)}
-				className="flex items-center gap-2 px-3 py-2 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded transition-colors"
-			>
+			<Button onClick={() => setShowConfirm(true)} className="px-3 py-2">
 				<Play className="w-4 h-4" />
 				Resume
-			</button>
+			</Button>
 
 			<ConfirmDialog
 				open={showConfirm}

@@ -1,8 +1,7 @@
-import { type MouseEvent, useEffect, useState } from "react";
+import { type MouseEvent, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { LogOut } from "lucide-react";
-import { toast } from "sonner";
 
 import { Button } from "@shared/ui/button";
 import { Sidebar, SidebarContent, useSidebar } from "@shared/ui/sidebar";
@@ -12,7 +11,6 @@ import type { Project } from "@entities/project/types";
 
 import { CreateProjectDialog } from "@features/projects/CreateProjectDialog";
 import { ProjectSwitcher } from "@features/projects/components/ProjectSwitcher";
-import { useProjectList } from "@features/projects/data/listProject";
 
 import { useProject } from "../ProjectContext";
 import { getExpandedStateForRoute, navGroups } from "./NavBarConfig";
@@ -22,7 +20,7 @@ const SideNavbar = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
 
-	const { isMobile, setOpenMobile } = useSidebar();
+	const { setOpenMobile } = useSidebar();
 
 	const handleNavBarItemClick = (event: MouseEvent<HTMLButtonElement>) => {
 		const link = event.currentTarget.dataset.link;
@@ -75,11 +73,8 @@ const SideNavbar = () => {
 						))}
 					</div>
 
-					<div className="p-4 border-t border-gray-200">
-						<Button
-							variant="ghost"
-							className="w-full justify-start text-gray-700 hover:bg-red-50 hover:text-red-600"
-						>
+					<div className=" w-full p-4 border-t border-gray-200">
+						<Button variant="ghost" className=" w-full">
 							<LogOut className="w-4 h-4 mr-2" />
 							Logout
 						</Button>
