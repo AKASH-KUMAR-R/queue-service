@@ -64,6 +64,7 @@ export function CreateApiKeyDialog({
 	const handleOpenChange = (isOpen: boolean) => {
 		if (!isOpen) {
 			// reset();
+			setDescription("");
 			onClose();
 		}
 	};
