@@ -52,6 +52,44 @@ const findById = async (db: PrismaClient, id: string) => {
 	});
 };
 
+const findJobsByWorkerId = async (
+	db: PrismaClient,
+	workerId: string,
+	page: number,
+	limit: number,
+) => {
+	const paginationParams = new PaginationParams(page, limit);
+
+	const results = await db.job.findMany({
+		where: {
+			job_events: {
+				some: {
+					worker_id: workerId,
+					event_type: JobEventType.JOB_COMPLETED,
+				},
+			},
+		},
+		orderBy: {
+			created_at: "desc",
+		},
+		skip: paginationParams.offset,
+		take: paginationParams.limit,
+	});
+
+	const total = await db.job.count({
+		where: {
+			job_events: {
+				some: {
+					worker_id: workerId,
+					event_type: JobEventType.JOB_COMPLETED,
+				},
+			},
+		},
+	});
+
+	return new PaginationResults(results, page, limit, total);
+};
+
 const findJobsByQueueId = async (
 	db: PrismaClient,
 	queueId: string,
@@ -322,6 +360,7 @@ const updateStatusAsPendingByRetry = async (
 export default {
 	createJob,
 	findById,
+	findJobsByWorkerId,
 	findJobsByQueueId,
 	findNextJob,
 	updateById,

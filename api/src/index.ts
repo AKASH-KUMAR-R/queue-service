@@ -66,10 +66,10 @@ app.use("/api/dashboard/api-key", apiKeyRouter);
 app.use("/api/dashboard/job-events", jobEventsRouter);
 app.use("/api/dashboard/queue-metrics", queueMetricsRouter);
 app.use("/api/dashboard/job", jobDashboardRouter);
+app.use("/api/dashboard/worker-status", workerStatusRouter);
 
 //  routes for worker sdk
 app.use("/api/worker/job", jobWorkerRouter);
-app.use("/api/worker/worker-status", workerStatusRouter);
 
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 	console.error(err.message);

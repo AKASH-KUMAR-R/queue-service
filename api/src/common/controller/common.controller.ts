@@ -35,6 +35,11 @@ const queryFields: Record<string, string[]> = {
 		"next_status",
 	],
 	"queue-metrics": ["id", "queue_id"],
+	"worker-status": ["queue_id", "worker_id"],
+};
+
+const orderBy: Record<string, any> = {
+	"worker-status": { last_seen: "desc" },
 };
 
 export const upsert = async (req: Request, res: Response) => {
@@ -152,7 +157,11 @@ export const list = async (req: Request, res: Response) => {
 		if (!modelPath || !models[modelPath]) {
 			return res.status(400).json({ error: "Invalid model path" });
 		}
-		const result = await commonService.findAll(models[modelPath], req.db);
+		const result = await commonService.findAll(
+			models[modelPath],
+			req.db,
+			orderBy[modelPath] || null,
+		);
 		res.status(200).json(
 			enhancedSerialize({
 				data: result,
@@ -191,6 +200,7 @@ export const search = async (req: Request, res: Response) => {
 			page,
 			limit,
 			validQueryFields,
+			orderBy[modelPath] || null,
 		);
 
 		res.status(200).json(
