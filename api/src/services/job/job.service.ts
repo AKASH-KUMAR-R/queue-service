@@ -60,7 +60,6 @@ const findJobsByWorkerId = async (
 ) => {
 	const paginationParams = new PaginationParams(page, limit);
 
-	console.debug(workerId, page, limit, "FROM ME");
 	const results = await db.job.findMany({
 		where: {
 			job_events: {
