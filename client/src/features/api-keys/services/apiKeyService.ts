@@ -10,6 +10,7 @@ import {
 
 export type ApiKeyCreateData = {
 	project_id: string;
+	description: string;
 };
 
 type ApiKeyCreateResponse = {

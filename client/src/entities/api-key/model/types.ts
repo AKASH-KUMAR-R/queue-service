@@ -6,6 +6,7 @@ export type ApiKey = {
 	id: string;
 	projectId: string;
 	revoked: boolean;
+	description: string;
 	//` Timestamps
 	createdAt: string; // ISO 8601
 	updatedAt: string; // ISO 8601
@@ -16,6 +17,7 @@ export type RawApiResponseApiKey = {
 	id: string;
 	project_id: string;
 	revoked: boolean;
+	description: string;
 	created_at: string;
 	updated_at: string;
 	revoked_at?: string;
@@ -30,8 +32,8 @@ export type RawApiResponseApiKeyWithSecret = RawApiResponseApiKey & {
 };
 
 export type CreateApiKeyRequest = {
-	name: string;
-	description?: string;
+	description: string;
+	project_id: string;
 };
 
 export type CreateApiKeyResponse = {

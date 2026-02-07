@@ -10,6 +10,7 @@ export const toApiKey = (data: RawApiResponseApiKey): ApiKey => {
 		id: data.id,
 		projectId: data.project_id,
 		revoked: data.revoked,
+		description: data.description,
 		createdAt: data.created_at,
 		updatedAt: data.updated_at,
 		revokedAt: data.revoked_at,

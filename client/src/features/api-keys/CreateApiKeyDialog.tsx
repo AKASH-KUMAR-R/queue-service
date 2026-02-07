@@ -1,8 +1,12 @@
+import React, { useState } from "react";
+
 import { toast } from "sonner";
 
 import { Button } from "@shared/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@shared/ui/dialog";
+import { Label } from "@shared/ui/label";
 import { Spinner } from "@shared/ui/spinner";
+import { Textarea } from "@shared/ui/textarea";
 
 import { type ApiKeyWithSecret } from "@entities/api-key/model/types";
 
@@ -24,6 +28,8 @@ export function CreateApiKeyDialog({
 	onSubmit,
 	projectId,
 }: CreateApiKeyDialogProps) {
+	const [description, setDescription] = useState("");
+
 	const handleCreateApiKeyError: CreateApiKeyFormErrorHandler = (
 		message,
 		errors,
@@ -39,9 +45,12 @@ export function CreateApiKeyDialog({
 	const { mutate: createApiKey, isPending: isApiKeyCreating } =
 		useCreateApiKeyForm(handleCreateApiKeyError);
 
-	const handleApiGenerateClick = () => {
+	const handleApiGenerateClick = (
+		event: React.FormEvent<HTMLFormElement>,
+	) => {
+		event.preventDefault();
 		createApiKey(
-			{ project_id: projectId },
+			{ project_id: projectId, description },
 			{
 				onSuccess({ data: resData }) {
 					toast.success("API Key created successfully.");
@@ -55,6 +64,7 @@ export function CreateApiKeyDialog({
 	const handleOpenChange = (isOpen: boolean) => {
 		if (!isOpen) {
 			// reset();
+			setDescription("");
 			onClose();
 		}
 	};
@@ -69,22 +79,38 @@ export function CreateApiKeyDialog({
 				<DialogTitle>
 					Generate a new API Key for your project
 				</DialogTitle>
-				<div className="flex items-center justify-end gap-3 p-6 border-t  sticky bottom-0 ">
-					<Button
-						type="button"
-						onClick={() => handleOpenChange(false)}
-						variant="secondary"
-					>
-						Cancel
-					</Button>
-					<Button
-						type="button"
-						onClick={handleApiGenerateClick}
-						disabled={isApiKeyCreating}
-					>
-						{isApiKeyCreating ? <Spinner /> : "Generate API Key"}
-					</Button>
-				</div>
+
+				<form onSubmit={handleApiGenerateClick}>
+					<div className=" space-y-2">
+						<Label htmlFor="api-description">Description</Label>
+						<Textarea
+							id="api-description"
+							className=" w-full min-h-20"
+							value={description}
+							onChange={(event) =>
+								setDescription(event.target.value)
+							}
+							placeholder="A brief description to identify this API key (e.g., 'Key for backend service')"
+						/>
+					</div>
+
+					<div className="flex items-center justify-end gap-3 p-6 border-t  sticky bottom-0 ">
+						<Button
+							type="button"
+							onClick={() => handleOpenChange(false)}
+							variant="secondary"
+						>
+							Cancel
+						</Button>
+						<Button type="submit" disabled={isApiKeyCreating}>
+							{isApiKeyCreating ? (
+								<Spinner />
+							) : (
+								"Generate API Key"
+							)}
+						</Button>
+					</div>
+				</form>
 			</DialogContent>
 		</Dialog>
 	);
