@@ -163,6 +163,7 @@ model ApiKey {
     updated_at DateTime @updatedAt()
     id String @id() @default(uuid())
     secret String @unique()
+    description String @default("")
     revoked Boolean @default(false)
     revoked_at DateTime?
     project Project @relation("ProjectApiKeys", fields: [project_id], references: [id])
