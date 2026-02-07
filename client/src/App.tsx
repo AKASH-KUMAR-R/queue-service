@@ -5,9 +5,11 @@ import { ThemeProvider } from "@app/ThemeProvider";
 import { AppLayout } from "@app/layout";
 import { QueryClientProvider } from "@tanstack/react-query";
 
+import { Toaster } from "@shared/ui/sonner";
+
+import AuthProvider from "@features/auth/context/AuthContext";
+
 import { queryClient } from "./config/reactQuery";
-import AuthProvider from "./features/auth/context/AuthContext";
-import { Toaster } from "./shared/ui/sonner";
 
 export default function App() {
 	return (

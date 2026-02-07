@@ -78,6 +78,9 @@ export function ApiKeysList({
 								Status
 							</th>
 							<th className="py-3 px-4 text-left text-xs text-muted-foreground uppercase tracking-wider">
+								Description
+							</th>
+							<th className="py-3 px-4 text-left text-xs text-muted-foreground uppercase tracking-wider">
 								Created
 							</th>
 							<th className="py-3 px-4 text-left text-xs text-muted-foreground uppercase tracking-wider">

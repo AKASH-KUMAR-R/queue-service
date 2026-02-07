@@ -37,6 +37,12 @@ export function ApiKeyRow({ apiKey, onRevoke, rowNumber }: ApiKeyRowProps) {
 				<ApiKeyStatusBadge isRevoked={apiKey.revoked} />
 			</td>
 
+			<td className="py-3 px-4 text-sm text-muted-foreground">
+				{apiKey.description || (
+					<span className="italic">No description</span>
+				)}
+			</td>
+
 			{/* Created */}
 			<td className="py-3 px-4 text-sm text-muted-foreground">
 				{formatRelativeTime(apiKey.createdAt)}
