@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 
 import { Check, ChevronDown, Plus } from "lucide-react";
 
+import { Button } from "@shared/ui/button";
+
 import type { Project } from "@entities/project/types";
 
 type ProjectSwitcherProps = {
@@ -95,7 +97,9 @@ export function ProjectSwitcher({
 					</div>
 
 					<div className="border-t border-border p-2">
-						<button
+						<Button
+							type="button"
+							variant="ghost"
 							onClick={() => {
 								onCreateProject();
 								setIsOpen(false);
@@ -104,7 +108,7 @@ export function ProjectSwitcher({
 						>
 							<Plus className="w-4 h-4" />
 							Create New Project
-						</button>
+						</Button>
 					</div>
 				</div>
 			)}

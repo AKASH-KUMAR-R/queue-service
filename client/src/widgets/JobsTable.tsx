@@ -1,15 +1,24 @@
 import { useState } from "react";
 
+import type { PaginatedComponentProps } from "@shared/types/types";
+import { Paginated } from "@shared/ui/pagination/Paginated";
+
 import type { Job } from "../entities/job/types/types";
 import { JobRow } from "../features/jobs/components/JobRow";
 import { EmptyState } from "../shared/ui/EmptyState";
 
-type JobsTableProps = {
+type JobsTableProps = PaginatedComponentProps & {
 	jobs: Job[];
 	onViewClick?: (jobId: string) => void;
 };
 
-export function JobsTable({ jobs, onViewClick }: JobsTableProps) {
+export function JobsTable({
+	jobs,
+	onViewClick,
+	page,
+	totalPages,
+	onPageChange,
+}: JobsTableProps) {
 	const [expandedJob, setExpandedJob] = useState<string | null>(null);
 
 	if (jobs.length === 0) {
@@ -67,6 +76,11 @@ export function JobsTable({ jobs, onViewClick }: JobsTableProps) {
 						))}
 					</tbody>
 				</table>
+				<Paginated
+					page={page}
+					totalPages={totalPages}
+					onPageChange={onPageChange}
+				/>
 			</div>
 		</div>
 	);

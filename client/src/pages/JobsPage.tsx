@@ -22,11 +22,17 @@ export function JobsPage() {
 
 	const [filters, setFilters] = useState<JobSearchParams>({
 		status: "ALL",
+		page: 1,
+		limit: 10,
 	});
 	const { data: jobs, isLoading: isJobListLoading } = useJobsList(
 		queueId ?? "",
 		filters,
 	);
+
+	const handlePageChange = (newPage: number) => {
+		setFilters((prev) => ({ ...prev, page: newPage }));
+	};
 
 	if (!queueId) {
 		return (
@@ -83,7 +89,13 @@ export function JobsPage() {
 					setFilters((prev) => ({ ...prev, [field]: value }))
 				}
 			/>
-			<JobsTable jobs={jobList} onViewClick={handleJobViewClick} />
+			<JobsTable
+				jobs={jobList}
+				onViewClick={handleJobViewClick}
+				page={filters.page || 1}
+				totalPages={jobs?.data.totalPages || 1}
+				onPageChange={handlePageChange}
+			/>
 
 			<ViewJobDialog
 				jobId={searchQuery.get("jobId")}

@@ -27,6 +27,8 @@ export function QueuesPage() {
 		label: "",
 		projectId: currentProject?.id || "",
 		status: undefined,
+		page: 1,
+		limit: 10,
 	});
 
 	const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -40,7 +42,15 @@ export function QueuesPage() {
 		console.log("Creating queue:", newQueue);
 	};
 
+	const handlePageChange = (newPage: number) => {
+		setFilters((prev) => ({ ...prev, page: newPage }));
+	};
+
 	const filteredQueues = data?.data.results || [];
+	const pagination = {
+		page: data?.data.page || 1,
+		totalPages: data?.data.totalPages || 1,
+	};
 
 	return (
 		<div className="p-8">
@@ -89,9 +99,19 @@ export function QueuesPage() {
 					}
 				/>
 			) : viewMode === "card" ? (
-				<QueueGrid queues={filteredQueues} />
+				<QueueGrid
+					queues={filteredQueues}
+					page={pagination.page}
+					totalPages={pagination.totalPages}
+					onPageChange={handlePageChange}
+				/>
 			) : (
-				<QueueTable queues={filteredQueues} />
+				<QueueTable
+					queues={filteredQueues}
+					page={pagination.page}
+					totalPages={pagination.totalPages}
+					onPageChange={handlePageChange}
+				/>
 			)}
 
 			{showCreateDialog && (

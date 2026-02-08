@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
 import { EmptyState } from "@shared/ui/EmptyState";
 import { LoadingState } from "@shared/ui/LoadingState";
@@ -10,10 +10,23 @@ export const WorkerStatusPage: React.FC = () => {
 	const { queueId } = useParams();
 	const navigate = useNavigate();
 
-	const { data, isLoading } = useWorkerList({ queueId: queueId });
+	const [searchQuery, setSearchQuery] = useSearchParams();
+
+	const { data, isLoading } = useWorkerList({
+		queueId: queueId,
+		page: Number(searchQuery.get("page")) || 1,
+	});
 
 	const handleViewWorkerDoneJobs = (workerId: string) => {
 		navigate(workerId);
+	};
+
+	const handlePageChange = (newPage: number) => {
+		setSearchQuery((prev) => {
+			const newParams = new URLSearchParams(prev);
+			newParams.set("page", newPage.toString());
+			return newParams;
+		});
 	};
 
 	if (!queueId) {
@@ -61,6 +74,9 @@ export const WorkerStatusPage: React.FC = () => {
 			<WorkersTable
 				data={data?.data.results || []}
 				handleViewJobs={handleViewWorkerDoneJobs}
+				page={Number(searchQuery.get("page")) || 1}
+				totalPages={data?.data.totalPages || 1}
+				onPageChange={handlePageChange}
 			/>
 		</div>
 	);

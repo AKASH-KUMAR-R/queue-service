@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import { useProject } from "@app/ProjectContext";
 import { ApiKeysList } from "@widgets/api-keys/ApiKeysList";
@@ -14,11 +15,17 @@ import { CreateApiKeyDialog } from "@features/api-keys/CreateApiKeyDialog";
 import { RevokeApiKeyDialog } from "@features/api-keys/RevokeApiKeyDialog";
 import { useApiKeyList } from "@features/api-keys/data/listApiKeys";
 
+//INFO The ProjectExistenceWrapper ensures that this page is only rendered if a project is selected, so we can safely assume currentProject is always defined here.
 export function ProjectApiKeysPage() {
 	const { currentProject } = useProject();
 
+	const [searchQuery, setSearchQuery] = useSearchParams();
 	const { data: apiKeysList, isPending: isLoadingKeysList } = useApiKeyList(
-		currentProject?.id!,
+		currentProject!.id,
+		{
+			page: Number(searchQuery.get("page")) || 1,
+			limit: 10,
+		},
 	);
 
 	const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -55,9 +62,13 @@ export function ProjectApiKeysPage() {
 		setCreatedKey(null);
 	};
 
-	if (!currentProject) {
-		return <div>Loading project...</div>;
-	}
+	const handlePageChange = (newPage: number) => {
+		setSearchQuery((prev) => {
+			const newParams = new URLSearchParams(prev);
+			newParams.set("page", newPage.toString());
+			return newParams;
+		});
+	};
 
 	return (
 		<div className="p-8">
@@ -83,6 +94,9 @@ export function ProjectApiKeysPage() {
 				apiKeys={apiKeysList?.data.results || []}
 				onRevoke={handleRevokeClick}
 				onCreateClick={() => setShowCreateDialog(true)}
+				page={Number(searchQuery.get("page")) || 1}
+				onPageChange={handlePageChange}
+				totalPages={apiKeysList?.data.totalPages || 1}
 			/>
 
 			{/* Dialogs */}
@@ -90,7 +104,7 @@ export function ProjectApiKeysPage() {
 				open={showCreateDialog}
 				onClose={() => setShowCreateDialog(false)}
 				onSubmit={handleCreateApiKey}
-				projectId={currentProject.id}
+				projectId={currentProject!.id}
 			/>
 
 			<ApiKeyCreatedDialog

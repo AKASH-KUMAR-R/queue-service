@@ -14,3 +14,9 @@ export type PaginationParams = {
 	page?: number;
 	limit?: number;
 };
+
+export type PaginatedComponentProps = {
+	totalPages: number;
+	page: number;
+	onPageChange: (page: number) => void;
+};

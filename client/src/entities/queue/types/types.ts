@@ -1,4 +1,8 @@
-import type { Base, RawApiResponseBase } from "@shared/types/types";
+import type {
+	Base,
+	PaginationParams,
+	RawApiResponseBase,
+} from "@shared/types/types";
 
 export type QueueStatus = "ACTIVE" | "PAUSED" | "DELETED";
 
@@ -50,13 +54,13 @@ export type RawApiResponseQueue = RawApiResponseBase & {
 	status: QueueStatus;
 };
 
-export type QueueSearchParams = {
+export type QueueSearchParams = PaginationParams & {
 	label?: string;
 	projectId?: string;
 	status?: QueueStatus;
 };
 
-export type RawQueueSearchParams = {
+export type RawQueueSearchParams = PaginationParams & {
 	label?: string;
 	project_id?: string;
 	status?: QueueStatus;
