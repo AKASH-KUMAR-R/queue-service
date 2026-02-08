@@ -14,6 +14,9 @@ export function QueueGrid({ queues }: QueueGridProps) {
 	const handleSelectQueue = (queueId: string) => {
 		navigate(`/queues/${queueId}/jobs`);
 	};
+	const handleViewWorkers = (queueId: string) => {
+		navigate(`/queues/${queueId}/workers`);
+	};
 
 	return (
 		<div className="grid grid-cols-12 gap-4">
@@ -22,6 +25,7 @@ export function QueueGrid({ queues }: QueueGridProps) {
 					key={queue.id}
 					queue={queue}
 					onSelectQueue={handleSelectQueue}
+					onViewWorkers={handleViewWorkers}
 				/>
 			))}
 		</div>

@@ -11,9 +11,14 @@ import { ResumeQueueButton } from "./ResumeQueueButton";
 type QueueCardProps = {
 	queue: QueueWithMetrics;
 	onSelectQueue: (queueId: string) => void;
+	onViewWorkers: (queueId: string) => void;
 };
 
-export function QueueCard({ queue, onSelectQueue }: QueueCardProps) {
+export function QueueCard({
+	queue,
+	onSelectQueue,
+	onViewWorkers,
+}: QueueCardProps) {
 	return (
 		<div className="col-span-6 bg-white border border-neutral-200 rounded-lg p-6 hover:border-neutral-300 transition-colors">
 			<div className="flex items-start justify-between mb-4">
@@ -97,6 +102,12 @@ export function QueueCard({ queue, onSelectQueue }: QueueCardProps) {
 					className="flex-1 px-3 py-2 text-sm "
 				>
 					View Jobs
+				</Button>
+				<Button
+					onClick={() => onViewWorkers(queue.id)}
+					className="flex-1 px-3 py-2 text-sm "
+				>
+					View Workers
 				</Button>
 				<Button className="">
 					<RefreshCw className="w-4 h-4" />
