@@ -32,8 +32,12 @@ const ViewWorkerJobs = () => {
 	};
 
 	return (
-		<div>
-			<div>View Worker Jobs</div>
+		<div className=" space-y-4">
+			<h1 className=" text-lg">View Worker Jobs</h1>
+			<div className=" text-foreground opacity-60">
+				View the list of jobs completed by this worker. Click on a job
+				to see more details about it.
+			</div>
 
 			{isWorkerDoneJobsLoading ? (
 				<LoadingState />

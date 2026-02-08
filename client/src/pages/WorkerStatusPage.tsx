@@ -1,4 +1,4 @@
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { EmptyState } from "@shared/ui/EmptyState";
 import { LoadingState } from "@shared/ui/LoadingState";
