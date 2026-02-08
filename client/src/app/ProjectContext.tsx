@@ -6,6 +6,8 @@ import {
 	useState,
 } from "react";
 
+import type { PaginationParams } from "@shared/types/types";
+
 import type { Project } from "@entities/project/types";
 
 type ProjectContextType = {
@@ -16,6 +18,12 @@ type ProjectContextType = {
 	initializeProjects: (initialProjects: Project[]) => void;
 	isProjectsLoading: boolean;
 	setIsProjectsLoading: (isLoading: boolean) => void;
+	pagination: PaginationParams & {
+		totalPages?: number;
+	};
+	handlePaginationChange: (
+		pagination: PaginationParams & { totalPages?: number },
+	) => void;
 };
 
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
@@ -23,6 +31,21 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
 	const [currentProject, setCurrentProject] = useState<Project | null>(null);
 	const [projects, setProjects] = useState<Project[]>([]);
 	const [isProjectsLoading, setIsProjectsLoading] = useState<boolean>(true);
+
+	const [pagination, setPagination] = useState<
+		PaginationParams & { totalPages?: number }
+	>({
+		page: 1,
+		limit: 10,
+		totalPages: 1,
+	});
+
+	const handlePaginationChange = useCallback(
+		(pagination: PaginationParams & { totalPages?: number }) => {
+			setPagination((prev) => ({ ...prev, ...pagination }));
+		},
+		[],
+	);
 
 	const initializeProjects = useCallback((initialProjects: Project[]) => {
 		setProjects(initialProjects);
@@ -37,7 +60,6 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
 	}, []);
 
 	const changeCurrentProject = useCallback((project: Project) => {
-		console.debug("Changing current project to:", project);
 		setCurrentProject(project);
 	}, []);
 
@@ -51,6 +73,8 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
 				initializeProjects,
 				isProjectsLoading,
 				setIsProjectsLoading,
+				pagination,
+				handlePaginationChange,
 			}}
 		>
 			{children}

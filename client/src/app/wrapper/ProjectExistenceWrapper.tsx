@@ -15,22 +15,35 @@ type ProjectExistenceWrapperProps = {
 const ProjectExistenceWrapper: React.FC<ProjectExistenceWrapperProps> = ({
 	children,
 }) => {
-	const { currentProject, initializeProjects, setIsProjectsLoading } =
-		useProject();
+	const {
+		currentProject,
+		initializeProjects,
+		setIsProjectsLoading,
+		pagination,
+		handlePaginationChange,
+	} = useProject();
 
 	const {
 		data: projectList,
 		isLoading: isProjectListLoading,
 		isError: isProjectListError,
 		isSuccess: isProjectListSuccess,
-	} = useProjectList();
+	} = useProjectList({
+		page: pagination.page,
+		limit: pagination.limit,
+	});
 
 	useEffect(() => {
 		if (isProjectListLoading) return;
 
 		if (isProjectListSuccess) {
 			console.log("Fetched projects:", projectList.data);
-			initializeProjects(projectList.data || []);
+			initializeProjects(projectList.data.results || []);
+			handlePaginationChange({
+				page: projectList.data.page,
+				limit: projectList.data.limit,
+				totalPages: projectList.data.totalPages,
+			});
 			setIsProjectsLoading(false);
 		}
 
@@ -44,6 +57,7 @@ const ProjectExistenceWrapper: React.FC<ProjectExistenceWrapperProps> = ({
 		isProjectListError,
 		isProjectListSuccess,
 		initializeProjects,
+		handlePaginationChange,
 	]);
 
 	if (isProjectListLoading) {

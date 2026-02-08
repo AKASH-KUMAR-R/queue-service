@@ -1,4 +1,6 @@
 import api from "@shared/api";
+import type { PaginationParams } from "@shared/types/types";
+import type { PaginatedResult } from "@shared/types/utils";
 
 import type { Project } from "@entities/project/types";
 import { toProject, toProjectList } from "@entities/project/utils/transform";
@@ -8,7 +10,7 @@ import type { UpdateProjectFormData } from "@pages/ProjectSettingsPage";
 import type { CreateProjectFormData } from "../CreateProjectDialog";
 
 type ProjectListResponse = {
-	data: Project[];
+	data: PaginatedResult<Project>;
 };
 
 type CreateProjectResponse = {
@@ -19,10 +21,19 @@ type UpdateProjectResponse = {
 	data: Project;
 };
 
-export const fetchProjects = async (): Promise<ProjectListResponse> => {
-	const response = await api.get("/api/dashboard/project/list");
+export const fetchProjects = async (
+	filters: PaginationParams,
+): Promise<ProjectListResponse> => {
+	const response = await api.get("/api/dashboard/project/search", {
+		params: filters,
+	});
 
-	return { data: toProjectList(response.data.data) };
+	return {
+		data: {
+			...response.data.data,
+			results: toProjectList(response.data.data.results),
+		},
+	};
 };
 
 export const createProject = async (

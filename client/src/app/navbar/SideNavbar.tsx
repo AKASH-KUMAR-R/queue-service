@@ -36,8 +36,15 @@ const SideNavbar = () => {
 		setOpenMobile(false);
 	};
 
-	const { currentProject, projects, setCurrentProject, isProjectsLoading } =
-		useProject();
+	const {
+		currentProject,
+		projects,
+		setCurrentProject,
+		isProjectsLoading,
+		pagination,
+		handlePaginationChange,
+	} = useProject();
+
 	const [showCreateDialog, setShowCreateDialog] = useState(false);
 
 	const [expandedGroups, setExpandedGroups] = useState(() =>
@@ -53,6 +60,10 @@ const SideNavbar = () => {
 
 	const handleCreateProject = (newProject: Project) => {
 		setCurrentProject(newProject);
+	};
+
+	const handlePageChange = (page: number) => {
+		handlePaginationChange({ page });
 	};
 
 	return (
@@ -92,6 +103,8 @@ const SideNavbar = () => {
 					onClose={closeProjectSwitcher}
 					currentProject={currentProject}
 					projects={projects}
+					pagination={pagination}
+					onPageChange={handlePageChange}
 					onProjectChange={setCurrentProject}
 					onCreateProject={() => setShowCreateDialog(true)}
 				/>

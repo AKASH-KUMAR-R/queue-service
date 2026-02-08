@@ -1,7 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { Check, ChevronDown } from "lucide-react";
 
-import { Check, ChevronDown, Plus } from "lucide-react";
-
+import type { PaginationParams } from "@shared/types/types";
 import { EmptyState } from "@shared/ui/EmptyState";
 import { Button } from "@shared/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@shared/ui/dialog";
@@ -17,6 +16,8 @@ type ProjectSwitcherDialogProps = {
 	projects: Project[];
 	onProjectChange: (project: Project) => void;
 	onCreateProject: () => void;
+	pagination: PaginationParams & { totalPages?: number };
+	onPageChange: (page: number) => void;
 };
 
 export function ProjectSwitcherDialog({
@@ -26,13 +27,15 @@ export function ProjectSwitcherDialog({
 	projects,
 	onProjectChange,
 	onCreateProject,
+	pagination,
+	onPageChange,
 }: ProjectSwitcherDialogProps) {
 	const handleProjectSelect = (project: Project) => {
 		onProjectChange(project);
 	};
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent className=" w-full sm:max-w-7xl">
+			<DialogContent className=" w-full sm:max-w-7xl sm:h-[calc(100%-4rem)]">
 				<DialogTitle>Project Switcher</DialogTitle>
 
 				{projects.length === 0 && (
@@ -45,6 +48,9 @@ export function ProjectSwitcherDialog({
 				)}
 				<ProjectTable
 					data={projects}
+					page={pagination.page || 1}
+					totalPages={pagination.totalPages || 1}
+					onPageChange={onPageChange}
 					renderActions={(project) => (
 						<Button
 							type="button"
