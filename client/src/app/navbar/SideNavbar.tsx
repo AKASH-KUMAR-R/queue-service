@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import { LogOut } from "lucide-react";
 
+import { useDialog } from "@shared/hooks/useDialog";
 import { Button } from "@shared/ui/button";
 import { Sidebar, SidebarContent, useSidebar } from "@shared/ui/sidebar";
 import { Spinner } from "@shared/ui/spinner";
@@ -10,7 +11,8 @@ import { Spinner } from "@shared/ui/spinner";
 import type { Project } from "@entities/project/types";
 
 import { CreateProjectDialog } from "@features/projects/CreateProjectDialog";
-import { ProjectSwitcher } from "@features/projects/components/ProjectSwitcher";
+import ProjectSwitcherDisplayCurrent from "@features/projects/components/CurrentProject";
+import { ProjectSwitcherDialog } from "@features/projects/components/ProjectSwitcher";
 
 import { useProject } from "../ProjectContext";
 import { getExpandedStateForRoute, navGroups } from "./NavBarConfig";
@@ -19,6 +21,12 @@ import NavGroup from "./NavGroup";
 const SideNavbar = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
+
+	const {
+		isOpen: isProjectSwitcherOpen,
+		openDialog: openProjectSwitcher,
+		closeDialog: closeProjectSwitcher,
+	} = useDialog();
 
 	const { setOpenMobile } = useSidebar();
 
@@ -54,11 +62,9 @@ const SideNavbar = () => {
 					{isProjectsLoading ? (
 						<Spinner />
 					) : (
-						<ProjectSwitcher
-							currentProject={currentProject}
-							projects={projects}
-							onProjectChange={setCurrentProject}
-							onCreateProject={() => setShowCreateDialog(true)}
+						<ProjectSwitcherDisplayCurrent
+							project={currentProject}
+							onClick={openProjectSwitcher}
 						/>
 					)}
 					<div className="flex-1 p-4 overflow-y-auto">
@@ -80,6 +86,15 @@ const SideNavbar = () => {
 						</Button>
 					</div>
 				</SidebarContent>
+
+				<ProjectSwitcherDialog
+					isOpen={isProjectSwitcherOpen}
+					onClose={closeProjectSwitcher}
+					currentProject={currentProject}
+					projects={projects}
+					onProjectChange={setCurrentProject}
+					onCreateProject={() => setShowCreateDialog(true)}
+				/>
 
 				<CreateProjectDialog
 					open={showCreateDialog}
