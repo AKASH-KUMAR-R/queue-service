@@ -1,4 +1,5 @@
 import { Check, ChevronDown } from "lucide-react";
+import { toast } from "sonner";
 
 import type { PaginationParams } from "@shared/types/types";
 import { EmptyState } from "@shared/ui/EmptyState";
@@ -32,46 +33,49 @@ export function ProjectSwitcherDialog({
 }: ProjectSwitcherDialogProps) {
 	const handleProjectSelect = (project: Project) => {
 		onProjectChange(project);
+		toast.info("Switched to project: " + project.label);
+		onClose();
 	};
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
 			<DialogContent className=" w-full sm:max-w-7xl sm:h-[calc(100%-4rem)]">
 				<DialogTitle>Project Switcher</DialogTitle>
 
-				{projects.length === 0 && (
+				{projects.length === 0 ? (
 					<EmptyState
 						title="No Projects Available"
 						description="You don't have any projects yet. Create a new project to get started."
 						actionLabel="Create Project"
 						onAction={onCreateProject}
 					/>
+				) : (
+					<ProjectTable
+						data={projects}
+						page={pagination.page || 1}
+						totalPages={pagination.totalPages || 1}
+						onPageChange={onPageChange}
+						renderActions={(project) => (
+							<Button
+								type="button"
+								variant="ghost"
+								size="sm"
+								onClick={() => handleProjectSelect(project)}
+								className={
+									project.id === currentProject?.id
+										? "bg-toggle-background hover:bg-toggle-background-hover text-white"
+										: ""
+								}
+							>
+								{project.id === currentProject?.id ? (
+									<Check className="mr-2" />
+								) : (
+									<ChevronDown className="mr-2" />
+								)}
+								Switch
+							</Button>
+						)}
+					/>
 				)}
-				<ProjectTable
-					data={projects}
-					page={pagination.page || 1}
-					totalPages={pagination.totalPages || 1}
-					onPageChange={onPageChange}
-					renderActions={(project) => (
-						<Button
-							type="button"
-							variant="ghost"
-							size="sm"
-							onClick={() => handleProjectSelect(project)}
-							className={
-								project.id === currentProject?.id
-									? "bg-toggle-background hover:bg-toggle-background-hover text-white"
-									: ""
-							}
-						>
-							{project.id === currentProject?.id ? (
-								<Check className="mr-2" />
-							) : (
-								<ChevronDown className="mr-2" />
-							)}
-							Switch
-						</Button>
-					)}
-				/>
 			</DialogContent>
 		</Dialog>
 	);

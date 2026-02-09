@@ -88,7 +88,6 @@ export function ProjectApiKeysPage() {
 				</p>
 			</div>
 
-			{isLoadingKeysList && <Spinner size="lg" />}
 			{/* API Keys List */}
 			<ApiKeysList
 				apiKeys={apiKeysList?.data.results || []}
@@ -97,6 +96,7 @@ export function ProjectApiKeysPage() {
 				page={Number(searchQuery.get("page")) || 1}
 				onPageChange={handlePageChange}
 				totalPages={apiKeysList?.data.totalPages || 1}
+				loading={isLoadingKeysList}
 			/>
 
 			{/* Dialogs */}
