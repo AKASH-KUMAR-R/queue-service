@@ -1,14 +1,17 @@
 import { Key } from "lucide-react";
 
+import type { PaginatedComponentProps } from "@shared/types/types";
+import { Paginated } from "@shared/ui/pagination/Paginated";
+
 import type { ApiKey } from "../../entities/api-key/model/types";
 import { ApiKeyRow } from "../../entities/api-key/ui/ApiKeyRow";
 
-interface ApiKeysListProps {
+type ApiKeysListProps = PaginatedComponentProps & {
 	apiKeys: ApiKey[];
 	onRevoke: (apiKey: ApiKey) => void;
 	loading?: boolean;
 	onCreateClick: () => void;
-}
+};
 
 function EmptyState({ onCreateClick }: { onCreateClick: () => void }) {
 	return (
@@ -56,6 +59,9 @@ export function ApiKeysList({
 	onRevoke,
 	loading,
 	onCreateClick,
+	page,
+	onPageChange,
+	totalPages,
 }: ApiKeysListProps) {
 	if (loading) {
 		return <LoadingSkeleton />;
@@ -99,6 +105,11 @@ export function ApiKeysList({
 						))}
 					</tbody>
 				</table>
+				<Paginated
+					page={page}
+					onPageChange={onPageChange}
+					totalPages={totalPages}
+				/>
 			</div>
 		</div>
 	);

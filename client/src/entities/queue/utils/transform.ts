@@ -94,5 +94,7 @@ export const toSearchQueueRequestParams = (
 		label: data.label,
 		project_id: data.projectId,
 		status: data.status,
+		page: data.page,
+		limit: data.limit,
 	};
 };

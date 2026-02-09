@@ -1,4 +1,6 @@
 import api from "@shared/api";
+import { generateQueryParams } from "@shared/api/utils/requestUtils";
+import type { PaginationParams } from "@shared/types/types";
 import type { PaginatedResult } from "@shared/types/utils";
 
 import type { ApiKey, ApiKeyWithSecret } from "@entities/api-key/model/types";
@@ -34,8 +36,14 @@ export const create = async (
 	return { data: toApiKeyWithSecret(response.data.data) };
 };
 
-export const list = async (projectId: string): Promise<ApiKeyListResponse> => {
-	const urlParams = new URLSearchParams({ project_id: projectId });
+export const list = async (
+	projectId: string,
+	filters: PaginationParams,
+): Promise<ApiKeyListResponse> => {
+	const urlParams = generateQueryParams({
+		project_id: projectId,
+		...filters,
+	});
 
 	const response = await api.get(
 		`/api/dashboard/api-key/search?${urlParams.toString()}`,

@@ -1,113 +1,82 @@
-import { useEffect, useRef, useState } from "react";
+import { Check, ChevronDown } from "lucide-react";
+import { toast } from "sonner";
 
-import { Check, ChevronDown, Plus } from "lucide-react";
+import type { PaginationParams } from "@shared/types/types";
+import { EmptyState } from "@shared/ui/EmptyState";
+import { Button } from "@shared/ui/button";
+import { Dialog, DialogContent, DialogTitle } from "@shared/ui/dialog";
 
 import type { Project } from "@entities/project/types";
 
-type ProjectSwitcherProps = {
+import { ProjectTable } from "./ProjectTable";
+
+type ProjectSwitcherDialogProps = {
+	isOpen: boolean;
+	onClose: () => void;
 	currentProject: Project | null;
 	projects: Project[];
 	onProjectChange: (project: Project) => void;
 	onCreateProject: () => void;
+	pagination: PaginationParams & { totalPages?: number };
+	onPageChange: (page: number) => void;
 };
 
-export function ProjectSwitcher({
+export function ProjectSwitcherDialog({
+	isOpen,
+	onClose,
 	currentProject,
 	projects,
 	onProjectChange,
 	onCreateProject,
-}: ProjectSwitcherProps) {
-	const [isOpen, setIsOpen] = useState(false);
-	const dropdownRef = useRef<HTMLDivElement>(null);
-
-	useEffect(() => {
-		const handleClickOutside = (event: MouseEvent) => {
-			if (
-				dropdownRef.current &&
-				!dropdownRef.current.contains(event.target as Node)
-			) {
-				setIsOpen(false);
-			}
-		};
-
-		if (isOpen) {
-			document.addEventListener("mousedown", handleClickOutside);
-		}
-
-		return () => {
-			document.removeEventListener("mousedown", handleClickOutside);
-		};
-	}, [isOpen]);
-
+	pagination,
+	onPageChange,
+}: ProjectSwitcherDialogProps) {
+	const handleProjectSelect = (project: Project) => {
+		onProjectChange(project);
+		toast.info("Switched to project: " + project.label);
+		onClose();
+	};
 	return (
-		<div className="relative" ref={dropdownRef}>
-			<button
-				onClick={() => setIsOpen(!isOpen)}
-				className="w-full p-6 border-b border-border hover:bg-accent transition-colors text-left"
-			>
-				<div className="flex items-center justify-between">
-					<div className="flex-1 min-w-0">
-						<h1 className="text-xl font-semibold text-foreground truncate">
-							{currentProject
-								? currentProject.label
-								: "No Project Selected"}
-						</h1>
-					</div>
-					<ChevronDown
-						className={`w-4 h-4 text-muted-foreground transition-transform ${
-							isOpen ? "transform rotate-180" : ""
-						}`}
+		<Dialog open={isOpen} onOpenChange={onClose}>
+			<DialogContent className=" w-full sm:max-w-7xl sm:h-[calc(100%-4rem)]">
+				<DialogTitle>Project Switcher</DialogTitle>
+
+				{projects.length === 0 ? (
+					<EmptyState
+						title="No Projects Available"
+						description="You don't have any projects yet. Create a new project to get started."
+						actionLabel="Create Project"
+						onAction={onCreateProject}
 					/>
-				</div>
-			</button>
-
-			{isOpen && (
-				<div className="absolute top-full left-0 right-0 bg-card border-b border-border shadow-lg z-50 max-h-96 overflow-y-auto">
-					<div className="p-2">
-						<div className="text-xs font-medium text-muted-foreground px-3 py-2">
-							{currentProject
-								? currentProject.label
-								: "No Project Selected"}
-						</div>
-
-						{projects.map((project) => (
-							<button
-								key={project.id}
-								onClick={() => {
-									onProjectChange(project);
-									setIsOpen(false);
-								}}
-								className="w-full flex items-center justify-between px-3 py-2 text-sm text-foreground hover:bg-accent rounded transition-colors"
+				) : (
+					<ProjectTable
+						data={projects}
+						page={pagination.page || 1}
+						totalPages={pagination.totalPages || 1}
+						onPageChange={onPageChange}
+						renderActions={(project) => (
+							<Button
+								type="button"
+								variant="ghost"
+								size="sm"
+								onClick={() => handleProjectSelect(project)}
+								className={
+									project.id === currentProject?.id
+										? "bg-toggle-background hover:bg-toggle-background-hover text-white"
+										: ""
+								}
 							>
-								<div className="flex-1 min-w-0 text-left">
-									<div className="font-medium text-card-foreground truncate">
-										{project.label}
-									</div>
-									<div className={`text-xs mt-0.5`}>
-										{project.description}
-									</div>
-								</div>
-								{project.id === currentProject?.id && (
-									<Check className="w-4 h-4 text-foreground flex-shrink-0 ml-2" />
+								{project.id === currentProject?.id ? (
+									<Check className="mr-2" />
+								) : (
+									<ChevronDown className="mr-2" />
 								)}
-							</button>
-						))}
-					</div>
-
-					<div className="border-t border-border p-2">
-						<button
-							onClick={() => {
-								onCreateProject();
-								setIsOpen(false);
-							}}
-							className="w-full flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-accent rounded transition-colors"
-						>
-							<Plus className="w-4 h-4" />
-							Create New Project
-						</button>
-					</div>
-				</div>
-			)}
-		</div>
+								Switch
+							</Button>
+						)}
+					/>
+				)}
+			</DialogContent>
+		</Dialog>
 	);
 }

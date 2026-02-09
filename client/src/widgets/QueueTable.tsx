@@ -1,12 +1,20 @@
+import type { PaginatedComponentProps } from "@shared/types/types";
+import { Paginated } from "@shared/ui/pagination/Paginated";
+
 import type { QueueWithMetrics } from "@entities/queue/types/types";
 
 import { QueueTableRow } from "@features/queues/components/QueueTableRow";
 
-type QueueTableProps = {
+type QueueTableProps = PaginatedComponentProps & {
 	queues: QueueWithMetrics[];
 };
 
-export function QueueTable({ queues }: QueueTableProps) {
+export function QueueTable({
+	queues,
+	page,
+	onPageChange,
+	totalPages,
+}: QueueTableProps) {
 	return (
 		<div className="bg-white border border-neutral-200 rounded-lg overflow-hidden">
 			<div className="overflow-x-auto">
@@ -45,6 +53,11 @@ export function QueueTable({ queues }: QueueTableProps) {
 						))}
 					</tbody>
 				</table>
+				<Paginated
+					page={page}
+					onPageChange={onPageChange}
+					totalPages={totalPages}
+				/>
 			</div>
 		</div>
 	);
