@@ -71,16 +71,12 @@ export function CreateApiKeyDialog({
 
 	return (
 		<Dialog open={open} onOpenChange={handleOpenChange}>
-			<DialogContent
-				title="Generate API Key"
-				aria-describedby="create-api-key-description"
-				showCloseButton={false}
-			>
+			<DialogContent title="Generate API Key" showCloseButton={false}>
 				<DialogTitle>
 					Generate a new API Key for your project
 				</DialogTitle>
 
-				<form onSubmit={handleApiGenerateClick}>
+				<form onSubmit={handleApiGenerateClick} className=" mt-4">
 					<div className=" space-y-2">
 						<Label htmlFor="api-description">Description</Label>
 						<Textarea

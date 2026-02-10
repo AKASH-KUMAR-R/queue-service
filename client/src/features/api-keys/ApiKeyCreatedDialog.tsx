@@ -26,7 +26,6 @@ export function ApiKeyCreatedDialog({
 			<DialogContent
 				title="API Key Created Successfully"
 				className="max-w-lg"
-				aria-describedby="api-key-created-description"
 			>
 				<DialogTitle>API Key Created Successfully</DialogTitle>
 				<div className="p-6 space-y-6">

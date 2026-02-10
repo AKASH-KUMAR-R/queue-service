@@ -69,7 +69,8 @@ export function ProjectSettingsPage() {
 		}
 	};
 
-	const { mutate: updateProject } = useProjectUpdate(handleUpdateError);
+	const { mutate: updateProject, isPending } =
+		useProjectUpdate(handleUpdateError);
 
 	const handleSubmit = (data: UpdateProjectFormData) => {
 		if (!currentProject) return;
@@ -189,15 +190,12 @@ export function ProjectSettingsPage() {
 
 					{/* Actions */}
 					<div className="flex gap-3">
-						<Button type="submit" className="px-4 py-2  ">
-							Save Changes
-						</Button>
 						<Button
-							type="button"
-							variant="secondary"
-							className="px-4 py-2  "
+							type="submit"
+							className="px-4 py-2 "
+							disabled={isPending}
 						>
-							Cancel
+							{isPending ? "Saving..." : "Save Changes"}
 						</Button>
 					</div>
 				</form>

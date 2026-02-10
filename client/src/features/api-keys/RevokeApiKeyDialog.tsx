@@ -73,6 +73,10 @@ export function RevokeApiKeyDialog({
 						<h4 className="text-sm ">Key Details</h4>
 						<div className="space-y-2 text-sm">
 							<div className="flex items-start justify-between">
+								<span>Description:</span>
+								<span>{apiKey.description}</span>
+							</div>
+							<div className="flex items-start justify-between">
 								<span>Created:</span>
 								<span>{formatDateTime(apiKey.createdAt)}</span>
 							</div>
@@ -83,7 +87,7 @@ export function RevokeApiKeyDialog({
 						</div>
 					</div>
 
-					<Alert variant="destructive">
+					<Alert variant="destructive" className=" font-semibold ">
 						<AlertTitle className=" flex ">
 							<AlertTriangle className="w-5 h-5  mr-2" />
 							Warning
