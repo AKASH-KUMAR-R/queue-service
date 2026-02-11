@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@shared/ui/card";
 import { Dialog, DialogContent, DialogTrigger } from "@shared/ui/dialog";
 import { Separator } from "@shared/ui/separator";
 import { Spinner } from "@shared/ui/spinner";
+import { formatDateTime } from "@shared/utils/dateAndTimeUtils";
 
 import type {
 	JobEventSearchParams,
@@ -18,11 +19,6 @@ import { useJobById } from "@features/jobs/data/getJobById";
 import { useJobEventsById } from "@features/jobs/data/getJobEventsById";
 
 import { JobEventsTimeline } from "../job-events/JobEventsList";
-
-const formatDate = (dateString: string | null) => {
-	if (!dateString) return "N/A";
-	return new Date(dateString).toLocaleString();
-};
 
 const getStatusColor = (status: JobStatus) => {
 	switch (status) {
@@ -115,14 +111,9 @@ const ViewJobDialog: React.FC<ViewJobDialogProps> = ({
 		<Dialog open={isOpen} onOpenChange={onClose}>
 			<DialogContent
 				title="Job Details"
-				showCloseButton={false}
-				className=" w-full sm:max-w-7xl flex flex-col md:flex-row  md:justify-between h-full overflow-y-auto"
+				// showCloseButton={false}
+				className=" w-full h-[calc(100%-4rem)] sm:max-w-7xl flex flex-col md:flex-row  md:justify-between "
 			>
-				<DialogTrigger className=" absolute right-0 top-0">
-					<Button type="button" size="sm">
-						<X />
-					</Button>
-				</DialogTrigger>
 				<Card>
 					<CardHeader>
 						<div className="flex items-center justify-between">
@@ -194,7 +185,7 @@ const ViewJobDialog: React.FC<ViewJobDialogProps> = ({
 										Created At
 									</p>
 									<p className="text-sm mt-1">
-										{formatDate(job.createdAt)}
+										{formatDateTime(job.createdAt)}
 									</p>
 								</div>
 								<div>
@@ -202,7 +193,9 @@ const ViewJobDialog: React.FC<ViewJobDialogProps> = ({
 										Scheduled At
 									</p>
 									<p className="text-sm mt-1">
-										{formatDate(job.scheduledAt)}
+										{job.scheduledAt
+											? formatDateTime(job.scheduledAt)
+											: "N/A"}
 									</p>
 								</div>
 								<div>
@@ -210,7 +203,9 @@ const ViewJobDialog: React.FC<ViewJobDialogProps> = ({
 										Started At
 									</p>
 									<p className="text-sm mt-1">
-										{formatDate(job.startedAt)}
+										{job.startedAt
+											? formatDateTime(job.startedAt)
+											: "N/A"}
 									</p>
 								</div>
 								<div>
@@ -218,7 +213,9 @@ const ViewJobDialog: React.FC<ViewJobDialogProps> = ({
 										Last Heartbeat
 									</p>
 									<p className="text-sm mt-1">
-										{formatDate(job.heartbeatAt)}
+										{job.heartbeatAt
+											? formatDateTime(job.heartbeatAt)
+											: "N/A"}
 									</p>
 								</div>
 							</div>

@@ -30,6 +30,13 @@ type SignupRequestPayload = {
 	password: string;
 };
 
+type LogoutResponse = {
+	data: {
+		success: boolean;
+		message: string;
+	};
+};
+
 const login = async (data: LoginRequestPayload): Promise<LoginResponse> => {
 	const response = await api.post("/api/auth/login", data);
 	return { data: response.data, error: null };
@@ -41,7 +48,14 @@ const signup = async (data: SignupRequestPayload): Promise<SignupResponse> => {
 	return { data: response.data, error: null };
 };
 
+const logout = async (): Promise<LogoutResponse> => {
+	const response = await api.post("/api/auth/logout");
+
+	return { data: response.data };
+};
+
 export default {
 	login,
 	signup,
+	logout,
 };
