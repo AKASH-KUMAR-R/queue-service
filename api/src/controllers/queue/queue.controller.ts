@@ -1,6 +1,10 @@
 import type { Request, Response } from "express";
 
 import type {
+	QueueJobsFilters,
+	QueueJobsListRequestType,
+} from "@models/queue/requests/QueueJobsListRequest";
+import type {
 	QueueFilters,
 	QueueSearchRequestType,
 } from "@models/queue/requests/QueueSearchRequest";
@@ -56,12 +60,15 @@ const searchQueues = async (req: Request, res: Response) => {
 const getQueueJobs = async (req: Request, res: Response) => {
 	try {
 		const queueId = req.params.id as string;
+		const { page, limit, ...query } =
+			req.validQuery as QueueJobsListRequestType;
 
 		const results = await jobService.findJobsByQueueId(
 			req.db,
 			queueId,
 			parseInt(req.query.page as string) || 1,
 			parseInt(req.query.limit as string) || 10,
+			query,
 		);
 
 		res.status(200).json(results);
