@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { Outlet } from "react-router-dom";
 
 import { toast } from "sonner";
 
@@ -8,13 +9,7 @@ import { useProjectList } from "@features/projects/data/listProject";
 
 import { useProject } from "../ProjectContext";
 
-type ProjectExistenceWrapperProps = {
-	children: React.ReactNode;
-};
-
-const ProjectExistenceWrapper: React.FC<ProjectExistenceWrapperProps> = ({
-	children,
-}) => {
+const ProjectExistenceWrapper = () => {
 	const {
 		currentProject,
 		initializeProjects,
@@ -37,7 +32,6 @@ const ProjectExistenceWrapper: React.FC<ProjectExistenceWrapperProps> = ({
 		if (isProjectListLoading) return;
 
 		if (isProjectListSuccess) {
-			console.log("Fetched projects:", projectList.data);
 			initializeProjects(projectList.data.results || []);
 			handlePaginationChange({
 				page: projectList.data.page,
@@ -81,7 +75,7 @@ const ProjectExistenceWrapper: React.FC<ProjectExistenceWrapperProps> = ({
 		);
 	}
 
-	return children;
+	return <Outlet />;
 };
 
 export default ProjectExistenceWrapper;

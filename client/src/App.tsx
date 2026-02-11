@@ -1,5 +1,3 @@
-import { BrowserRouter } from "react-router-dom";
-
 import { ProjectProvider } from "@app/ProjectContext";
 import { ThemeProvider } from "@app/ThemeProvider";
 import { AppLayout } from "@app/layout";
@@ -13,17 +11,17 @@ import { queryClient } from "./config/reactQuery";
 
 export default function App() {
 	return (
-		<BrowserRouter>
-			<ThemeProvider>
-				<Toaster />
-				<QueryClientProvider client={queryClient}>
-					<AuthProvider>
-						<ProjectProvider>
-							<AppLayout />
-						</ProjectProvider>
-					</AuthProvider>
-				</QueryClientProvider>
-			</ThemeProvider>
-		</BrowserRouter>
+		// <BrowserRouter>
+		<ThemeProvider>
+			<Toaster />
+			<QueryClientProvider client={queryClient}>
+				<AuthProvider>
+					<ProjectProvider>
+						<AppLayout />
+					</ProjectProvider>
+				</AuthProvider>
+			</QueryClientProvider>
+		</ThemeProvider>
+		// </BrowserRouter>
 	);
 }
