@@ -120,6 +120,7 @@ export function ProjectSettingsPage() {
 												defaultValue={
 													currentProject.label
 												}
+												type="text"
 											/>
 											<RadixFormMessage />
 										</RadixFormItem>
@@ -137,6 +138,7 @@ export function ProjectSettingsPage() {
 											</RadixFormLabel>
 											<Input
 												{...field}
+												type="text"
 												defaultValue={
 													currentProject.description
 												}
