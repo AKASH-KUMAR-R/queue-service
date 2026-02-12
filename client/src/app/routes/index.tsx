@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 
+import RouteErrorBoundary from "@app/error/ErrorBoundary";
 import { CommonLayoutWrapper } from "@app/wrapper/CommonLayoutWrapper";
 import ProjectExistenceWrapper from "@app/wrapper/ProjectExistenceWrapper";
 
@@ -13,6 +14,7 @@ export const router = createBrowserRouter([
 	{
 		path: "/",
 		element: <CommonLayoutWrapper />,
+		errorElement: <RouteErrorBoundary />,
 		children: [
 			{
 				path: "/",
