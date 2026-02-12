@@ -239,16 +239,12 @@ export function CreateQueueDialog({
 						<div className="flex items-center justify-end gap-3 p-6 border-t">
 							<Button
 								type="button"
+								variant="secondary"
 								onClick={() => handleOpenChange(false)}
-								className="px-4 py-2 text-sm  rounded transition-colors"
 							>
 								Cancel
 							</Button>
-							<Button
-								type="submit"
-								className="px-4 py-2 text-sm  rounded transition-colors"
-								disabled={isCreating}
-							>
+							<Button type="submit" disabled={isCreating}>
 								{isCreating ? <Spinner /> : "Create Queue"}
 							</Button>
 						</div>

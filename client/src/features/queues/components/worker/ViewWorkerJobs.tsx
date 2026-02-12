@@ -13,7 +13,12 @@ const ViewWorkerJobs = () => {
 	const [searchQuery, setSearchQuery] = useSearchParams();
 
 	const { data: workerDoneJobs, isLoading: isWorkerDoneJobsLoading } =
-		useWorkerDoneJobList({}, workerId || null);
+		useWorkerDoneJobList(
+			{
+				page: Number(searchQuery.get("page")) || 1,
+			},
+			workerId || null,
+		);
 
 	const handleViewJobClick = (jobId: string) => {
 		setSearchQuery((prev) => {
@@ -27,6 +32,14 @@ const ViewWorkerJobs = () => {
 		setSearchQuery((prev) => {
 			const newParams = new URLSearchParams(prev);
 			newParams.delete("jobId");
+			return newParams;
+		});
+	};
+
+	const handlePageChange = (newPage: number) => {
+		setSearchQuery((prev) => {
+			const newParams = new URLSearchParams(prev);
+			newParams.set("page", newPage.toString());
 			return newParams;
 		});
 	};
@@ -48,6 +61,9 @@ const ViewWorkerJobs = () => {
 				/>
 			) : (
 				<JobsTable
+					page={workerDoneJobs?.data.page || 1}
+					totalPages={workerDoneJobs?.data.totalPages || 1}
+					onPageChange={handlePageChange}
 					jobs={workerDoneJobs?.data.results || []}
 					onViewClick={handleViewJobClick}
 				/>

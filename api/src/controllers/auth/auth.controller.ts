@@ -101,7 +101,30 @@ const signup = async (req: Request, res: Response) => {
 	}
 };
 
+const logout = async (_req: Request, res: Response) => {
+	try {
+		res.clearCookie("accessToken", {
+			httpOnly: true,
+			secure: true,
+			sameSite: process.env.NODE_ENV === "production" ? "lax" : "none",
+		});
+		res.clearCookie("refreshToken", {
+			httpOnly: true,
+			secure: true,
+			sameSite: process.env.NODE_ENV === "production" ? "lax" : "none",
+		});
+
+		res.status(200).json({
+			success: true,
+			message: "Logout successful",
+		});
+	} catch (err) {
+		handleError(res, err, 500);
+	}
+};
+
 export default {
 	login,
 	signup,
+	logout,
 };

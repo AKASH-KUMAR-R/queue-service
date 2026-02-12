@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 import { toast } from "sonner";
 
+import BreadcrumbsView from "@shared/component/BreadcrumbsView";
 import { SidebarProvider } from "@shared/ui/sidebar";
 import { Spinner } from "@shared/ui/spinner";
 import { getCleanUrl } from "@shared/utils/baseUtils";
@@ -14,11 +15,7 @@ import Header from "../navbar/Header";
 import { NAVBAR_RESTRICTED_PATHS } from "../navbar/NavBarConfig";
 import SideNavbar from "../navbar/SideNavbar";
 
-export const CommonLayoutWrapper = ({
-	children,
-}: {
-	children: React.ReactNode;
-}) => {
+export const CommonLayoutWrapper = () => {
 	const { initialize, user } = useAuth();
 
 	const { data, isLoading, isError, isSuccess } = useCurrentUser();
@@ -55,7 +52,7 @@ export const CommonLayoutWrapper = ({
 		);
 	}
 	if (!user) {
-		return <Navigate to="/" />;
+		return <Navigate to="/login" />;
 	}
 
 	return (
@@ -65,11 +62,12 @@ export const CommonLayoutWrapper = ({
 				<div className={` relative w-full overflow-hidden`}>
 					{!isRestricted && <Header />}
 					<div
-						className={` px-2 sm:px-6 pt-6 pb-3  w-full overflow-y-auto  ${
+						className={` px-2 sm:px-6 pt-6 pb-3  w-full overflow-y-auto space-y-2  ${
 							isRestricted ? "h-full" : " h-[calc(100%-4rem)]"
 						}`}
 					>
-						{children}
+						<BreadcrumbsView />
+						<Outlet />
 					</div>
 				</div>
 			</SidebarProvider>

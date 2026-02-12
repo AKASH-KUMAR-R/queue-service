@@ -85,9 +85,9 @@ export function JobsPage() {
 			</div>
 			<JobViewControls
 				searchQuery={filters}
-				onSearchChange={(field, value) =>
-					setFilters((prev) => ({ ...prev, [field]: value }))
-				}
+				onSearchChange={(field, value) => {
+					setFilters((prev) => ({ ...prev, [field]: value }));
+				}}
 			/>
 			<JobsTable
 				jobs={jobList}

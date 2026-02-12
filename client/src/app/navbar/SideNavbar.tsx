@@ -2,14 +2,18 @@ import { type MouseEvent, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { LogOut } from "lucide-react";
+import { toast } from "sonner";
 
 import { useDialog } from "@shared/hooks/useDialog";
+import { ConfirmDialog } from "@shared/ui/ConfirmDialog";
 import { Button } from "@shared/ui/button";
 import { Sidebar, SidebarContent, useSidebar } from "@shared/ui/sidebar";
 import { Spinner } from "@shared/ui/spinner";
 
 import type { Project } from "@entities/project/types";
 
+import { useAuth } from "@features/auth/context/AuthContext";
+import { useAuthLogout } from "@features/auth/data/authLogout";
 import { CreateProjectDialog } from "@features/projects/CreateProjectDialog";
 import ProjectSwitcherDisplayCurrent from "@features/projects/components/CurrentProject";
 import { ProjectSwitcherDialog } from "@features/projects/components/ProjectSwitcher";
@@ -21,6 +25,11 @@ import NavGroup from "./NavGroup";
 const SideNavbar = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
+	const {
+		isOpen: isLogoutConfirmOpen,
+		openDialog: openLogoutConfirm,
+		closeDialog: closeLogoutConfirm,
+	} = useDialog();
 
 	const {
 		isOpen: isProjectSwitcherOpen,
@@ -45,6 +54,10 @@ const SideNavbar = () => {
 		handlePaginationChange,
 	} = useProject();
 
+	const { mutate: logout, isPending: isLogoutPending } = useAuthLogout();
+
+	const { clear: clearUserState } = useAuth();
+
 	const [showCreateDialog, setShowCreateDialog] = useState(false);
 
 	const [expandedGroups, setExpandedGroups] = useState(() =>
@@ -64,6 +77,22 @@ const SideNavbar = () => {
 
 	const handlePageChange = (page: number) => {
 		handlePaginationChange({ page });
+	};
+
+	const handleLogout = () => {
+		logout(undefined, {
+			onSuccess: () => {
+				toast.success("Logged out successfully");
+				clearUserState();
+				navigate("/login");
+			},
+			onError: () => {
+				toast.error("Failed to log out. Please try again.");
+			},
+			onSettled: () => {
+				closeLogoutConfirm();
+			},
+		});
 	};
 
 	return (
@@ -91,9 +120,14 @@ const SideNavbar = () => {
 					</div>
 
 					<div className=" w-full p-4 border-t border-gray-200">
-						<Button variant="ghost" className=" w-full">
+						<Button
+							variant="ghost"
+							className=" w-full"
+							onClick={openLogoutConfirm}
+							disabled={isLogoutPending}
+						>
 							<LogOut className="w-4 h-4 mr-2" />
-							Logout
+							{isLogoutPending ? "Logging out..." : "Logout"}
 						</Button>
 					</div>
 				</SidebarContent>
@@ -115,6 +149,16 @@ const SideNavbar = () => {
 					onSubmit={handleCreateProject}
 				/>
 			</Sidebar>
+
+			<ConfirmDialog
+				open={isLogoutConfirmOpen}
+				onOpenChange={closeLogoutConfirm}
+				onConfirm={handleLogout}
+				title="Confirm Logout"
+				message="Are you sure you want to log out?"
+				variant="destructive"
+				confirmLabel="Logout"
+			/>
 		</>
 	);
 };

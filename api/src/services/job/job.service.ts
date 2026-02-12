@@ -6,6 +6,8 @@ import {
 	PrismaClient,
 } from "@prisma/client";
 
+import type { QueueJobsFilters } from "@models/queue/requests/QueueJobsListRequest";
+
 import jobEventsService from "@services/job-events/jobEvents.service";
 import queueRateLimiterService from "@services/queue-limit/queueRateLimiter.service";
 import queueMetricsService from "@services/queue-metrics/queueMetrics.service";
@@ -95,11 +97,17 @@ const findJobsByQueueId = async (
 	queueId: string,
 	page: number,
 	limit: number,
+	filters: QueueJobsFilters,
 ) => {
 	const paginationParams = new PaginationParams(page, limit);
 
+	const whereFilters: Prisma.JobWhereInput = {
+		...(filters.status && { status: filters.status }),
+	};
+
 	const results = await db.job.findMany({
 		where: {
+			...whereFilters,
 			queue_id: queueId,
 		},
 		orderBy: {
@@ -111,6 +119,7 @@ const findJobsByQueueId = async (
 
 	const count = await db.job.count({
 		where: {
+			...whereFilters,
 			queue_id: queueId,
 		},
 	});
