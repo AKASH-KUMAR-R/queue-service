@@ -1,6 +1,6 @@
-import { AppearanceSettingsPage } from "@pages/AppearanceSettingsPage";
+import type { AppRouteObject } from "@shared/types/routes";
 
-import type { AppRouteObject } from "../../shared/types/routes";
+import { AppearanceSettingsPage } from "@pages/AppearanceSettingsPage";
 
 export const GeneralRoutes: AppRouteObject = {
 	path: "/settings",

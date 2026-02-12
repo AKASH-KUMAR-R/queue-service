@@ -1,10 +1,10 @@
+import type { AppRouteObject } from "@shared/types/routes";
+
 import ViewWorkerJobs from "@features/queues/components/worker/ViewWorkerJobs";
 
 import { JobsPage } from "@pages/JobsPage";
 import { QueuesPage } from "@pages/QueuesPage";
 import { WorkerStatusPage } from "@pages/WorkerStatusPage";
-
-import type { AppRouteObject } from "../../shared/types/routes";
 
 export type QueueJobsRouteParams = {
 	queueId: string;
