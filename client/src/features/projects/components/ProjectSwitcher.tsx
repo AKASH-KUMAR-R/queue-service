@@ -33,7 +33,6 @@ export function ProjectSwitcherDialog({
 }: ProjectSwitcherDialogProps) {
 	const handleProjectSelect = (project: Project) => {
 		onProjectChange(project);
-		toast.info("Switched to project: " + project.label);
 		onClose();
 	};
 	return (

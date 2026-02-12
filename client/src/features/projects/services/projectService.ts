@@ -21,6 +21,8 @@ type UpdateProjectResponse = {
 	data: Project;
 };
 
+type FetchProjectByIdResponse = { data: Project };
+
 export const fetchProjects = async (
 	filters: PaginationParams,
 ): Promise<ProjectListResponse> => {
@@ -40,6 +42,14 @@ export const createProject = async (
 	data: CreateProjectFormData,
 ): Promise<CreateProjectResponse> => {
 	const response = await api.post("/api/dashboard/project/create", data);
+
+	return { data: toProject(response.data.data) };
+};
+
+export const fetchProjectById = async (
+	projectId: string,
+): Promise<FetchProjectByIdResponse> => {
+	const response = await api.get(`/api/dashboard/project/${projectId}`);
 
 	return { data: toProject(response.data.data) };
 };

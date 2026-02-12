@@ -19,12 +19,11 @@ export const router = createBrowserRouter([
 			{
 				path: "/",
 				element: <ProjectExistenceWrapper />,
-				children: [
-					ProjectRoutes,
-					QueueRoutes,
-					PerformanceRoutes,
-					GeneralRoutes,
-				],
+				children: [ProjectRoutes, QueueRoutes, PerformanceRoutes],
+			},
+			{
+				path: "general/*",
+				children: [GeneralRoutes],
 			},
 		],
 	},
