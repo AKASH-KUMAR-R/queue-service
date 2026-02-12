@@ -10,6 +10,7 @@ import { PerformanceRoutes } from "./performanceRoutes";
 import { ProjectRoutes } from "./projectRoutes";
 import { QueueRoutes } from "./queueRoutes";
 
+//TODO: Project list loading issue non projecr wrapper pages
 export const router = createBrowserRouter([
 	{
 		path: "/",
