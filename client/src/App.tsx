@@ -11,7 +11,6 @@ import { queryClient } from "./config/reactQuery";
 
 export default function App() {
 	return (
-		// <BrowserRouter>
 		<ThemeProvider>
 			<Toaster />
 			<QueryClientProvider client={queryClient}>
@@ -22,6 +21,5 @@ export default function App() {
 				</AuthProvider>
 			</QueryClientProvider>
 		</ThemeProvider>
-		// </BrowserRouter>
 	);
 }

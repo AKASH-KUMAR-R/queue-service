@@ -1,9 +1,9 @@
 import type { IndexRouteObject, NonIndexRouteObject } from "react-router-dom";
 
-export type BredcrumbFn = (params: Record<string, string>) => string;
+export type BreadcrumbFn = (params: Record<string, string>) => string;
 
 type AppRouteHandler = {
-	breadcrumb: string | BredcrumbFn;
+	breadcrumb: string | BreadcrumbFn;
 	to?: string;
 };
 

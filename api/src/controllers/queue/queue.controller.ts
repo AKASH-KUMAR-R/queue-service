@@ -1,9 +1,6 @@
 import type { Request, Response } from "express";
 
-import type {
-	QueueJobsFilters,
-	QueueJobsListRequestType,
-} from "@models/queue/requests/QueueJobsListRequest";
+import type { QueueJobsListRequestType } from "@models/queue/requests/QueueJobsListRequest";
 import type {
 	QueueFilters,
 	QueueSearchRequestType,
@@ -66,8 +63,8 @@ const getQueueJobs = async (req: Request, res: Response) => {
 		const results = await jobService.findJobsByQueueId(
 			req.db,
 			queueId,
-			parseInt(req.query.page as string) || 1,
-			parseInt(req.query.limit as string) || 10,
+			page || 1,
+			limit || 10,
 			query,
 		);
 
