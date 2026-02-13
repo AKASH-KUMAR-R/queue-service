@@ -71,8 +71,8 @@ app.use("/api/dashboard/worker-status", workerStatusRouter);
 //  routes for worker sdk
 app.use("/api/worker/job", jobWorkerRouter);
 
+// Global error handler
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
-	console.error(err.message);
 	handleError(res, err);
 });
 
