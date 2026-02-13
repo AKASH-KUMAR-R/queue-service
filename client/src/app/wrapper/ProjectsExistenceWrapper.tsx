@@ -13,11 +13,10 @@ import { useProjectById } from "@features/projects/data/projectById";
 import { useProject } from "../ProjectContext";
 
 //TODO: This component is responsible for ensuring that a valid project context is established before rendering any child routes that depend on it. It checks for the presence of a projectId in the URL or local storage, fetches the corresponding project data, and handles loading and error states appropriately. If no valid project is found, it prompts the user to select or create a project.May need to handle edge cases like invalid projectId in URL, network errors, and syncing project selection across different parts of the app. Also check for any flickering issues during navigation and project switching
-const ProjectExistenceWrapper = () => {
-	const [searchParams, setSearchParams] = useSearchParams();
+const ProjectsExistenceWrapper = () => {
+	const [searchParams] = useSearchParams();
 
 	const {
-		currentProject,
 		setCurrentProject,
 		initializeProjects,
 		setIsProjectsLoading,
@@ -70,6 +69,9 @@ const ProjectExistenceWrapper = () => {
 		handlePaginationChange,
 	]);
 
+	// Syncing current project with URL changes
+	// This ensures that if the user manually changes the URL or if we programmatically change it from somewhere else, the current project in context stays in sync.
+
 	useEffect(() => {
 		if (isProjectLoading) return;
 
@@ -88,19 +90,7 @@ const ProjectExistenceWrapper = () => {
 		}
 	}, [project, isProjectLoading, isProjectError]);
 
-	// Syncing current project with URL changes
-	// This ensures that if the user manually changes the URL or if we programmatically change it from somewhere else, the current project in context stays in sync.
-	useEffect(() => {
-		if (!currentProject) return;
-
-		setSearchParams((prev) => {
-			const newParams = new URLSearchParams(prev);
-			newParams.set("projectId", currentProject.id);
-			return newParams;
-		});
-	}, [currentProject, setSearchParams]);
-
-	if (isProjectListLoading || isProjectLoading) {
+	if (isProjectListLoading) {
 		return (
 			<div className="flex items-center justify-center h-full">
 				<p className="text-lg text-muted-foreground">
@@ -110,12 +100,15 @@ const ProjectExistenceWrapper = () => {
 		);
 	}
 
-	if (!currentProject) {
+	if (isProjectLoading) {
 		return (
-			<div className="flex items-center justify-center">
+			<div className="flex items-center justify-center h-full">
 				<p className="text-lg text-muted-foreground">
-					No project selected. Please create or select a project to
-					continue.
+					<Spinner size="lg" /> Loading project
+					<span className=" font-semibold">
+						{searchParams.get("projectId")}
+					</span>
+					...
 				</p>
 			</div>
 		);
@@ -124,4 +117,4 @@ const ProjectExistenceWrapper = () => {
 	return <Outlet />;
 };
 
-export default ProjectExistenceWrapper;
+export default ProjectsExistenceWrapper;
