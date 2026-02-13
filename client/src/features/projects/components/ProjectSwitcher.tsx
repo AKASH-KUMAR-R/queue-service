@@ -1,5 +1,4 @@
 import { Check, ChevronDown } from "lucide-react";
-import { toast } from "sonner";
 
 import type { PaginationParams } from "@shared/types/types";
 import { EmptyState } from "@shared/ui/EmptyState";

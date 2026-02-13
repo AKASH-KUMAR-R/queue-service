@@ -12,7 +12,7 @@ import { useProjectById } from "@features/projects/data/projectById";
 
 import { useProject } from "../ProjectContext";
 
-//TODO: This component is responsible for ensuring that a valid project context is established before rendering any child routes that depend on it. It checks for the presence of a projectId in the URL or local storage, fetches the corresponding project data, and handles loading and error states appropriately. If no valid project is found, it prompts the user to select or create a project.May need to handle edge cases like invalid projectId in URL, network errors, and syncing project selection across different parts of the app. Also check for any flickering issues during navigation and project switching
+//TODO: This component is responsible for ensuring that a valid project context is established before rendering any child routes that depend on it. It checks for the presence of a projectId in the URL or local storage, fetches the corresponding project data, and handles loading and error states appropriately. If no valid project is found, it prompts the user to select or create a project.
 const ProjectsExistenceWrapper = () => {
 	const [searchParams] = useSearchParams();
 
@@ -40,7 +40,10 @@ const ProjectsExistenceWrapper = () => {
 		isError: isProjectError,
 	} = useProjectById(
 		searchParams.get("projectId") ||
-			getValueFromLocalStorage(STORAGE_KEYS.currentProject, null),
+			getValueFromLocalStorage<string | null>(
+				STORAGE_KEYS.currentProject,
+				null,
+			),
 	);
 
 	useEffect(() => {
