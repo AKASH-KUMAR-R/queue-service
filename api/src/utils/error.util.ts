@@ -40,6 +40,16 @@ export const handleError = (
 			status = 500;
 			returnErrorMessage = "Internal server error";
 		}
+	} else if (error instanceof Prisma.PrismaClientValidationError) {
+		status = 400;
+		returnErrorMessage = error.message;
+	} else if (
+		error instanceof Prisma.PrismaClientInitializationError ||
+		error instanceof Prisma.PrismaClientRustPanicError ||
+		error instanceof Prisma.PrismaClientUnknownRequestError
+	) {
+		status = 500;
+		returnErrorMessage = "Internal server error";
 	} else if (error instanceof Error) {
 		returnErrorMessage = error.message;
 	}
