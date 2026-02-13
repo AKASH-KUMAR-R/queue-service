@@ -25,6 +25,7 @@ import NavGroup from "./NavGroup";
 const SideNavbar = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
+
 	const {
 		isOpen: isLogoutConfirmOpen,
 		openDialog: openLogoutConfirm,
@@ -95,6 +96,19 @@ const SideNavbar = () => {
 		});
 	};
 
+	const handleProjectChange = (project: Project) => {
+		setCurrentProject(project);
+		toast.info("Switched to project: " + project.label);
+	};
+
+	const projectListWithCurrentIncluded = projects.some(
+		(p) => p.id === currentProject?.id,
+	)
+		? projects
+		: currentProject
+			? [currentProject, ...projects]
+			: projects;
+
 	return (
 		<>
 			<Sidebar className=" z-50 w-64 border-r shadow-sm h-screen">
@@ -136,10 +150,10 @@ const SideNavbar = () => {
 					isOpen={isProjectSwitcherOpen}
 					onClose={closeProjectSwitcher}
 					currentProject={currentProject}
-					projects={projects}
+					projects={projectListWithCurrentIncluded}
 					pagination={pagination}
 					onPageChange={handlePageChange}
-					onProjectChange={setCurrentProject}
+					onProjectChange={handleProjectChange}
 					onCreateProject={() => setShowCreateDialog(true)}
 				/>
 

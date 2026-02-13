@@ -163,7 +163,7 @@ export const navGroups: NavGroup[] = [
 		description: "Application preferences and settings",
 		items: [
 			{
-				path: "/settings/appearance",
+				path: "/general/settings/appearance",
 				label: "Appearance",
 				icon: Palette,
 				description: "Customize theme and display",

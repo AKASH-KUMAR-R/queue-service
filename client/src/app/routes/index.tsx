@@ -2,7 +2,8 @@ import { createBrowserRouter } from "react-router-dom";
 
 import RouteErrorBoundary from "@app/error/ErrorBoundary";
 import { CommonLayoutWrapper } from "@app/wrapper/CommonLayoutWrapper";
-import ProjectExistenceWrapper from "@app/wrapper/ProjectExistenceWrapper";
+import { CurrentProjectAttachWrapper } from "@app/wrapper/CurrentProjectAttachWrapper";
+import ProjectsExistenceWrapper from "@app/wrapper/ProjectsExistenceWrapper";
 
 import { AuthRoutes } from "./authRoutes";
 import { GeneralRoutes } from "./generalRoutes";
@@ -17,13 +18,20 @@ export const router = createBrowserRouter([
 		errorElement: <RouteErrorBoundary />,
 		children: [
 			{
-				path: "/",
-				element: <ProjectExistenceWrapper />,
+				element: <ProjectsExistenceWrapper />,
 				children: [
-					ProjectRoutes,
-					QueueRoutes,
-					PerformanceRoutes,
-					GeneralRoutes,
+					{
+						element: <CurrentProjectAttachWrapper />,
+						children: [
+							ProjectRoutes,
+							QueueRoutes,
+							PerformanceRoutes,
+						],
+					},
+					{
+						path: "general/*",
+						children: [GeneralRoutes],
+					},
 				],
 			},
 		],

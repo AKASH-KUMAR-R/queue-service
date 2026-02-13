@@ -6,14 +6,16 @@ import {
 	useState,
 } from "react";
 
+import { STORAGE_KEYS } from "@shared/lib/storage";
 import type { PaginationParams } from "@shared/types/types";
+import { setValueInLocalStorage } from "@shared/utils/storage";
 
 import type { Project } from "@entities/project/types";
 
 type ProjectContextType = {
 	currentProject: Project | null;
 	projects: Project[];
-	setCurrentProject: (project: Project) => void;
+	setCurrentProject: (project: Project | null) => void;
 	addProject: (project: Project) => void;
 	initializeProjects: (initialProjects: Project[]) => void;
 	isProjectsLoading: boolean;
@@ -29,6 +31,7 @@ type ProjectContextType = {
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
 export function ProjectProvider({ children }: { children: ReactNode }) {
 	const [currentProject, setCurrentProject] = useState<Project | null>(null);
+
 	const [projects, setProjects] = useState<Project[]>([]);
 	const [isProjectsLoading, setIsProjectsLoading] = useState<boolean>(true);
 
@@ -47,20 +50,24 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
 		[],
 	);
 
-	const initializeProjects = useCallback((initialProjects: Project[]) => {
-		setProjects(initialProjects);
-		if (initialProjects.length > 0) {
-			setCurrentProject(initialProjects[0]);
-		}
-	}, []);
+	const initializeProjects = useCallback(
+		(initialProjects: Project[]) => {
+			setProjects(initialProjects);
+		},
+		[currentProject, setCurrentProject],
+	);
 
 	const addProject = useCallback((project: Project) => {
 		setProjects((prev) => [...prev, project]);
 		setCurrentProject(project);
 	}, []);
 
-	const changeCurrentProject = useCallback((project: Project) => {
+	const changeCurrentProject = useCallback((project: Project | null) => {
 		setCurrentProject(project);
+		setValueInLocalStorage(
+			STORAGE_KEYS.currentProject,
+			project?.id || null,
+		);
 	}, []);
 
 	return (
