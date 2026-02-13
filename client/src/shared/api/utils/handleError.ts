@@ -20,6 +20,9 @@ export const handleError = (error: unknown) => {
 				typeof resData.message === "string"
 			) {
 				return resData.message;
+			}
+			if ("error" in resData && typeof resData.error === "string") {
+				return resData.error;
 			} else if (
 				"detail" in resData &&
 				typeof resData.detail === "string"
