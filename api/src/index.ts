@@ -4,9 +4,11 @@ import Express, {
 	type Response,
 } from "express";
 
+import "@config/dotenv.config";
+import passport from "@config/passport.config";
+
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import { configDotenv } from "dotenv";
 import pinoHttp from "pino-http";
 
 import { prismaMiddleware } from "@common/middleware/prisma.middleware";
@@ -24,13 +26,6 @@ import workerStatusRouter from "@routes/worker-status/workerStatus.routes";
 
 import { handleError } from "@utils/error.util";
 import { logger } from "@utils/logger.util";
-
-const NODE_ENV = process.env.NODE_ENV || "development";
-const envPath = NODE_ENV === "production" ? ".prod.env" : ".dev.env";
-
-configDotenv({
-	path: envPath,
-});
 
 const app = Express();
 
@@ -52,7 +47,7 @@ app.use(
 app.use(Express.json());
 
 app.use(cookieParser());
-
+app.use(passport.initialize());
 app.use(prismaMiddleware);
 
 // Routes for auth

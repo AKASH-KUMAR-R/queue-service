@@ -50,7 +50,8 @@
       "@models/*": ["models/*"],
       "@utils/*": ["utils/*"],
       "@routes/*": ["routes/*"],
-      "@errors/*": ["errors/*"]
+      "@errors/*": ["errors/*"],
+      "@config/*": ["config/*"]
     }
   },
   "include": ["src/**/*"]

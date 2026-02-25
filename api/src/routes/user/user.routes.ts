@@ -1,7 +1,9 @@
 import { Router } from "express";
 
+import passport from "@config/passport.config";
+
 import commonController from "@common/controller/common.controller";
-import { authMiddleware } from "@common/middleware/auth.middleware";
+import { attachPrismaContext } from "@common/middleware/prisma.middleware";
 import {
 	validateId,
 	validationMiddleware,
@@ -13,18 +15,46 @@ import userController from "@controllers/user/user.controller";
 
 const router = Router();
 
-router.get("/list", authMiddleware, commonController.list);
-router.get("/search", authMiddleware, commonController.search);
-router.get("/me", authMiddleware, userController.getCurrentUser);
-router.get("/:id", authMiddleware, validateId, commonController.getById);
+router.get(
+	"/list",
+	passport.authenticate("jwt", { session: false }),
+	attachPrismaContext,
+	commonController.list,
+);
+router.get(
+	"/search",
+	passport.authenticate("jwt", { session: false }),
+	attachPrismaContext,
+	commonController.search,
+);
+router.get(
+	"/me",
+	passport.authenticate("jwt", { session: false }),
+	attachPrismaContext,
+	userController.getCurrentUser,
+);
+router.get(
+	"/:id",
+	passport.authenticate("jwt", { session: false }),
+	attachPrismaContext,
+	validateId,
+	commonController.getById,
+);
 
 router.put(
 	"/:id",
-	authMiddleware,
+	passport.authenticate("jwt", { session: false }),
+	attachPrismaContext,
 	validateId,
 	validationMiddleware(UserUpdateRequest),
 	commonController.update,
 );
 
-router.delete("/:id", authMiddleware, validateId, commonController.remove);
+router.delete(
+	"/:id",
+	passport.authenticate("jwt", { session: false }),
+	attachPrismaContext,
+	validateId,
+	commonController.remove,
+);
 export default router;
