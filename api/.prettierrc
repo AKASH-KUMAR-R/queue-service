@@ -10,6 +10,7 @@
         "plugins": ["@trivago/prettier-plugin-sort-imports"],
         "importOrder": [
           "^express(.*)$",
+          "^@config/(.*)$",
           "<THIRD_PARTY_MODULES>",
           "^@common/(.*)$",
           "^@routes/(.*)$",

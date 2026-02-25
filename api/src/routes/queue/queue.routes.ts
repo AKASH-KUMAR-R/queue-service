@@ -1,7 +1,9 @@
 import { Router } from "express";
 
+import passport from "@config/passport.config";
+
 import commonController from "@common/controller/common.controller";
-import { authMiddleware } from "@common/middleware/auth.middleware";
+import { attachPrismaContext } from "@common/middleware/prisma.middleware";
 import {
 	queryValidationMiddleware,
 	validateId,
@@ -17,49 +19,72 @@ import queueController from "@controllers/queue/queue.controller";
 
 const router = Router();
 
-router.get("/list", authMiddleware, commonController.list);
+router.get(
+	"/list",
+	passport.authenticate("jwt", { session: false }),
+	attachPrismaContext,
+	commonController.list,
+);
 router.get(
 	"/search",
-	authMiddleware,
+	passport.authenticate("jwt", { session: false }),
+	attachPrismaContext,
 	queryValidationMiddleware(QueueSearchRequest),
 	queueController.searchQueues,
 );
-router.get("/:id", authMiddleware, validateId, commonController.getById);
+router.get(
+	"/:id",
+	passport.authenticate("jwt", { session: false }),
+	attachPrismaContext,
+	validateId,
+	commonController.getById,
+);
 
 router.get(
 	"/:id/jobs",
-	authMiddleware,
+	passport.authenticate("jwt", { session: false }),
+	attachPrismaContext,
 	validateId,
 	queryValidationMiddleware(QueueJobsListRequest),
 	queueController.getQueueJobs,
 );
 router.get(
 	"/:id/metrics",
-	authMiddleware,
+	passport.authenticate("jwt", { session: false }),
+	attachPrismaContext,
 	validateId,
 	queueController.getQueueMetrics,
 );
 router.get(
 	"/:id/workers",
-	authMiddleware,
+	passport.authenticate("jwt", { session: false }),
+	attachPrismaContext,
 	validateId,
 	queueController.getQueueRelatedWorkers,
 );
 router.post(
 	"/create",
-	authMiddleware,
+	passport.authenticate("jwt", { session: false }),
+	attachPrismaContext,
 	validationMiddleware(QueueCreateRequest),
 	queueController.addQueue,
 );
 
 router.put(
 	"/:id",
-	authMiddleware,
+	passport.authenticate("jwt", { session: false }),
+	attachPrismaContext,
 	validateId,
 	validationMiddleware(QueueUpdateRequest),
 	commonController.update,
 );
 
-router.delete("/:id", authMiddleware, validateId, commonController.remove);
+router.delete(
+	"/:id",
+	passport.authenticate("jwt", { session: false }),
+	attachPrismaContext,
+	validateId,
+	commonController.remove,
+);
 
 export default router;

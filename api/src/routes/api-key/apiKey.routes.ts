@@ -1,7 +1,9 @@
 import { Router } from "express";
 
+import passport from "@config/passport.config";
+
 import commonController from "@common/controller/common.controller";
-import { authMiddleware } from "@common/middleware/auth.middleware";
+import { attachPrismaContext } from "@common/middleware/prisma.middleware";
 import {
 	validateId,
 	validationMiddleware,
@@ -13,14 +15,32 @@ import apiKeyController from "@controllers/api-key/apiKey.controller";
 
 const router = Router();
 
-router.get("/search", authMiddleware, commonController.search);
-router.get("/:id", authMiddleware, validateId, commonController.getById);
+router.get(
+	"/search",
+	passport.authenticate("jwt", { session: false }),
+	attachPrismaContext,
+	commonController.search,
+);
+router.get(
+	"/:id",
+	passport.authenticate("jwt", { session: false }),
+	attachPrismaContext,
+	validateId,
+	commonController.getById,
+);
 
-router.put("/revoke/:id", authMiddleware, validateId, apiKeyController.revoke);
+router.put(
+	"/revoke/:id",
+	passport.authenticate("jwt", { session: false }),
+	attachPrismaContext,
+	validateId,
+	apiKeyController.revoke,
+);
 
 router.post(
 	"/create",
-	authMiddleware,
+	passport.authenticate("jwt", { session: false }),
+	attachPrismaContext,
 	validationMiddleware(ApiKeyCreateRequest),
 	apiKeyController.create,
 );
