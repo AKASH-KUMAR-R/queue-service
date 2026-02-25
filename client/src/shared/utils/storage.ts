@@ -25,3 +25,25 @@ export const setValueInLocalStorage = <T>(key: string, value: T): void => {
 		console.warn(`Error setting localStorage key "${key}":`, err);
 	}
 };
+
+export const removeValueFromLocalStorage = (key: string): void => {
+	try {
+		if (typeof window === "undefined") {
+			return;
+		}
+		window.localStorage.removeItem(key);
+	} catch (err) {
+		console.warn(`Error removing localStorage key "${key}":`, err);
+	}
+};
+
+export const clearLocalStorage = (): void => {
+	try {
+		if (typeof window === "undefined") {
+			return;
+		}
+		window.localStorage.clear();
+	} catch (err) {
+		console.warn("Error clearing localStorage:", err);
+	}
+};
