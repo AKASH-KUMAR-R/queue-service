@@ -2,6 +2,8 @@ import type { Request, Response } from "express";
 
 import { DAY_IN_MILLISECONDS, MINUTES_IN_MILLISECOND } from "lib/time";
 
+import { VERIFY_JWT_STATUS } from "@common/types/jwt";
+
 import type { UserLoginRequestType } from "@models/user/requests/UserLoginRequest";
 import type { UserSignUpRequestType } from "@models/user/requests/UserSignUpRequest";
 
@@ -9,7 +11,7 @@ import userService from "@services/user/user.service";
 
 import { compareText, hashText } from "@utils/bcrypt.util";
 import { handleError } from "@utils/error.util";
-import { generateToken } from "@utils/jwt.util";
+import { generateToken, verifyToken } from "@utils/jwt.util";
 
 const login = async (req: Request, res: Response) => {
 	try {
@@ -123,8 +125,57 @@ const logout = async (_req: Request, res: Response) => {
 	}
 };
 
+const refreshToken = async (req: Request, res: Response) => {
+	try {
+		const refreshCookieToken = req.cookies.refreshToken;
+
+		if (!refreshCookieToken) {
+			return res.status(401).json({
+				success: false,
+				message: "Unauthorized",
+			});
+		}
+
+		const { status, payload } = verifyToken(refreshCookieToken);
+
+		if (
+			status === VERIFY_JWT_STATUS.EXPIRED ||
+			status === VERIFY_JWT_STATUS.INVALID
+		) {
+			return res.status(401).json({
+				success: false,
+				message: "Unauthorized",
+			});
+		}
+
+		const userId = (payload as { userId: string }).userId;
+
+		const newAccessToken = generateToken(
+			{
+				userId,
+			},
+			{ expiresIn: "15m" },
+		);
+
+		res.cookie("accessToken", newAccessToken, {
+			httpOnly: true,
+			secure: true,
+			sameSite: process.env.NODE_ENV === "production" ? "lax" : "none",
+			maxAge: MINUTES_IN_MILLISECOND * 15, // 15 minutes
+		});
+
+		res.status(200).json({
+			success: true,
+			message: "Token refreshed successfully",
+		});
+	} catch (err) {
+		handleError(res, err, 500);
+	}
+};
+
 export default {
 	login,
 	signup,
 	logout,
+	refreshToken,
 };
