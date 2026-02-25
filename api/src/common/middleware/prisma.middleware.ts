@@ -24,9 +24,9 @@ export const attachPrismaContext = async (
 			throw new Error("Unauthorized");
 		}
 
-		req.db = getEnhancedPrisma(req.user as User);
+		req.db = getEnhancedPrisma(req.user as Omit<User, "password">);
 		next();
 	} catch (err) {
-		handleError(res, err, 500);
+		handleError(res, "Unauthorized", 401);
 	}
 };

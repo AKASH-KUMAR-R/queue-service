@@ -150,6 +150,15 @@ const refreshToken = async (req: Request, res: Response) => {
 
 		const userId = (payload as { userId: string }).userId;
 
+		const user = await userService.findUserById(req.db, userId);
+
+		if (!user) {
+			return res.status(401).json({
+				success: false,
+				message: "Unauthorized",
+			});
+		}
+
 		const newAccessToken = generateToken(
 			{
 				userId,
