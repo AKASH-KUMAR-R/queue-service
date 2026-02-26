@@ -9,6 +9,7 @@ import { ConfirmDialog } from "@shared/ui/ConfirmDialog";
 import { Button } from "@shared/ui/button";
 import { Sidebar, SidebarContent, useSidebar } from "@shared/ui/sidebar";
 import { Spinner } from "@shared/ui/spinner";
+import { clearLocalStorage } from "@shared/utils/storage";
 
 import type { Project } from "@entities/project/types";
 
@@ -85,6 +86,7 @@ const SideNavbar = () => {
 			onSuccess: () => {
 				toast.success("Logged out successfully");
 				clearUserState();
+				clearLocalStorage();
 				navigate("/login");
 			},
 			onError: () => {

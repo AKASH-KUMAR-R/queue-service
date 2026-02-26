@@ -1,4 +1,4 @@
-import api from "@shared/api";
+import api, { unauthorizedApi } from "@shared/api";
 
 import type { User } from "@entities/user/types/user";
 
@@ -38,12 +38,12 @@ type LogoutResponse = {
 };
 
 const login = async (data: LoginRequestPayload): Promise<LoginResponse> => {
-	const response = await api.post("/api/auth/login", data);
+	const response = await unauthorizedApi.post("/api/auth/login", data);
 	return { data: response.data, error: null };
 };
 
 const signup = async (data: SignupRequestPayload): Promise<SignupResponse> => {
-	const response = await api.post("/api/auth/signup", data);
+	const response = await unauthorizedApi.post("/api/auth/signup", data);
 
 	return { data: response.data, error: null };
 };
