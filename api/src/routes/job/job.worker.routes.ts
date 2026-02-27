@@ -13,7 +13,10 @@ import NextJobQueryParams from "@models/job/requests/NextJobQueryParams";
 
 import jobWorkerController from "@controllers/job/job.worker.controlller";
 
-import jobRateLimiter, { extractWorkerId } from "./job.middleware";
+import jobRateLimiter, {
+	extractProducerId,
+	extractWorkerId,
+} from "./job.middleware";
 
 const router = Router();
 
@@ -37,7 +40,7 @@ router.post(
 	"/create",
 	workerAuthMiddleware,
 	validationMiddleware(JobCreateRequest),
-	extractWorkerId,
+	extractProducerId,
 	jobWorkerController.addJobToQueue,
 );
 

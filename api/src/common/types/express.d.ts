@@ -8,6 +8,7 @@ declare global {
 			user?: Omit<User, "password">;
 			project?: Project;
 			worker_id?: string;
+			producer_id?: string;
 		}
 	}
 }
