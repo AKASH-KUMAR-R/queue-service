@@ -46,7 +46,7 @@ passport.use(
 	"api-key",
 	new CustomStrategy(async (req, done) => {
 		try {
-			const apiKey = req.headers["x-api-key"] as string;
+			const apiKey = req.get("x-api-key");
 
 			if (!apiKey) {
 				return done(null, false);

@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import passport from "passport";
+import passport from "@config/passport.config";
 
 import {
 	queryValidationMiddleware,
