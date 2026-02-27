@@ -6,9 +6,7 @@ import { generateProducerId } from "../utils/producer.util";
 
 export default function createProducer(options: ProducerOptions) {
     const producerId = generateProducerId(
-        options.metaData && options.metaData.label
-            ? options.metaData.label
-            : "producer",
+        options.metaData?.label || "producer",
     );
 
     const client = getApiClient({
