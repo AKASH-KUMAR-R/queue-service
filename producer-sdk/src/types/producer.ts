@@ -1,6 +1,7 @@
 export type ProducerOptions = {
     baseUrl: string;
     apiKey: string;
+    metaData?: Record<string, any>;
 };
 
 export type AddJobOptions = {
