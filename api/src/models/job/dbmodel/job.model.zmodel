@@ -21,6 +21,7 @@ model Job extends Base {
     timeout_ms Int?
     priority Int @default(5) @gte(1) @lte(10)  // 1 to 10. 1 means high and 10 means low
     scheduled_at DateTime?
+    producer_id String? 
 
     job_events JobEvents[] @relation("Job Events")
 

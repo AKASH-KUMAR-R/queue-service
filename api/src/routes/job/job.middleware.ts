@@ -80,4 +80,21 @@ export const extractWorkerId = async (
 
 	next();
 };
+
+export const extractProducerId = async (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+) => {
+	const producerId = req.headers["x-producer-id"] as string;
+
+	if (!producerId) {
+		return handleError(res, "X-Producer-Id is required", 400);
+	}
+
+	req.producer_id = producerId;
+
+	next();
+};
+
 export default jobRateLimiter;

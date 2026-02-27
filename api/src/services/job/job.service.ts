@@ -21,22 +21,20 @@ import { QueueRateLimitExceeded } from "@errors/QueueRateLimitExceeded";
 const createJob = async (
 	db: PrismaClient,
 	data: Prisma.JobCreateInput,
-	worker_id: string,
+	producerId: string,
 ) => {
 	return await db.$transaction(async (tx) => {
 		const newJob = await tx.job.create({
-			data,
-		});
-
-		await workerStatusService.upsertForHeartbeat(tx, worker_id, {
-			queue_id: newJob.queue_id,
+			data: {
+				...data,
+				producer_id: producerId,
+			},
 		});
 
 		await jobEventsService.createJobEvent(tx, {
 			project_id: newJob.project_id,
 			queue_id: newJob.queue_id,
 			job_id: newJob.id,
-			worker_id,
 			event_type: JobEventType.JOB_CREATED,
 			prev_status: JobStatus.PENDING,
 			next_status: JobStatus.PENDING,

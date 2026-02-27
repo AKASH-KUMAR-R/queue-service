@@ -13,7 +13,7 @@ app.use(
         origin: "*",
         credentials: true,
         allowedHeaders: ["x-api-key"],
-    })
+    }),
 );
 
 app.use(express.json());
@@ -31,22 +31,22 @@ const producer = createProducer({
     apiKey: process.env.WORKER_API_KEY || "",
 });
 
-// const addMockJobs = async () => {
-// 	try {
-// 		for (let i = 1; i <= 5; i++) {
-// 			await producer.addJob("email_queue", {
-// 				payload: {
-// 					email: `example${i}@example.com`,
-// 				},
-// 			});
-// 			console.log(`Added job ${i}`);
-// 		}
-// 	} catch (err) {
-// 		console.log("Failed to create dummy jobs");
-// 	}
-// };
+const addMockJobs = async () => {
+    try {
+        for (let i = 1; i <= 5; i++) {
+            await producer.addJob("email_queue", {
+                payload: {
+                    email: `example${i}@example.com`,
+                },
+            });
+            console.log(`Added job ${i}`);
+        }
+    } catch (err) {
+        console.log("Failed to create dummy jobs");
+    }
+};
 
-// addMockJobs();
+addMockJobs();
 
 app.listen(process.env.PORT || 8000, () => {
     console.log("Worker test server is running");

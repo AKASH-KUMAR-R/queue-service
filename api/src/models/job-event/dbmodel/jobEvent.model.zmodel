@@ -19,7 +19,7 @@ model JobEvents extends Base {
     event_type JobEventType
     prev_status JobStatus
     next_status JobStatus
-    worker_id String
+    worker_id String?
     metadata Json?
 
     @@index([job_id, created_at(sort: Desc)]) // For fetching events of a job in descending order of creation time

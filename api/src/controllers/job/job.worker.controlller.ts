@@ -43,7 +43,7 @@ const addJobToQueue = async (req: Request, res: Response) => {
 				priority: req.body.priority,
 				scheduled_at: req.body.scheduled_at,
 			},
-			req.worker_id as string,
+			req.producer_id as string,
 		);
 
 		res.status(201).json(result);
