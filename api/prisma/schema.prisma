@@ -99,6 +99,7 @@ model Job {
     timeout_ms Int?
     priority Int @default(5)
     scheduled_at DateTime?
+    producer_id String?
     job_events JobEvents[] @relation("Job Events")
 
     @@index([queue_id, status, priority, created_at])
@@ -117,7 +118,7 @@ model JobEvents {
     event_type JobEventType
     prev_status JobStatus
     next_status JobStatus
-    worker_id String
+    worker_id String?
     metadata Json?
 
     @@index([job_id, created_at(sort: Desc)])
