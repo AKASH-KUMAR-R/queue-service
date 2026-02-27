@@ -1,6 +1,7 @@
 import { Router } from "express";
 
-import { workerAuthMiddleware } from "@common/middleware/auth.middleware";
+import passport from "@config/passport.config";
+
 import {
 	queryValidationMiddleware,
 	validateId,
@@ -22,7 +23,10 @@ const router = Router();
 
 router.get(
 	"/next-job",
-	workerAuthMiddleware,
+	passport.authenticate("api-key", {
+		session: false,
+		assignProperty: "project",
+	}),
 	queryValidationMiddleware(NextJobQueryParams),
 	jobRateLimiter,
 	extractWorkerId,
@@ -30,7 +34,10 @@ router.get(
 );
 router.get(
 	"/:id",
-	workerAuthMiddleware,
+	passport.authenticate("api-key", {
+		session: false,
+		assignProperty: "project",
+	}),
 	validateId,
 	extractWorkerId,
 	jobWorkerController.getJobById,
@@ -38,7 +45,10 @@ router.get(
 
 router.post(
 	"/create",
-	workerAuthMiddleware,
+	passport.authenticate("api-key", {
+		session: false,
+		assignProperty: "project",
+	}),
 	validationMiddleware(JobCreateRequest),
 	extractProducerId,
 	jobWorkerController.addJobToQueue,
@@ -46,7 +56,10 @@ router.post(
 
 router.put(
 	"/mark-as-completed/:id",
-	workerAuthMiddleware,
+	passport.authenticate("api-key", {
+		session: false,
+		assignProperty: "project",
+	}),
 	validateId,
 	extractWorkerId,
 	jobWorkerController.markAsCompleted,
@@ -54,7 +67,10 @@ router.put(
 
 router.put(
 	"/mark-as-failed/:id",
-	workerAuthMiddleware,
+	passport.authenticate("api-key", {
+		session: false,
+		assignProperty: "project",
+	}),
 	validateId,
 	extractWorkerId,
 	jobWorkerController.markAsFailed,
@@ -62,7 +78,10 @@ router.put(
 
 router.put(
 	"/heartbeat/:id",
-	workerAuthMiddleware,
+	passport.authenticate("api-key", {
+		session: false,
+		assignProperty: "project",
+	}),
 	validateId,
 	extractWorkerId,
 	jobWorkerController.heartBeatCheck,
@@ -70,7 +89,10 @@ router.put(
 
 router.put(
 	"/update/:id",
-	workerAuthMiddleware,
+	passport.authenticate("api-key", {
+		session: false,
+		assignProperty: "project",
+	}),
 	validateId,
 	extractWorkerId,
 	validationMiddleware(JobUpdateRequest),

@@ -70,7 +70,7 @@ export const extractWorkerId = async (
 	res: Response,
 	next: NextFunction,
 ) => {
-	const workerId = req.headers["x-worker-id"] as string;
+	const workerId = req.get("x-worker-id");
 
 	if (!workerId) {
 		return handleError(res, "X-Worker-Id is required", 400);
@@ -86,7 +86,7 @@ export const extractProducerId = async (
 	res: Response,
 	next: NextFunction,
 ) => {
-	const producerId = req.headers["x-producer-id"] as string;
+	const producerId = req.get("x-producer-id");
 
 	if (!producerId) {
 		return handleError(res, "X-Producer-Id is required", 400);
