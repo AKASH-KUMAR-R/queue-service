@@ -6,6 +6,7 @@ import Express, {
 
 import "@config/dotenv.config";
 import passport from "@config/passport.config";
+import "@config/prisma.config";
 
 import cookieParser from "cookie-parser";
 import cors from "cors";

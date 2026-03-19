@@ -2,7 +2,6 @@ import "./src/models/user/dbmodel/user.model.zmodel";
 
 datasource db {
     provider = 'postgresql'
-    url = env('DATABASE_URL')
 }
 
 generator client {
