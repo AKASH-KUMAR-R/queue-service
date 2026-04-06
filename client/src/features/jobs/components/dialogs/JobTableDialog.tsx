@@ -1,12 +1,7 @@
 import { JobsTable } from "@widgets/JobsTable";
 
 import { LoadingState } from "@shared/ui/LoadingState";
-import {
-	Dialog,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
-} from "@shared/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@shared/ui/dialog";
 
 import type { Job } from "@entities/job/types/types";
 
@@ -33,7 +28,13 @@ const JobTableDialog: React.FC<JobTableDialogProps> = ({
 				{isLoading ? (
 					<LoadingState />
 				) : (
-					<JobsTable jobs={data} onViewClick={onViewJob} />
+					<JobsTable
+						jobs={data}
+						onViewClick={onViewJob}
+						totalPages={1}
+						onPageChange={(_page) => {}}
+						page={1}
+					/>
 				)}
 			</DialogContent>
 		</Dialog>

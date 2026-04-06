@@ -39,7 +39,7 @@ export function PauseQueueButton({
 					message={`Are you sure you want to pause "${queue.label}"? In-progress jobs will complete, but no new jobs will be processed.`}
 					confirmLabel="Pause Queue"
 					onConfirm={handlePause}
-					variant="warning"
+					variant="destructive"
 				/>
 			</>
 		);
@@ -59,7 +59,7 @@ export function PauseQueueButton({
 				message={`Are you sure you want to pause "${queue.label}"? In-progress jobs will complete, but no new jobs will be processed.`}
 				confirmLabel="Pause Queue"
 				onConfirm={handlePause}
-				variant="warning"
+				variant="destructive"
 			/>
 		</>
 	);

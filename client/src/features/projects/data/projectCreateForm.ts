@@ -21,7 +21,7 @@ export const useProjectCreate = (onError: ProjectCreateFormErrorHandler) => {
 		mutationFn: createProject,
 		onSuccess() {
 			client.invalidateQueries({
-				queryKey: projectKeys.lists(),
+				queryKey: projectKeys.all,
 			});
 		},
 		onError(errors) {

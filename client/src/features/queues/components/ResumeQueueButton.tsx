@@ -39,7 +39,7 @@ export function ResumeQueueButton({
 					message={`Are you sure you want to resume "${queue.label}"? The queue will start processing pending jobs.`}
 					confirmLabel="Resume Queue"
 					onConfirm={handleResume}
-					variant="primary"
+					variant="default"
 				/>
 			</>
 		);
@@ -59,7 +59,7 @@ export function ResumeQueueButton({
 				message={`Are you sure you want to resume "${queue.label}"? The queue will start processing pending jobs.`}
 				confirmLabel="Resume Queue"
 				onConfirm={handleResume}
-				variant="primary"
+				variant="default"
 			/>
 		</>
 	);

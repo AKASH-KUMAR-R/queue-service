@@ -6,7 +6,6 @@ import { ApiKeysList } from "@widgets/api-keys/ApiKeysList";
 import { Plus } from "lucide-react";
 
 import { Button } from "@shared/ui/button";
-import { Spinner } from "@shared/ui/spinner";
 
 import type { ApiKey, ApiKeyWithSecret } from "@entities/api-key/model/types";
 

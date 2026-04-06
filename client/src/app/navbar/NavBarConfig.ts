@@ -9,15 +9,7 @@
  * - Queue Management: Operational queue tasks
  * - General: User preferences and app settings
  */
-import {
-	BarChart3,
-	Briefcase,
-	Key,
-	Layers,
-	Palette,
-	Settings,
-	Users,
-} from "lucide-react";
+import { BarChart3, Key, Layers, Palette, Settings } from "lucide-react";
 
 // ============================================================================
 // Types & Interfaces

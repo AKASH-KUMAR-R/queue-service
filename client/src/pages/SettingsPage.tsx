@@ -22,11 +22,7 @@ const settingsSchema = z.object({
 type SettingsFormData = z.infer<typeof settingsSchema>;
 
 export function SettingsPage() {
-	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-	} = useForm<SettingsFormData>({
+	const { register, handleSubmit } = useForm<SettingsFormData>({
 		resolver: zodResolver(settingsSchema),
 		defaultValues: {
 			maxAttempts: 3,
@@ -105,7 +101,7 @@ export function SettingsPage() {
 					<div className="grid grid-cols-12 gap-4">
 						<div className="col-span-4">
 							<FormField>
-								<Label htmlFor="maxAttempts" required>
+								<Label htmlFor="maxAttempts">
 									Max Attempts
 								</Label>
 								<Input
@@ -113,42 +109,28 @@ export function SettingsPage() {
 									type="number"
 									min="1"
 									max="10"
-									error={errors.maxAttempts?.message}
-									{...register("maxAttempts", {
-										valueAsNumber: true,
-									})}
+									required
 								/>
 							</FormField>
 						</div>
 						<div className="col-span-4">
 							<FormField>
-								<Label htmlFor="timeout" required>
+								<Label htmlFor="timeout">
 									Timeout (seconds)
 								</Label>
-								<Input
-									id="timeout"
-									type="number"
-									min="1"
-									error={errors.timeout?.message}
-									{...register("timeout", {
-										valueAsNumber: true,
-									})}
-								/>
+								<Input id="timeout" type="number" min="1" />
 							</FormField>
 						</div>
 						<div className="col-span-4">
 							<FormField>
-								<Label htmlFor="retryDelay" required>
+								<Label htmlFor="retryDelay">
 									Retry Delay (seconds)
 								</Label>
 								<Input
 									id="retryDelay"
 									type="number"
 									min="0"
-									error={errors.retryDelay?.message}
-									{...register("retryDelay", {
-										valueAsNumber: true,
-									})}
+									required
 								/>
 							</FormField>
 						</div>

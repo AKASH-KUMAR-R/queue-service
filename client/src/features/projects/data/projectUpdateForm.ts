@@ -28,7 +28,7 @@ export const useProjectUpdate = (onError: ProjectUpdateFormErrorHandler) => {
 			updateProject(data.projectId, data.data),
 		onSuccess() {
 			client.invalidateQueries({
-				queryKey: projectKeys.lists(),
+				queryKey: projectKeys.all,
 			});
 		},
 		onError(errors) {

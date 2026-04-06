@@ -3,7 +3,7 @@ interface StatusBadgeProps {
 	type: "queue" | "job" | "worker";
 }
 
-export function StatusBadge({ status, type }: StatusBadgeProps) {
+export function StatusBadge({ status }: StatusBadgeProps) {
 	const getStatusStyle = () => {
 		const normalized = status.toLowerCase();
 

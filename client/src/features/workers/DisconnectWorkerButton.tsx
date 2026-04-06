@@ -35,7 +35,7 @@ export function DisconnectWorkerButton({
 				message={`Are you sure you want to disconnect worker "${worker.id}"? Active jobs will be reassigned to other workers.`}
 				confirmLabel="Disconnect Worker"
 				onConfirm={handleDisconnect}
-				variant="danger"
+				variant="destructive"
 			/>
 		</>
 	);
