@@ -14,36 +14,39 @@ export const logger = pino(
 			{
 				target: "pino/file",
 				options: {
-					destination: path.join(
-						__dirname,
-						"..",
-						"..",
-						"./logs/all.log",
-					),
-					mkdir: true,
-				},
-			},
-			{
-				target: "pino/file",
-				options: {
-					destination: path.join(
-						__dirname,
-						"..",
-						"..",
-						"./logs/error.log",
-					),
-					mkdir: true,
-				},
-				level: "error",
-			},
-			{
-				target: "pino/file",
-				options: {
 					destination: 1,
-					mkdir: true,
 				},
 				level: "info",
 			},
+			...(process.env.NODE_ENV !== "production"
+				? [
+						{
+							target: "pino/file",
+							options: {
+								destination: path.join(
+									__dirname,
+									"..",
+									"..",
+									"./logs/all.log",
+								),
+								mkdir: true,
+							},
+						},
+						{
+							target: "pino/file",
+							options: {
+								destination: path.join(
+									__dirname,
+									"..",
+									"..",
+									"./logs/error.log",
+								),
+								mkdir: true,
+							},
+							level: "error",
+						},
+					]
+				: []),
 		],
 	}),
 );
