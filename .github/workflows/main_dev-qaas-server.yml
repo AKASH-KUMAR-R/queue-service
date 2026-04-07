@@ -62,5 +62,5 @@ jobs:
         with:
           app-name: 'dev-qaas-server'
           slot-name: 'Production'
-          package: ./api
+          package: .
           
