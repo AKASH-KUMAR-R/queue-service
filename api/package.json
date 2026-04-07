@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon",
+    "build": "npx zenstack generate && tsup",
+    "start": "node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "generate": "dotenv -e .dev.env -- npx zenstack generate",
     "migrate:dev": "dotenv -e .dev.env -- prisma migrate dev",
@@ -49,6 +51,7 @@
     "nodemon": "^3.1.11",
     "prisma": "^6.19.0",
     "ts-node-dev": "^2.0.0",
+    "tsup": "^8.5.1",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "zenstack": "^2.22.1"

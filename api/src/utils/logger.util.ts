@@ -20,6 +20,7 @@ export const logger = pino(
 						"..",
 						"./logs/all.log",
 					),
+					mkdir: true,
 				},
 			},
 			{
@@ -31,6 +32,7 @@ export const logger = pino(
 						"..",
 						"./logs/error.log",
 					),
+					mkdir: true,
 				},
 				level: "error",
 			},
@@ -38,6 +40,7 @@ export const logger = pino(
 				target: "pino/file",
 				options: {
 					destination: 1,
+					mkdir: true,
 				},
 				level: "info",
 			},
