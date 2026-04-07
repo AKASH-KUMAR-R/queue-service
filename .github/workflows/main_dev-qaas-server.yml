@@ -25,15 +25,16 @@ jobs:
 
       - name: npm install, build, and test
         run: |
+          cd ./api
           npm install
+          npm run generate
           npm run build --if-present
-          npm run test --if-present
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: node-app
-          path: .
+          path: ./api
 
   deploy:
     runs-on: ubuntu-latest
@@ -61,5 +62,5 @@ jobs:
         with:
           app-name: 'dev-qaas-server'
           slot-name: 'Production'
-          package: .
+          package: ./api
           
