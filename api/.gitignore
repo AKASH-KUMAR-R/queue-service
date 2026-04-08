@@ -5,3 +5,6 @@ dist
 
 logs
 *.log
+
+# Generated Prisma Client
+src/generated/*
