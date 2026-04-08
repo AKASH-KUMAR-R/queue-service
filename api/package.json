@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon",
-    "build": "npx zenstack generate --output ./src/generated/prisma && tsup",
+    "build": "npx zenstack generate --output ./src/generated/prisma && tsup && npm run copy-engine",
+    "copy-engine": "cp src/generated/prisma-cli/*.node dist/",
     "start": "node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "generate": "dotenv -e .dev.env -- npx zenstack generate --output ./src/generated/prisma",
