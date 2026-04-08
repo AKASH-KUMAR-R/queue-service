@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 
-import type { User } from "@prisma/client";
+import type { User } from "@db/client";
 
 import type { ProjectCreateRequestType } from "@models/project/requests/ProjectCreateRequest";
 

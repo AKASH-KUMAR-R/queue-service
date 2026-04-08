@@ -1,4 +1,4 @@
-import type { Prisma, PrismaClient, User } from "@prisma/client";
+import type { Prisma, PrismaClient, User } from "@db/client";
 
 const createUser = async (db: PrismaClient, data: Prisma.UserCreateInput) => {
 	const user = await db.user.create({

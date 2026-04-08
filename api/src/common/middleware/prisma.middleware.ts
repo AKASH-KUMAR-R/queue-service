@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 
-import type { User } from "@prisma/client";
+import type { User } from "@db/client";
 
 import { handleError } from "@utils/error.util";
 import { getEnhancedPrisma, prisma } from "@utils/prisma.util";

@@ -1,4 +1,4 @@
-import { Prisma, type PrismaClient, type Queue } from "@prisma/client";
+import { Prisma, type PrismaClient, type Queue } from "@db/client";
 
 import type { QueueFilters } from "@models/queue/requests/QueueSearchRequest";
 

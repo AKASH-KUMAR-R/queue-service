@@ -1,4 +1,4 @@
-import type { PrismaClient } from "@prisma/client";
+import type { PrismaClient } from "@db/client";
 
 type DelegateForModel<M extends keyof PrismaClient> =
 	PrismaClient[M] extends infer D ? D : never;

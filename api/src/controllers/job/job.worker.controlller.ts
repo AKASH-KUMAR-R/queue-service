@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 
-import { JobStatus } from "@prisma/client";
+import { JobStatus } from "@db/client";
 
 import type { NextJobQueryParamsType } from "@models/job/requests/NextJobQueryParams";
 

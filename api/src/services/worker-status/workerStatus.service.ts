@@ -1,4 +1,4 @@
-import type { Prisma, PrismaClient } from "@prisma/client";
+import type { Prisma, PrismaClient } from "@db/client";
 
 const upsert = async (
 	db: PrismaClient | Prisma.TransactionClient,

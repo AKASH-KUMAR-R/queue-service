@@ -7,7 +7,7 @@
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
-    "module": "esnext",
+    "module": "preserve",
     "target": "es2020",
     "types": ["node"],
 
@@ -39,7 +39,7 @@
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "baseUrl": "./src",
@@ -51,7 +51,8 @@
       "@utils/*": ["utils/*"],
       "@routes/*": ["routes/*"],
       "@errors/*": ["errors/*"],
-      "@config/*": ["config/*"]
+      "@config/*": ["config/*"],
+      "@db/*": ["generated/prisma-cli/*"]
     }
   },
   "include": ["src/**/*"]

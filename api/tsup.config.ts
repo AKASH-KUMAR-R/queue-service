@@ -8,4 +8,6 @@ export default defineConfig({
   sourcemap: true,
   tsconfig: "tsconfig.json",
   target: "es2022",
+  splitting: false,
+  shims: true,
 });

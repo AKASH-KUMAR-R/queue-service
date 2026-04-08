@@ -1,4 +1,4 @@
-import { JobStatus } from "@prisma/client";
+import { JobStatus } from "@db/client";
 import zod from "zod";
 
 const QueueJobsListRequest = zod

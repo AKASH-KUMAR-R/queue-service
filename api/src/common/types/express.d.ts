@@ -1,4 +1,4 @@
-import type { PrismaClient, Project, User } from "@prisma/client";
+import type { PrismaClient, Project, User } from "@db/client";
 
 declare global {
 	namespace Express {

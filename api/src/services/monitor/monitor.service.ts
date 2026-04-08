@@ -1,4 +1,4 @@
-import { JobEventType, JobStatus } from "@prisma/client";
+import { JobEventType, JobStatus } from "@db/client";
 
 import jobEventsService from "@services/job-events/jobEvents.service";
 import queueMetricsService from "@services/queue-metrics/queueMetrics.service";

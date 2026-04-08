@@ -1,4 +1,4 @@
-import { QueueStatus } from "@prisma/client";
+import { QueueStatus } from "@db/client";
 import zod from "zod";
 
 const QueueUpdateRequest = zod

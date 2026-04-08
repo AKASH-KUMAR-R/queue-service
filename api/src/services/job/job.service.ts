@@ -4,7 +4,7 @@ import {
 	JobStatus,
 	type Prisma,
 	PrismaClient,
-} from "@prisma/client";
+} from "@db/client";
 
 import type { QueueJobsFilters } from "@models/queue/requests/QueueJobsListRequest";
 

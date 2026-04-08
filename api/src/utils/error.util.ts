@@ -1,6 +1,6 @@
 import type { Response } from "express";
 
-import { Prisma } from "@prisma/client";
+import { Prisma } from "@db/client";
 import { PrismaErrorCode } from "@zenstackhq/runtime";
 
 import { QueueRateLimitExceeded } from "@errors/QueueRateLimitExceeded";

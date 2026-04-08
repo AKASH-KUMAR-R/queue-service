@@ -1,4 +1,4 @@
-import type { ApiKey, Prisma, PrismaClient } from "@prisma/client";
+import type { ApiKey, Prisma, PrismaClient } from "@db/client";
 
 const createApiKey = async (
 	db: PrismaClient,
