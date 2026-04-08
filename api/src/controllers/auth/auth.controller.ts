@@ -55,14 +55,14 @@ const login = async (req: Request, res: Response) => {
 		res.cookie("accessToken", accessToken, {
 			httpOnly: true,
 			secure: true,
-			sameSite: process.env.NODE_ENV === "production" ? "lax" : "none",
+			sameSite: process.env.NODE_ENV === "production" ? "none" : "none",
 			maxAge: MINUTES_IN_MILLISECOND * 15, // 15 minutes
 		});
 
 		res.cookie("refreshToken", refreshToken, {
 			httpOnly: true,
 			secure: true,
-			sameSite: process.env.NODE_ENV === "production" ? "lax" : "none",
+			sameSite: process.env.NODE_ENV === "production" ? "none" : "none",
 			maxAge: DAY_IN_MILLISECONDS * 7, // 7 days
 		});
 
