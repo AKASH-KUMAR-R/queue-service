@@ -12,6 +12,7 @@ generator client {
     provider = "prisma-client"
     output = "../src/generated/prisma-cli"
     moduleFormat = "esm"
+    binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 enum QueueStatus {
