@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon",
     "build": "npx zenstack generate && tsup",
-    "start": "dotenv -e .prod.env -- node dist/index.js",
+    "start": "node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "generate": "dotenv -e .dev.env -- npx zenstack generate",
     "migrate:dev": "dotenv -e .dev.env -- prisma migrate dev",
