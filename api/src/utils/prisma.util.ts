@@ -1,5 +1,5 @@
 import { PrismaClient, type User } from "@db/client";
-import { enhance } from "@zenstackhq/runtime";
+import { enhance } from "@zenstack/enhance";
 
 export const prisma = new PrismaClient(); // for non auth
 

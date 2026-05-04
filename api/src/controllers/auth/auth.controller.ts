@@ -1,4 +1,4 @@
-import type { Request, Response } from "express";
+import type { CookieOptions, Request, Response } from "express";
 
 import { DAY_IN_MILLISECONDS, MINUTES_IN_MILLISECOND } from "lib/time";
 
@@ -12,6 +12,18 @@ import userService from "@services/user/user.service";
 import { compareText, hashText } from "@utils/bcrypt.util";
 import { handleError } from "@utils/error.util";
 import { generateToken, verifyToken } from "@utils/jwt.util";
+
+const cookieOptions = (maxAge?: number): CookieOptions => {
+	const isProduction = process.env.NODE_ENV === "production";
+
+	return {
+		httpOnly: true,
+		secure: true,
+		sameSite: isProduction ? "none" : "none",
+		path: "/",
+		...(maxAge ? { maxAge } : {}),
+	};
+};
 
 const login = async (req: Request, res: Response) => {
 	try {
@@ -52,19 +64,17 @@ const login = async (req: Request, res: Response) => {
 			{ expiresIn: "7d" },
 		);
 
-		res.cookie("accessToken", accessToken, {
-			httpOnly: true,
-			secure: true,
-			sameSite: process.env.NODE_ENV === "production" ? "none" : "none",
-			maxAge: MINUTES_IN_MILLISECOND * 15, // 15 minutes
-		});
+		res.cookie(
+			"accessToken",
+			accessToken,
+			cookieOptions(MINUTES_IN_MILLISECOND * 15),
+		);
 
-		res.cookie("refreshToken", refreshToken, {
-			httpOnly: true,
-			secure: true,
-			sameSite: process.env.NODE_ENV === "production" ? "none" : "none",
-			maxAge: DAY_IN_MILLISECONDS * 7, // 7 days
-		});
+		res.cookie(
+			"refreshToken",
+			refreshToken,
+			cookieOptions(DAY_IN_MILLISECONDS * 7),
+		);
 
 		const { password: _, ...userWithoutPassword } = user;
 
@@ -105,16 +115,8 @@ const signup = async (req: Request, res: Response) => {
 
 const logout = async (_req: Request, res: Response) => {
 	try {
-		res.clearCookie("accessToken", {
-			httpOnly: true,
-			secure: true,
-			sameSite: process.env.NODE_ENV === "production" ? "lax" : "none",
-		});
-		res.clearCookie("refreshToken", {
-			httpOnly: true,
-			secure: true,
-			sameSite: process.env.NODE_ENV === "production" ? "lax" : "none",
-		});
+		res.clearCookie("accessToken", cookieOptions());
+		res.clearCookie("refreshToken", cookieOptions());
 
 		res.status(200).json({
 			success: true,
@@ -166,12 +168,11 @@ const refreshToken = async (req: Request, res: Response) => {
 			{ expiresIn: "15m" },
 		);
 
-		res.cookie("accessToken", newAccessToken, {
-			httpOnly: true,
-			secure: true,
-			sameSite: process.env.NODE_ENV === "production" ? "lax" : "none",
-			maxAge: MINUTES_IN_MILLISECOND * 15, // 15 minutes
-		});
+		res.cookie(
+			"accessToken",
+			newAccessToken,
+			cookieOptions(MINUTES_IN_MILLISECOND * 15),
+		);
 
 		res.status(200).json({
 			success: true,
