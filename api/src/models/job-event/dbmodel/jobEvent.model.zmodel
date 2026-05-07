@@ -23,6 +23,7 @@ model JobEvents extends Base {
     metadata Json?
 
     @@index([job_id, created_at(sort: Desc)]) // For fetching events of a job in descending order of creation time
+    @@index([queue_id, created_at, event_type])
 
     @@allow('all', auth() != null && auth().id == project.user_id) //If the multiple user model is implemented, change this to check project ownership
 }
