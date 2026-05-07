@@ -105,9 +105,12 @@ const findQueues = async (
 	limit: number,
 ) => {
 	const paginationParams = new PaginationParams(page, limit);
+	const trimmedLabel = query.label?.trim();
 
 	const whereQuery: Prisma.QueueWhereInput = {
-		...(query.label && { label: query.label }),
+		...(trimmedLabel && {
+			label: { contains: trimmedLabel, mode: "insensitive" },
+		}),
 		...(query.status && { status: query.status }),
 		...(query.project_id && { project_id: query.project_id }),
 	};

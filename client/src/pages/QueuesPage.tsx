@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useProject } from "@app/ProjectContext";
 import { QueueGrid } from "@widgets/QueueGrid";
@@ -30,11 +30,21 @@ export function QueuesPage() {
 		page: 1,
 		limit: 10,
 	});
+	const [debouncedLabel, setDebouncedLabel] = useState("");
 
 	const [showCreateDialog, setShowCreateDialog] = useState(false);
 
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			setDebouncedLabel(filters.label?.trim() || "");
+		}, 350);
+
+		return () => clearTimeout(timer);
+	}, [filters.label]);
+
 	const { data, isLoading: isQueueLoading } = useQueueList({
 		...filters,
+		label: debouncedLabel,
 		projectId: currentProject?.id || "",
 	});
 
@@ -70,9 +80,10 @@ export function QueuesPage() {
 				viewMode={viewMode}
 				onViewModeChange={setViewMode}
 				searchQuery={filters}
-				onSearchChange={(field, value) =>
-					setFilters((prev) => ({ ...prev, [field]: value }))
-				}
+				onSearchChange={(field, value) => {
+					if (field !== "label") return;
+					setFilters((prev) => ({ ...prev, label: value, page: 1 }));
+				}}
 			/>
 
 			{filteredQueues.length === 0 ? (
