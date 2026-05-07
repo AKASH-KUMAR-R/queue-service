@@ -58,7 +58,7 @@ Single-test command support: no package currently has a real test framework conf
 
 ## Restricted Operations & CLI Safety
 
-- **Migrations:** NEVER suggest or run `npx prisma migrate`. The source of truth is `schema.zmodel`. Always use `npx zenstack generate` followed by `npx prisma db push` or the specific ZenStack migration flow.
+- **Migrations:** NEVER suggest or run `npx prisma migrate`. The source of truth is `schema.zmodel`. Always use `npm run generate` followed by `npm run migrate:dev` or the specific ZenStack migration flow.
 - **Dependency Management:** Before adding a new npm package, the agent must ask for permission. Do not autonomously run `npm install`.
 - **Environment Variables:** Never create or modify `.env` files with real credentials. Only suggest changes to `.env.example`.
 - **Generated Code:** Do not attempt to fix errors inside the `src/generated/` folder. Re-run the generation script instead.
