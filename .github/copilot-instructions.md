@@ -64,3 +64,15 @@ Single-test command support: no package currently has a real test framework conf
 - **Generated Code:** Do not attempt to fix errors inside the `src/generated/` folder. Re-run the generation script instead.
 - **Database Destructive Actions:** Strictly forbidden to suggest `npx prisma migrate reset` or any command that drops tables without explicit user confirmation.
 - **Production Deployments:** Do not suggest or execute deployment scripts without explicit user approval. Always confirm the target environment and deployment strategy before proceeding.
+
+# Workflow Rules
+
+- **Branch Creation First:** Before executing any plan that involves code changes, file modifications, or deletions, the first step must always be to create a new Git branch from the main branch.
+- **Branch Naming Logic:** Use the command `git checkout -b <prefix>/<description>` using the following mapping:
+    - `feat/`: New features or significant additions.
+    - `fix/`: Bug fixes.
+    - `chore/`: Maintenance tasks, dependencies, or configuration changes.
+    - `hot-fix/`: Critical production fixes.
+    - `refactor/`: Code changes that neither fix a bug nor add a feature.
+- **Description Format:** The `<description>` should be kebab-case and concise (e.g., `feat/add-jwt-auth`).
+- **Pre-execution Check:** Always ensure `git status` is clean or warned before branching.
