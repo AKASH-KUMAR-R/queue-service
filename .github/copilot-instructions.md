@@ -69,11 +69,12 @@ Single-test command support: no package currently has a real test framework conf
 # Workflow Rules
 
 - **Branch Creation First:** Before executing any plan that involves code changes, file modifications, or deletions, the first step must always be to create a new Git branch from the main branch.
-- **Branch Naming Logic:** Use the command `git checkout -b <prefix>/<description>` using the following mapping:
+- **Branch Naming Logic:** Use the command `git checkout -b <prefix>/<scope>/<description>` using the following mapping:
     - `feat/`: New features or significant additions.
     - `fix/`: Bug fixes.
     - `chore/`: Maintenance tasks, dependencies, or configuration changes.
     - `hot-fix/`: Critical production fixes.
     - `refactor/`: Code changes that neither fix a bug nor add a feature.
+    - Use scoped prefixes for all branch types: `b/` for backend, `f/` for frontend, `w/` for worker SDK, and `p/` for producer SDK. Example: `feat/b/add-jwt-auth`, `fix/f/button-styling`, `chore/w/update-dependencies`.
 - **Description Format:** The `<description>` should be kebab-case and concise (e.g., `feat/add-jwt-auth`).
 - **Pre-execution Check:** Always ensure `git status` is clean or warned before branching.
