@@ -1,4 +1,5 @@
 import "./src/models/user/dbmodel/user.model.zmodel";
+import "./src/models/cron-state/dbmodel/cronState.model.zmodel";
 
 datasource db {
     provider = 'postgresql'
@@ -11,4 +12,3 @@ generator client {
   moduleFormat  = "esm"
   binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
-

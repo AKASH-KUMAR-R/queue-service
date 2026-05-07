@@ -5,6 +5,7 @@ import "../../job/dbmodel/job.model.zmodel";
 import "../../queue-limit/dbmodel/queueRateLimit.model.zmodel";
 import "../../job-event/dbmodel/jobEvent.model.zmodel";
 import "../../queue-metrics/dbmodel/queueMetrics.model.zmodel";
+import "../../queue-insights/dbmodel/queueInsights.model.zmodel";
 import "../../worker-status/dbmodel/workerStatus.model.zmodel";
 
 model Queue extends Base {
@@ -25,6 +26,7 @@ model Queue extends Base {
 
     job_events JobEvents[] @relation("Queue Job Events")
     queue_metrics QueueMetrics? @relation("QueueMetrics")
+    queue_insights QueueInsights[] @relation("QueueInsights")
     queue_workers WorkerStatus[] @relation("QueueWorkers")
 
     @@unique([project_id, label])

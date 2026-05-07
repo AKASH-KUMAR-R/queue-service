@@ -1,0 +1,31 @@
+
+import "../../queue/dbmodel/queue.model.zmodel";
+
+model QueueInsights {
+    id String @id @default(uuid())
+    queue_id String
+    bucket_hour DateTime
+
+    jobs_completed Int @default(0)
+    jobs_failed Int @default(0)
+    jobs_requeued Int @default(0)
+
+    success_rate Float @default(0)
+    failure_rate Float @default(0)
+    retry_rate Float @default(0)
+
+    p50_latency Float?
+    p95_latency Float?
+    p99_latency Float?
+
+    queue Queue @relation("QueueInsights", fields: [queue_id], references: [id])
+
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+
+    @@unique([queue_id, bucket_hour])
+    @@index([queue_id, bucket_hour])
+
+    @@allow('read', auth() != null && auth().id == queue.project.user_id)
+}
+
