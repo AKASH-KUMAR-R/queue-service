@@ -1,5 +1,6 @@
+import "../../base/base.model.zmodel";
 
-model CronState {
+model CronState extends Base {
     id String @id @default(uuid())
     cron_name String @unique
     last_run_at DateTime

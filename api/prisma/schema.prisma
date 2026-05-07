@@ -151,6 +151,8 @@ model QueueMetrics {
 }
 
 model QueueInsights {
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt()
     id String @id() @default(uuid())
     queue_id String
     bucket_hour DateTime
@@ -164,8 +166,6 @@ model QueueInsights {
     p95_latency Float?
     p99_latency Float?
     queue Queue @relation("QueueInsights", fields: [queue_id], references: [id])
-    created_at DateTime @default(now())
-    updated_at DateTime @updatedAt()
 
     @@unique([queue_id, bucket_hour])
     @@index([queue_id, bucket_hour])
@@ -200,6 +200,8 @@ model ApiKey {
 }
 
 model CronState {
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt()
     id String @id() @default(uuid())
     cron_name String @unique()
     last_run_at DateTime

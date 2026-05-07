@@ -1,7 +1,8 @@
 
 import "../../queue/dbmodel/queue.model.zmodel";
+import "../../base/base.model.zmodel";
 
-model QueueInsights {
+model QueueInsights extends Base {
     id String @id @default(uuid())
     queue_id String
     bucket_hour DateTime
@@ -19,9 +20,6 @@ model QueueInsights {
     p99_latency Float?
 
     queue Queue @relation("QueueInsights", fields: [queue_id], references: [id])
-
-    created_at DateTime @default(now())
-    updated_at DateTime @updatedAt
 
     @@unique([queue_id, bucket_hour])
     @@index([queue_id, bucket_hour])
