@@ -16,6 +16,10 @@ type QueueTableRowProps = {
 
 export function QueueTableRow({ queue }: QueueTableRowProps) {
 	const navigate = useNavigate();
+	const queueMetricsQuery = new URLSearchParams({
+		projectId: queue.projectId,
+		queueId: queue.id,
+	}).toString();
 
 	return (
 		<tr className="hover:bg-neutral-50">
@@ -73,6 +77,11 @@ export function QueueTableRow({ queue }: QueueTableRowProps) {
 						title="View jobs"
 					>
 						<ExternalLink className="w-4 h-4" />
+					</Button>
+					<Button
+						onClick={() => navigate(`/metrics?${queueMetricsQuery}`)}
+					>
+						Metrics
 					</Button>
 				</div>
 			</td>
