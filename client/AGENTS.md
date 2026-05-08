@@ -24,6 +24,10 @@ Use this file as the default context for coding and planning tasks in `client/`.
   - `data/` for React Query hooks and keys
   - `components/` for UI
 - Keep shared primitives in `src/shared/` (`api`, `ui`, `utils`, `types`, `hooks`).
+  - Naming conventions:
+    - Use camelCase for variables and functions.
+    - Use kabab-case for folder names.
+    - Use PascalCase for React component names and their component file names.
 - Keep route definitions typed with `AppRouteObject` and include breadcrumb metadata through `handle` when appropriate.
 
 ## 4) API and data best practices
