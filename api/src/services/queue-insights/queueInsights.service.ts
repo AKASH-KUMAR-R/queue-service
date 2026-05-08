@@ -20,6 +20,8 @@ type LatencyPercentilesRaw = {
 	p99_latency: number | string | null;
 };
 
+// TODO: currently it fetchs all events after the last run time, but we need to add a upper bound as well to avoid fetching too many events in case the cron job fails to run for a long time. We can use the current time as the upper bound.
+
 const getAffectedBuckets = async (
 	sinceLastRun: Date,
 ): Promise<AffectedBucket[]> => {
