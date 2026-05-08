@@ -27,6 +27,8 @@ import workerStatusRouter from "@routes/worker-status/workerStatus.routes";
 import { handleError } from "@utils/error.util";
 import { logger } from "@utils/logger.util";
 
+import { startCronJobs } from "./scheduler/insights";
+
 const app = Express();
 
 app.use(
@@ -74,6 +76,8 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 	handleError(res, err);
 });
 
+//TODO: the cron jobs needs to be moved to a seperate start cmd.Also, the monitor jobs and insights jobs needs to be seperated as they have different frequency and resource requirements.
 app.listen(process.env.PORT, () => {
 	console.log("Server listening at port ", process.env.PORT);
+	startCronJobs();
 });

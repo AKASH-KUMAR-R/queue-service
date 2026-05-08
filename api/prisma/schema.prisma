@@ -80,6 +80,7 @@ model Queue {
     queueRateLimiter QueueRateLimiter? @relation("QueueRateLimiter")
     job_events JobEvents[] @relation("Queue Job Events")
     queue_metrics QueueMetrics? @relation("QueueMetrics")
+    queue_insights QueueInsights[] @relation("QueueInsights")
     queue_workers WorkerStatus[] @relation("QueueWorkers")
 
     @@unique([project_id, label])
@@ -125,6 +126,7 @@ model JobEvents {
     metadata Json?
 
     @@index([job_id, created_at(sort: Desc)])
+    @@index([queue_id, created_at, event_type])
 }
 
 model QueueRateLimiter {
@@ -146,6 +148,27 @@ model QueueMetrics {
     active_jobs BigInt @default(0)
     failed_jobs BigInt @default(0)
     completed_jobs BigInt @default(0)
+}
+
+model QueueInsights {
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt()
+    id String @id() @default(uuid())
+    queue_id String
+    bucket_hour DateTime
+    jobs_completed Int @default(0)
+    jobs_failed Int @default(0)
+    jobs_requeued Int @default(0)
+    success_rate Float @default(0)
+    failure_rate Float @default(0)
+    retry_rate Float @default(0)
+    p50_latency Float?
+    p95_latency Float?
+    p99_latency Float?
+    queue Queue @relation("QueueInsights", fields: [queue_id], references: [id])
+
+    @@unique([queue_id, bucket_hour])
+    @@index([queue_id, bucket_hour])
 }
 
 model WorkerStatus {
@@ -174,4 +197,12 @@ model ApiKey {
     project_id String
 
     @@index([project_id, revoked])
+}
+
+model CronState {
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt()
+    id String @id() @default(uuid())
+    cron_name String @unique()
+    last_run_at DateTime
 }

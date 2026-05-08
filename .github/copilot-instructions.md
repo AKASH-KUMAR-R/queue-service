@@ -58,9 +58,23 @@ Single-test command support: no package currently has a real test framework conf
 
 ## Restricted Operations & CLI Safety
 
-- **Migrations:** NEVER suggest or run `npx prisma migrate`. The source of truth is `schema.zmodel`. Always use `npx zenstack generate` followed by `npx prisma db push` or the specific ZenStack migration flow.
+- **Migrations:**The source of truth is `schema.zmodel`. Always use `npm run generate` followed by `npm run migrate:dev` or the specific ZenStack migration flow.
+    - For local development, Copilot CLI actions that update/generated DB code should run `cd api && npm run generate` and then `cd api && npm run migrate:dev` (or the ZenStack equivalent). Do NOT run any production migration commands or destructive migration resets without explicit user approval.
 - **Dependency Management:** Before adding a new npm package, the agent must ask for permission. Do not autonomously run `npm install`.
 - **Environment Variables:** Never create or modify `.env` files with real credentials. Only suggest changes to `.env.example`.
 - **Generated Code:** Do not attempt to fix errors inside the `src/generated/` folder. Re-run the generation script instead.
 - **Database Destructive Actions:** Strictly forbidden to suggest `npx prisma migrate reset` or any command that drops tables without explicit user confirmation.
 - **Production Deployments:** Do not suggest or execute deployment scripts without explicit user approval. Always confirm the target environment and deployment strategy before proceeding.
+
+# Workflow Rules
+
+- **Branch Creation First:** Before executing any plan that involves code changes, file modifications, or deletions, the first step must always be to create a new Git branch from the main branch.
+- **Branch Naming Logic:** Use the command `git checkout -b <prefix>/<scope>/<description>` using the following mapping:
+    - `feat/`: New features or significant additions.
+    - `fix/`: Bug fixes.
+    - `chore/`: Maintenance tasks, dependencies, or configuration changes.
+    - `hot-fix/`: Critical production fixes.
+    - `refactor/`: Code changes that neither fix a bug nor add a feature.
+    - Use scoped prefixes for all branch types: `b/` for backend, `f/` for frontend, `w/` for worker SDK, and `p/` for producer SDK. Example: `feat/b/add-jwt-auth`, `fix/f/button-styling`, `chore/w/update-dependencies`.
+- **Description Format:** The `<description>` should be kebab-case and concise (e.g., `feat/add-jwt-auth`).
+- **Pre-execution Check:** Always ensure `git status` is clean or warned before branching.
