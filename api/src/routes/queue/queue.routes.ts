@@ -10,11 +10,13 @@ import {
 	validationMiddleware,
 } from "@common/middleware/zod.middleware";
 
+import QueueInsightsRequest from "@models/queue-insights/requests/QueueInsightsRequest";
 import { QueueCreateRequest } from "@models/queue/requests/QueueCreateRequest";
 import { QueueJobsListRequest } from "@models/queue/requests/QueueJobsListRequest";
 import { QueueSearchRequest } from "@models/queue/requests/QueueSearchRequest";
 import { QueueUpdateRequest } from "@models/queue/requests/QueueUpdateRequest";
 
+import queueInsightsController from "@controllers/queue-insights/queueInsights.controller";
 import queueController from "@controllers/queue/queue.controller";
 
 const router = Router();
@@ -61,6 +63,14 @@ router.get(
 	attachPrismaContext,
 	validateId,
 	queueController.getQueueRelatedWorkers,
+);
+router.get(
+	"/:id/insights",
+	passport.authenticate("jwt", { session: false }),
+	attachPrismaContext,
+	validateId,
+	queryValidationMiddleware(QueueInsightsRequest),
+	queueInsightsController.getQueueInsights,
 );
 router.post(
 	"/create",
