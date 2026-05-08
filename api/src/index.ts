@@ -27,6 +27,8 @@ import workerStatusRouter from "@routes/worker-status/workerStatus.routes";
 import { handleError } from "@utils/error.util";
 import { logger } from "@utils/logger.util";
 
+import { startCronJobs } from "./scheduler/insights";
+
 const app = Express();
 
 app.use(
@@ -76,4 +78,5 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 
 app.listen(process.env.PORT, () => {
 	console.log("Server listening at port ", process.env.PORT);
+	startCronJobs();
 });
