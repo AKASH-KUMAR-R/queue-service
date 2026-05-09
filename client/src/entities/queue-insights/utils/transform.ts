@@ -1,11 +1,11 @@
 import type {
-	GetQueueMetricsResponse,
-	RawQueueMetrics,
-	RawQueueMetricsParams,
+	GetQueueInsightsResponse,
+	RawQueueInsights,
+	RawQueueInsightsParams,
 } from "../types/apiTypes";
-import type { QueueMetrics, QueueMetricsParams } from "../types/types";
+import type { QueueInsights, QueueInsightsParams } from "../types/types";
 
-export const toQueueMetrics = (raw: RawQueueMetrics): QueueMetrics => {
+export const toQueueInsights = (raw: RawQueueInsights): QueueInsights => {
 	return {
 		id: raw.id,
 		queueId: raw.queue_id,
@@ -24,15 +24,15 @@ export const toQueueMetrics = (raw: RawQueueMetrics): QueueMetrics => {
 	};
 };
 
-export const toQueueMetricsList = (
-	raw: GetQueueMetricsResponse,
-): QueueMetrics[] => {
-	return raw.map(toQueueMetrics);
+export const toQueueInsightsList = (
+	raw: GetQueueInsightsResponse,
+): QueueInsights[] => {
+	return raw.map(toQueueInsights);
 };
 
-export const toRawQueueMetricsParams = (
-	params: QueueMetricsParams,
-): RawQueueMetricsParams => {
+export const toRawQueueInsightsParams = (
+	params: QueueInsightsParams,
+): RawQueueInsightsParams => {
 	return {
 		queue_id: params.queueId,
 		from: params.from.toISOString(),

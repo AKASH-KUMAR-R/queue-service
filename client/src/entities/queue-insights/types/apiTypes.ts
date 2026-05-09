@@ -1,6 +1,6 @@
 import type { RawApiResponseBase } from "@shared/types/types";
 
-export type RawQueueMetrics = RawApiResponseBase & {
+export type RawQueueInsights = RawApiResponseBase & {
 	id: string;
 	queue_id: string;
 	bucket_hour: string;
@@ -15,10 +15,10 @@ export type RawQueueMetrics = RawApiResponseBase & {
 	p99_latency: number | null;
 };
 
-export type RawQueueMetricsParams = {
+export type RawQueueInsightsParams = {
 	queue_id: string;
 	from: string;
 	to: string;
 };
 
-export type GetQueueMetricsResponse = RawQueueMetrics[];
+export type GetQueueInsightsResponse = RawQueueInsights[];

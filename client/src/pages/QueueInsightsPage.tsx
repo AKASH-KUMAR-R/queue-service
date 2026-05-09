@@ -6,7 +6,7 @@ import { MetricSummaryCards } from "@widgets/MetricSummaryCards";
 import { Alert, AlertDescription, AlertTitle } from "@shared/ui/alert";
 import { Skeleton } from "@shared/ui/skeleton";
 
-import { useQueueMetricsList } from "@features/queue-metrics/data/listMetrics";
+import { useQueueInsightsList } from "@features/queue-insights/data/listMetrics";
 
 type TimeRange = "1hr" | "6hr" | "24hr" | "7d";
 
@@ -23,7 +23,7 @@ const getHoursByRange = (timeRange: TimeRange): number => {
 	}
 };
 
-export function MetricsPage() {
+export default function QueueInsightsPage() {
 	const [searchQuery] = useSearchParams();
 	const [timeRange, setTimeRange] = useState<TimeRange>("24hr");
 	const [autoRefresh, setAutoRefresh] = useState(true);
@@ -46,7 +46,7 @@ export function MetricsPage() {
 		isLoading,
 		isError,
 		error,
-	} = useQueueMetricsList(projectId, {
+	} = useQueueInsightsList(projectId, {
 		queueId,
 		from,
 		to,
