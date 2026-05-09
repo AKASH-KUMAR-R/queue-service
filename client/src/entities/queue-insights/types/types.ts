@@ -1,6 +1,6 @@
 import type { Base } from "@shared/types/types";
 
-export type QueueMetrics = Base & {
+export type QueueInsights = Base & {
 	id: string;
 	queueId: string;
 	bucketHour: string;
@@ -15,7 +15,7 @@ export type QueueMetrics = Base & {
 	p99Latency: number | null;
 };
 
-export type QueueMetricsParams = {
+export type QueueInsightsParams = {
 	queueId: string;
 	from: Date;
 	to: Date;

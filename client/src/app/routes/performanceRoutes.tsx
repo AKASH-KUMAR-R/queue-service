@@ -1,8 +1,8 @@
 import type { AppRouteObject } from "@shared/types/routes";
 
-import { MetricsPage } from "@pages/MetricsPage";
+import QueueInsightsPage from "@pages/QueueInsightsPage";
 
 export const PerformanceRoutes: AppRouteObject = {
 	path: "/metrics",
-	element: <MetricsPage />,
+	element: <QueueInsightsPage />,
 };
