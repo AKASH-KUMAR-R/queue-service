@@ -12,12 +12,14 @@ type QueueCardProps = {
 	queue: QueueWithMetrics;
 	onSelectQueue: (queueId: string) => void;
 	onViewWorkers: (queueId: string) => void;
+	onViewMetrics: (queueId: string, projectId: string) => void;
 };
 
 export function QueueCard({
 	queue,
 	onSelectQueue,
 	onViewWorkers,
+	onViewMetrics,
 }: QueueCardProps) {
 	return (
 		<div className="col-span-6 bg-white border border-neutral-200 rounded-lg p-6 hover:border-neutral-300 transition-colors">
@@ -108,6 +110,12 @@ export function QueueCard({
 					className="flex-1 px-3 py-2 text-sm "
 				>
 					View Workers
+				</Button>
+				<Button
+					onClick={() => onViewMetrics(queue.id, queue.projectId)}
+					className="flex-1 px-3 py-2 text-sm "
+				>
+					Metrics
 				</Button>
 				<Button className="">
 					<RefreshCw className="w-4 h-4" />

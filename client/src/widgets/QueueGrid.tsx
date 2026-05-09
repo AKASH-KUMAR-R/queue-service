@@ -25,6 +25,14 @@ export function QueueGrid({
 	const handleViewWorkers = (queueId: string) => {
 		navigate(`/queues/${queueId}/workers`);
 	};
+	const handleViewMetrics = (queueId: string, projectId: string) => {
+		const queryParams = new URLSearchParams({
+			projectId,
+			queueId,
+		});
+
+		navigate(`/metrics?${queryParams.toString()}`);
+	};
 
 	return (
 		<div className=" w-full">
@@ -35,6 +43,7 @@ export function QueueGrid({
 						queue={queue}
 						onSelectQueue={handleSelectQueue}
 						onViewWorkers={handleViewWorkers}
+						onViewMetrics={handleViewMetrics}
 					/>
 				))}
 			</div>

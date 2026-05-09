@@ -9,24 +9,25 @@ import {
 	YAxis,
 } from "recharts";
 
-export function MetricCharts() {
-	const throughputData = [
-		{ time: "00:00", processed: 245, failed: 8 },
-		{ time: "04:00", processed: 312, failed: 5 },
-		{ time: "08:00", processed: 523, failed: 12 },
-		{ time: "12:00", processed: 678, failed: 15 },
-		{ time: "16:00", processed: 589, failed: 9 },
-		{ time: "20:00", processed: 434, failed: 7 },
-	];
+type ThroughputChartData = {
+	time: string;
+	processed: number;
+	failed: number;
+};
 
-	const latencyData = [
-		{ time: "00:00", p50: 145, p95: 423, p99: 892 },
-		{ time: "04:00", p50: 132, p95: 389, p99: 756 },
-		{ time: "08:00", p50: 167, p95: 512, p99: 1034 },
-		{ time: "12:00", p50: 198, p95: 634, p99: 1289 },
-		{ time: "16:00", p50: 156, p95: 478, p99: 945 },
-		{ time: "20:00", p50: 141, p95: 412, p99: 823 },
-	];
+type LatencyChartData = {
+	time: string;
+	p50: number | null;
+	p95: number | null;
+	p99: number | null;
+};
+
+type MetricChartsProps = {
+	throughputData: ThroughputChartData[];
+	latencyData: LatencyChartData[];
+};
+
+export function MetricCharts({ throughputData, latencyData }: MetricChartsProps) {
 
 	return (
 		<div className="space-y-6">
