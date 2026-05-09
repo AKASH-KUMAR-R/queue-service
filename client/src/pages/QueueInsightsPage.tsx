@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 
 import { MetricCharts } from "@widgets/MetricCharts";
 import { MetricSummaryCards } from "@widgets/MetricSummaryCards";
+
 import { Alert, AlertDescription, AlertTitle } from "@shared/ui/alert";
 import { Skeleton } from "@shared/ui/skeleton";
 
@@ -24,11 +25,11 @@ const getHoursByRange = (timeRange: TimeRange): number => {
 };
 
 export default function QueueInsightsPage() {
-	const [searchQuery] = useSearchParams();
+	const [searchQuery, setSearchQuery] = useSearchParams();
 	const [timeRange, setTimeRange] = useState<TimeRange>("24hr");
-	const [autoRefresh, setAutoRefresh] = useState(true);
 	const projectId = searchQuery.get("projectId") ?? "";
 	const queueId = searchQuery.get("queueId") ?? "";
+	const autoRefresh = searchQuery.get("autoRefresh") === "true";
 
 	const { from, to } = useMemo(() => {
 		const now = new Date();
@@ -46,11 +47,15 @@ export default function QueueInsightsPage() {
 		isLoading,
 		isError,
 		error,
-	} = useQueueInsightsList(projectId, {
-		queueId,
-		from,
-		to,
-	});
+	} = useQueueInsightsList(
+		projectId,
+		{
+			queueId,
+			from,
+			to,
+		},
+		autoRefresh,
+	);
 
 	const throughputData = useMemo(() => {
 		return (metrics ?? []).map((metric) => ({
@@ -149,7 +154,15 @@ export default function QueueInsightsPage() {
 							type="checkbox"
 							id="auto-refresh"
 							checked={autoRefresh}
-							onChange={(e) => setAutoRefresh(e.target.checked)}
+							onChange={(e) =>
+								setSearchQuery((prev) => {
+									prev.set(
+										"autoRefresh",
+										e.target.checked.toString(),
+									);
+									return prev;
+								})
+							}
 							className="w-4 h-4"
 						/>
 						<label
