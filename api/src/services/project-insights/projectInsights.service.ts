@@ -60,7 +60,7 @@ const recomputeBucket = async (
 			active_queues += 1;
 		}
 	}
-
+	// NOTE: Here, if the cron job runs after one hour off, then we might miss out on some active workers in the affected bucket. We can consider aligning the cron job run with the bucket hour end time to avoid this issue. For now, we are considering the worker active if it has been seen in the last 5 minutes, which should be good enough for our use case.
 	const active_workers = await prisma.workerStatus.count({
 		where: {
 			last_seen: {

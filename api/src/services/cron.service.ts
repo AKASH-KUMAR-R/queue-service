@@ -8,6 +8,7 @@ import { prisma } from "@utils/prisma.util";
 
 const QUEUE_INSIGHTS_CRON_NAME = "queue_insights";
 
+// TODO: Needs to consider batching and cuncurrency if the affected bucket count is large. For now, we expect the affected bucket count to be small and can be processed within the cron interval.
 const runQueueInsightsCron = async (): Promise<void> => {
 	try {
 		const now = new Date();
