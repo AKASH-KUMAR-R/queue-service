@@ -1,4 +1,8 @@
 import { useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+
+import { MetricCharts } from "@widgets/MetricCharts";
+import { MetricSummaryCards } from "@widgets/MetricSummaryCards";
 import {
 	AlertCircle,
 	BarChart2,
@@ -8,23 +12,15 @@ import {
 	XCircle,
 } from "lucide-react";
 
-import { MetricCharts } from "@widgets/MetricCharts";
-import { MetricSummaryCards } from "@widgets/MetricSummaryCards";
+import { Alert, AlertDescription, AlertTitle } from "@shared/ui/alert";
+import { Skeleton } from "@shared/ui/skeleton";
+
+import { useProjectInsightsummary } from "@features/project-insights/data/getSummary";
+import { useProjectInsightsTrends } from "@features/project-insights/data/listTrends";
 
 type TimeRange = "1hr" | "6hr" | "24hr" | "7d";
 
-type MockProjectInsight = {
-	bucket_hour: Date;
-	jobs_enqueued: number;
-	jobs_completed: number;
-	jobs_failed: number;
-	success_rate: number;
-	failure_rate: number;
-	active_workers: number;
-	active_queues: number;
-};
-
-const getBucketCountByRange = (timeRange: TimeRange): number => {
+const getHoursByRange = (timeRange: TimeRange): number => {
 	switch (timeRange) {
 		case "1hr":
 			return 1;
@@ -33,47 +29,8 @@ const getBucketCountByRange = (timeRange: TimeRange): number => {
 		case "24hr":
 			return 24;
 		case "7d":
-			return 24;
+			return 24 * 7;
 	}
-};
-
-const clamp = (value: number, min: number, max: number): number =>
-	Math.max(min, Math.min(max, value));
-
-const createMockProjectInsights = (): MockProjectInsight[] => {
-	const now = new Date();
-	const alignedNow = new Date(now);
-	alignedNow.setMinutes(0, 0, 0);
-
-	return Array.from({ length: 24 }, (_, index) => {
-		const hourOffset = 23 - index;
-		const bucket_hour = new Date(alignedNow);
-		bucket_hour.setHours(alignedNow.getHours() - hourOffset);
-
-		const waveLoad =
-			78 + Math.round(22 * Math.sin(index / 3) + 16 * Math.cos(index / 5));
-		const jobs_completed = clamp(waveLoad, 40, 120);
-		const jobs_failed = 2 + ((index * 5 + 1) % 9);
-		const buffer = 1 + ((index * 3 + 2) % 5);
-		const jobs_enqueued = jobs_completed + jobs_failed + buffer;
-		const totalTerminal = jobs_completed + jobs_failed;
-		const success_rate =
-			totalTerminal === 0 ? 0 : jobs_completed / totalTerminal;
-		const failure_rate = totalTerminal === 0 ? 0 : jobs_failed / totalTerminal;
-		const active_workers = 3 + ((index * 2 + 1) % 6);
-		const active_queues = 2 + ((index * 3 + 1) % 4);
-
-		return {
-			bucket_hour,
-			jobs_enqueued,
-			jobs_completed,
-			jobs_failed,
-			success_rate,
-			failure_rate,
-			active_workers,
-			active_queues,
-		};
-	});
 };
 
 type AnalyticsCardProps = {
@@ -89,41 +46,67 @@ function AnalyticsCard({ label, value, icon }: AnalyticsCardProps) {
 				{icon}
 				<div className="text-xs text-neutral-500">{label}</div>
 			</div>
-			<div className="text-xl font-semibold text-neutral-900 mb-1">{value}</div>
+			<div className="text-xl font-semibold text-neutral-900 mb-1">
+				{value}
+			</div>
 		</div>
 	);
 }
 
 export default function ProjectInsightsPage() {
+	const [searchQuery] = useSearchParams();
 	const [timeRange, setTimeRange] = useState<TimeRange>("24hr");
+	const projectId = searchQuery.get("projectId") ?? "";
 
-	const mockData = useMemo(() => createMockProjectInsights(), []);
-	const bucketCount = getBucketCountByRange(timeRange);
-	const rangeData = useMemo(
-		() => mockData.slice(-bucketCount),
-		[mockData, bucketCount],
+	const { from, to } = useMemo(() => {
+		const now = new Date();
+		const fromDate = new Date(now);
+		fromDate.setHours(now.getHours() - getHoursByRange(timeRange));
+
+		return {
+			from: fromDate,
+			to: now,
+		};
+	}, [timeRange]);
+
+	const {
+		data: trendsResponse,
+		isLoading: isTrendsLoading,
+		isError: isTrendsError,
+		error: trendsError,
+	} = useProjectInsightsTrends(projectId, { from, to });
+
+	const {
+		data: summaryResponse,
+		isLoading: isSummaryLoading,
+		isError: isSummaryError,
+		error: summaryError,
+	} = useProjectInsightsummary(projectId);
+
+	const trends = useMemo(
+		() => trendsResponse?.data ?? [],
+		[trendsResponse?.data],
 	);
-
-	const latestBucket = rangeData[rangeData.length - 1] ?? null;
+	const latestSummary = summaryResponse?.data ?? null;
 
 	const totals = useMemo(() => {
-		const jobs_enqueued = rangeData.reduce(
-			(total, item) => total + item.jobs_enqueued,
+		const jobs_enqueued = trends.reduce(
+			(total, item) => total + item.jobsEnqueued,
 			0,
 		);
-		const jobs_failed = rangeData.reduce(
-			(total, item) => total + item.jobs_failed,
+		const jobs_failed = trends.reduce(
+			(total, item) => total + item.jobsFailed,
 			0,
 		);
 		const average_success_rate =
-			rangeData.length > 0
-				? rangeData.reduce((total, item) => total + item.success_rate, 0) /
-					rangeData.length
+			trends.length > 0
+				? trends.reduce((total, item) => total + item.successRate, 0) /
+					trends.length
 				: 0;
 		const average_failure_rate =
-			rangeData.length > 0
-				? rangeData.reduce((total, item) => total + item.failure_rate, 0) /
-					rangeData.length
+			trends.length > 0
+				? trends.reduce((total, item) => total + item.failureRate, 0) /
+					trends.length
 				: 0;
 
 		return {
@@ -132,28 +115,21 @@ export default function ProjectInsightsPage() {
 			success_rate_percent: average_success_rate * 100,
 			failure_rate_percent: average_failure_rate * 100,
 		};
-	}, [rangeData]);
+	}, [trends]);
 
 	const throughputData = useMemo(() => {
-		return rangeData.map((item) => ({
-			time: item.bucket_hour.toLocaleTimeString([], {
+		return trends.map((item) => ({
+			time: item.bucketHour.toLocaleTimeString([], {
 				hour: "2-digit",
 				minute: "2-digit",
 			}),
-			processed: item.jobs_completed,
-			failed: item.jobs_failed,
+			processed: item.jobsCompleted,
+			failed: item.jobsFailed,
 		}));
-	}, [rangeData]);
-
-	const latencyData: {
-		time: string;
-		p50: number | null;
-		p95: number | null;
-		p99: number | null;
-	}[] = [];
+	}, [trends]);
 
 	const summary = useMemo(() => {
-		const rangeMinutes = bucketCount * 60;
+		const rangeMinutes = getHoursByRange(timeRange) * 60;
 
 		return {
 			throughputPerMinute:
@@ -164,7 +140,15 @@ export default function ProjectInsightsPage() {
 			failureRatePercent: totals.failure_rate_percent,
 			retryRatePercent: 0,
 		};
-	}, [bucketCount, totals]);
+	}, [timeRange, totals]);
+
+	const isLoading = isTrendsLoading && isSummaryLoading;
+	const isError = isTrendsError || isSummaryError;
+	const error = trendsError ?? summaryError;
+	const errorMessage =
+		error instanceof Error
+			? error.message
+			: "Unable to fetch project analytics.";
 
 	return (
 		<div className="p-8">
@@ -174,62 +158,104 @@ export default function ProjectInsightsPage() {
 						Project Analytics
 					</h1>
 					<p className="text-sm text-muted-foreground mt-1">
-						Static preview for project-level insights UI
+						System-wide observability and performance
 					</p>
 				</div>
 				<div className="flex gap-1 bg-muted rounded p-1">
-					{(["1hr", "6hr", "24hr", "7d"] as TimeRange[]).map((range) => (
-						<button
-							key={range}
-							onClick={() => setTimeRange(range)}
-							className={`px-3 py-1 text-sm rounded transition-colors ${
-								timeRange === range
-									? "bg-card text-foreground shadow-sm"
-									: "text-muted-foreground hover:text-foreground"
-							}`}
-						>
-							{range}
-						</button>
-					))}
+					{(["1hr", "6hr", "24hr", "7d"] as TimeRange[]).map(
+						(range) => (
+							<button
+								key={range}
+								onClick={() => setTimeRange(range)}
+								className={`px-3 py-1 text-sm rounded transition-colors ${
+									timeRange === range
+										? "bg-card text-foreground shadow-sm"
+										: "text-muted-foreground hover:text-foreground"
+								}`}
+							>
+								{range}
+							</button>
+						),
+					)}
 				</div>
 			</div>
 
-			<div className="grid grid-cols-12 gap-4 mb-6">
-				<AnalyticsCard
-					label="Total Jobs Enqueued"
-					value={totals.jobs_enqueued.toLocaleString()}
-					icon={<BarChart2 className="w-5 h-5 text-blue-600" />}
-				/>
-				<AnalyticsCard
-					label="Success Rate"
-					value={`${totals.success_rate_percent.toFixed(2)}%`}
-					icon={<CheckCircle className="w-5 h-5 text-green-600" />}
-				/>
-				<AnalyticsCard
-					label="Failure Rate"
-					value={`${totals.failure_rate_percent.toFixed(2)}%`}
-					icon={<AlertCircle className="w-5 h-5 text-red-600" />}
-				/>
-				<AnalyticsCard
-					label="Jobs Failed"
-					value={totals.jobs_failed.toLocaleString()}
-					icon={<XCircle className="w-5 h-5 text-red-400" />}
-				/>
-				<AnalyticsCard
-					label="Active Workers"
-					value={(latestBucket?.active_workers ?? 0).toString()}
-					icon={<Users className="w-5 h-5 text-purple-600" />}
-				/>
-				<AnalyticsCard
-					label="Active Queues"
-					value={(latestBucket?.active_queues ?? 0).toString()}
-					icon={<Layers className="w-5 h-5 text-orange-600" />}
-				/>
-			</div>
-
-			<MetricSummaryCards summary={summary} />
-			<MetricCharts throughputData={throughputData} latencyData={latencyData} />
+			{isError ? (
+				<Alert variant="destructive">
+					<AlertTitle>Analytics unavailable</AlertTitle>
+					<AlertDescription>{errorMessage}</AlertDescription>
+				</Alert>
+			) : isLoading ? (
+				<>
+					<div className="grid grid-cols-12 gap-4 mb-6">
+						{Array.from({ length: 6 }).map((_, index) => (
+							<Skeleton
+								key={index}
+								className="col-span-2 h-[116px]"
+							/>
+						))}
+					</div>
+					<div className="space-y-6">
+						<Skeleton className="h-[360px] w-full" />
+					</div>
+				</>
+			) : trends.length === 0 ? (
+				<div className="text-sm text-muted-foreground">
+					No analytics available for this time range
+				</div>
+			) : (
+				<>
+					<div className="grid grid-cols-12 gap-4 mb-6">
+						<AnalyticsCard
+							label="Total Jobs Enqueued"
+							value={totals.jobs_enqueued.toLocaleString()}
+							icon={
+								<BarChart2 className="w-5 h-5 text-blue-600" />
+							}
+						/>
+						<AnalyticsCard
+							label="Success Rate"
+							value={`${totals.success_rate_percent.toFixed(2)}%`}
+							icon={
+								<CheckCircle className="w-5 h-5 text-green-600" />
+							}
+						/>
+						<AnalyticsCard
+							label="Failure Rate"
+							value={`${totals.failure_rate_percent.toFixed(2)}%`}
+							icon={
+								<AlertCircle className="w-5 h-5 text-red-600" />
+							}
+						/>
+						<AnalyticsCard
+							label="Jobs Failed"
+							value={totals.jobs_failed.toLocaleString()}
+							icon={<XCircle className="w-5 h-5 text-red-400" />}
+						/>
+						<AnalyticsCard
+							label="Active Workers"
+							value={(
+								latestSummary?.activeWorkers ?? 0
+							).toString()}
+							icon={<Users className="w-5 h-5 text-purple-600" />}
+						/>
+						<AnalyticsCard
+							label="Active Queues"
+							value={(
+								latestSummary?.activeQueues ?? 0
+							).toString()}
+							icon={
+								<Layers className="w-5 h-5 text-orange-600" />
+							}
+						/>
+					</div>
+					<MetricSummaryCards summary={summary} />
+					<MetricCharts
+						throughputData={throughputData}
+						latencyData={null}
+					/>
+				</>
+			)}
 		</div>
 	);
 }
-
