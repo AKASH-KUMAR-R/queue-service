@@ -58,6 +58,7 @@ model Project {
     user User @relation("UserProjects", fields: [user_id], references: [id])
     user_id String
     queues Queue[] @relation("ProjectQueues")
+    project_insights ProjectInsights[] @relation("ProjectInsights")
     apiKeys ApiKey[] @relation("ProjectApiKeys")
     jobs Job[] @relation("ProjectJobs")
     job_events JobEvents[] @relation("Project Job Events")
@@ -184,6 +185,25 @@ model WorkerStatus {
     metadata Json?
 
     @@index([queue_id, last_seen(sort: Desc)])
+}
+
+model ProjectInsights {
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt()
+    id String @id() @default(uuid())
+    project_id String
+    bucket_hour DateTime
+    jobs_enqueued Int @default(0)
+    jobs_completed Int @default(0)
+    jobs_failed Int @default(0)
+    success_rate Float @default(0)
+    failure_rate Float @default(0)
+    active_workers Int @default(0)
+    active_queues Int @default(0)
+    project Project @relation("ProjectInsights", fields: [project_id], references: [id])
+
+    @@unique([project_id, bucket_hour])
+    @@index([project_id, bucket_hour])
 }
 
 model ApiKey {
