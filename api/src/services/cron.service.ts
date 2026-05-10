@@ -1,5 +1,6 @@
 import { HOUR_IN_MILLISECONDS } from "lib/time";
 
+import projectInsightsService from "@services/project-insights/projectInsights.service";
 import queueInsightsService from "@services/queue-insights/queueInsights.service";
 
 import { logger } from "@utils/logger.util";
@@ -35,6 +36,21 @@ const runQueueInsightsCron = async (): Promise<void> => {
 			await queueInsightsService.recomputeBucket(
 				affectedBucket.queue_id,
 				affectedBucket.bucket_hour,
+			);
+		}
+
+		const affectedProjectBuckets =
+			await projectInsightsService.getAffectedBuckets(lastRunAt);
+
+		logger.info(
+			`[project_insights] affected bucket count=${affectedProjectBuckets.length}`,
+		);
+
+		for (const affectedBucket of affectedProjectBuckets) {
+			await projectInsightsService.recomputeBucket(
+				affectedBucket.project_id,
+				affectedBucket.bucket_hour,
+				now,
 			);
 		}
 
