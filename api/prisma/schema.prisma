@@ -159,6 +159,7 @@ model QueueInsights {
     jobs_completed Int @default(0)
     jobs_failed Int @default(0)
     jobs_requeued Int @default(0)
+    jobs_enqueued Int @default(0)
     success_rate Float @default(0)
     failure_rate Float @default(0)
     retry_rate Float @default(0)

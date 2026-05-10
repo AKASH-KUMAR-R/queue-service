@@ -10,6 +10,7 @@ model QueueInsights extends Base {
     jobs_completed Int @default(0)
     jobs_failed Int @default(0)
     jobs_requeued Int @default(0)
+    jobs_enqueued Int @default(0)
 
     success_rate Float @default(0)
     failure_rate Float @default(0)
@@ -26,4 +27,3 @@ model QueueInsights extends Base {
 
     @@allow('read', auth() != null && auth().id == queue.project.user_id)
 }
-

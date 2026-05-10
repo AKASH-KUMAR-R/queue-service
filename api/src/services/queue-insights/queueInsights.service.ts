@@ -54,6 +54,7 @@ const recomputeBucket = async (
 			},
 			event_type: {
 				in: [
+					JobEventType.JOB_CREATED,
 					JobEventType.JOB_COMPLETED,
 					JobEventType.JOB_FAILED,
 					JobEventType.JOB_REQUEUED,
@@ -68,6 +69,7 @@ const recomputeBucket = async (
 	let jobs_completed = 0;
 	let jobs_failed = 0;
 	let jobs_requeued = 0;
+	let jobs_enqueued = 0;
 
 	for (const event of events) {
 		if (event.event_type === JobEventType.JOB_COMPLETED) {
@@ -82,6 +84,11 @@ const recomputeBucket = async (
 
 		if (event.event_type === JobEventType.JOB_REQUEUED) {
 			jobs_requeued += 1;
+			continue;
+		}
+
+		if (event.event_type === JobEventType.JOB_CREATED) {
+			jobs_enqueued += 1;
 		}
 	}
 
@@ -124,6 +131,7 @@ const recomputeBucket = async (
 			},
 		},
 		update: {
+			jobs_enqueued,
 			jobs_completed,
 			jobs_failed,
 			jobs_requeued,
@@ -137,6 +145,7 @@ const recomputeBucket = async (
 		create: {
 			queue_id,
 			bucket_hour,
+			jobs_enqueued,
 			jobs_completed,
 			jobs_failed,
 			jobs_requeued,
