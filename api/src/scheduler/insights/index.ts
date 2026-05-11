@@ -4,7 +4,7 @@ import { runQueueInsightsCron } from "@services/cron.service";
 
 import { logger } from "@utils/logger.util";
 
-const QUEUE_INSIGHTS_CRON_SCHEDULE = "*/5 * * * *";
+const QUEUE_INSIGHTS_CRON_SCHEDULE = "*/1 * * * *";
 
 const startCronJobs = () => {
 	logger.info(

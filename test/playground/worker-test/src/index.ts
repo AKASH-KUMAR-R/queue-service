@@ -20,7 +20,7 @@ app.use(express.json());
 
 const worker = createWorker({
     apiKey: process.env.WORKER_API_KEY || "",
-    queueLabel: "email_queue",
+    queueLabel: "email-notification",
     baseUrl: "http://localhost:4000",
     pollingTime: 3000,
     concurrency: 4,
@@ -34,7 +34,7 @@ const producer = createProducer({
 const addMockJobs = async () => {
     try {
         for (let i = 1; i <= 5; i++) {
-            await producer.addJob("email_queue", {
+            await producer.addJob("email-notification", {
                 payload: {
                     email: `example${i}@example.com`,
                 },

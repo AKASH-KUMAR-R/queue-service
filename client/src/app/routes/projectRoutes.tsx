@@ -1,7 +1,7 @@
 import type { AppRouteObject } from "@shared/types/routes";
 
+import ProjectInsightsPage from "@pages/ProjectInsightsPage";
 import { ProjectSettingsPage } from "@pages/ProjectSettingsPage";
-import { ProjectStatisticsPage } from "@pages/ProjectStatisticsPage";
 import { ProjectApiKeysPage } from "@pages/project/ProjectApiKeysPage";
 
 export const ProjectRoutes: AppRouteObject = {
@@ -9,7 +9,7 @@ export const ProjectRoutes: AppRouteObject = {
 	children: [
 		{
 			path: "statistics",
-			element: <ProjectStatisticsPage />,
+			element: <ProjectInsightsPage />,
 		},
 		{
 			path: "api-keys",
