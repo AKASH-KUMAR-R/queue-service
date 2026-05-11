@@ -142,7 +142,7 @@ export default function ProjectInsightsPage() {
 		};
 	}, [timeRange, totals]);
 
-	const isLoading = isTrendsLoading && isSummaryLoading;
+	const isLoading = isTrendsLoading || isSummaryLoading;
 	const isError = isTrendsError || isSummaryError;
 	const error = trendsError ?? summaryError;
 	const errorMessage =
