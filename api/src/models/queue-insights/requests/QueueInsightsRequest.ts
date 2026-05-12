@@ -1,3 +1,4 @@
+import { DAY_IN_MILLISECONDS } from "lib/time";
 import zod from "zod";
 
 const QueueInsightsRequest = zod
@@ -5,7 +6,25 @@ const QueueInsightsRequest = zod
 		from: zod.iso.datetime(),
 		to: zod.iso.datetime(),
 	})
-	.strip();
+	.strip()
+	.superRefine(({ from, to }, ctx) => {
+		const fromDate = new Date(from);
+		const toDate = new Date(to);
+
+		if (
+			Math.abs(fromDate.getTime() - toDate.getTime()) /
+				DAY_IN_MILLISECONDS >
+			7
+		) {
+			ctx.addIssue({
+				code: "custom",
+				max: 7,
+				type: "date",
+				path: ["to"],
+				message: "The maximum allowed range is 7 days",
+			});
+		}
+	});
 
 export default QueueInsightsRequest;
 
