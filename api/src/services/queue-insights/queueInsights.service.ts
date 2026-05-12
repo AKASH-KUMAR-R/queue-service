@@ -115,11 +115,8 @@ const recomputeBucket = async (
 					WHERE "terminal"."queue_id" = ${queue_id}
 						AND "terminal"."created_at" >= ${bucket_hour}
 						AND "terminal"."created_at" < ${bucketHourEnd}
-						AND (
-							"terminal"."event_type" = ${JobEventType.JOB_COMPLETED}::"JobEventType"
-							OR "terminal"."event_type" = ${JobEventType.JOB_FAILED}::"JobEventType"
-						)
-				) AS "latency_rows"
+						AND "terminal"."event_type" = ${JobEventType.JOB_ACQUIRED}::"JobEventType"
+					) AS "latency_rows"
 			`,
 	);
 
