@@ -11,6 +11,15 @@ const QueueInsightsRequest = zod
 		const fromDate = new Date(from);
 		const toDate = new Date(to);
 
+		if (fromDate > toDate) {
+			ctx.addIssue({
+				code: "custom",
+				type: "date",
+				path: ["from"],
+				message: "The 'from' date must be before the 'to' date",
+			});
+		}
+
 		if (
 			Math.abs(fromDate.getTime() - toDate.getTime()) /
 				DAY_IN_MILLISECONDS >
