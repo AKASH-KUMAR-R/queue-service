@@ -8,6 +8,7 @@ import { HOUR_IN_MILLISECONDS } from "lib/time";
 
 import { toNullableNumber } from "@utils/parse.util";
 import { prisma } from "@utils/prisma.util";
+import { generateUtcHourBuckets } from "@utils/time.util";
 
 export type AffectedBucket = {
 	queue_id: string;
@@ -162,7 +163,7 @@ const getInsights = async (
 	from: Date,
 	to: Date,
 ): Promise<QueueInsights[]> => {
-	return await db.queueInsights.findMany({
+	const realRows = await db.queueInsights.findMany({
 		where: {
 			queue_id,
 			bucket_hour: {
@@ -174,6 +175,34 @@ const getInsights = async (
 			bucket_hour: "asc",
 		},
 	});
+
+	const insightsByHour = new Map<number, QueueInsights>();
+
+	for (const row of realRows) {
+		insightsByHour.set(new Date(row.bucket_hour).getTime(), row);
+	}
+
+	const emptyBucket = (bucket_hour: Date): QueueInsights => ({
+		id: "",
+		queue_id,
+		bucket_hour,
+		jobs_completed: 0,
+		jobs_failed: 0,
+		jobs_requeued: 0,
+		jobs_enqueued: 0,
+		success_rate: 0,
+		failure_rate: 0,
+		retry_rate: 0,
+		p50_latency: 0,
+		p95_latency: 0,
+		p99_latency: 0,
+		created_at: bucket_hour,
+		updated_at: bucket_hour,
+	});
+
+	return generateUtcHourBuckets(from, to).map(
+		(bucket) => insightsByHour.get(bucket.getTime()) ?? emptyBucket(bucket),
+	);
 };
 
 export default {

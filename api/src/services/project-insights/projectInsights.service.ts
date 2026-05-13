@@ -2,6 +2,7 @@ import { Prisma, type PrismaClient, type ProjectInsights } from "@db/client";
 import { MINUTES_IN_MILLISECOND } from "lib/time";
 
 import { prisma } from "@utils/prisma.util";
+import { generateUtcHourBuckets } from "@utils/time.util";
 
 export type AffectedProjectBucket = {
 	project_id: string;
@@ -129,7 +130,7 @@ const getProjectTrends = async (
 	from: Date,
 	to: Date,
 ): Promise<ProjectInsights[]> => {
-	return await db.projectInsights.findMany({
+	const realRows = await db.projectInsights.findMany({
 		where: {
 			project_id,
 			bucket_hour: {
@@ -141,6 +142,31 @@ const getProjectTrends = async (
 			bucket_hour: "asc",
 		},
 	});
+
+	const insightsByHour = new Map<number, ProjectInsights>();
+
+	for (const row of realRows) {
+		insightsByHour.set(new Date(row.bucket_hour).getTime(), row);
+	}
+
+	const emptyBucket = (bucket_hour: Date): ProjectInsights => ({
+		id: "",
+		project_id,
+		bucket_hour,
+		jobs_enqueued: 0,
+		jobs_completed: 0,
+		jobs_failed: 0,
+		success_rate: 0,
+		failure_rate: 0,
+		active_workers: 0,
+		active_queues: 0,
+		created_at: bucket_hour,
+		updated_at: bucket_hour,
+	});
+
+	return generateUtcHourBuckets(from, to).map(
+		(bucket) => insightsByHour.get(bucket.getTime()) ?? emptyBucket(bucket),
+	);
 };
 
 export default {
