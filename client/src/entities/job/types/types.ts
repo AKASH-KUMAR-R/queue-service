@@ -87,3 +87,11 @@ export type RawApiResponseJobEvent = RawApiResponseBase & {
 };
 
 export type JobEventSearchParams = PaginationParams & {};
+
+export type WorkerJobsFilters = PaginationParams & {
+	isScheduled?: boolean;
+};
+
+export type RawWorkerJobsFilters = PaginationParams & {
+	is_scheduled?: boolean;
+};
