@@ -1,6 +1,9 @@
+import type { PaginationParams } from "@shared/types/types";
+
 // API Key entity types
 
 export type ApiKeyStatus = boolean;
+export type ApiKeyFilterStatus = boolean; // true for revoked, false for active
 
 export type ApiKey = {
 	id: string;
@@ -39,4 +42,8 @@ export type CreateApiKeyRequest = {
 export type CreateApiKeyResponse = {
 	apiKey: ApiKeyWithSecret;
 	warning: string;
+};
+
+export type ApiKeySearchParams = PaginationParams & {
+	revoked?: ApiKeyFilterStatus;
 };

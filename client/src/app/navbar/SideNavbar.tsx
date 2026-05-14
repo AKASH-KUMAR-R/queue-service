@@ -53,7 +53,6 @@ const SideNavbar = () => {
 		setCurrentProject,
 		isProjectsLoading,
 		pagination,
-		handlePaginationChange,
 	} = useProject();
 
 	const { mutate: logout, isPending: isLogoutPending } = useAuthLogout();
@@ -75,10 +74,6 @@ const SideNavbar = () => {
 
 	const handleCreateProject = (newProject: Project) => {
 		setCurrentProject(newProject);
-	};
-
-	const handlePageChange = (page: number) => {
-		handlePaginationChange({ page });
 	};
 
 	const handleLogout = () => {
@@ -154,7 +149,6 @@ const SideNavbar = () => {
 					currentProject={currentProject}
 					projects={projectListWithCurrentIncluded}
 					pagination={pagination}
-					onPageChange={handlePageChange}
 					onProjectChange={handleProjectChange}
 					onCreateProject={() => setShowCreateDialog(true)}
 				/>

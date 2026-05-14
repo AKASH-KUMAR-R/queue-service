@@ -24,7 +24,7 @@ const queryFields: Record<string, string[]> = {
 	project: ["id", "title", "description"],
 	queue: ["id", "status", "created_at", "project_id"],
 	job: ["id", "status", "queue_id"],
-	"api-key": ["project_id"],
+	"api-key": ["project_id", "revoked"],
 	"job-events": [
 		"id",
 		"job_id",
@@ -179,10 +179,10 @@ export const search = async (req: Request, res: Response) => {
 			return res.status(400).json({ error: "Invalid model path" });
 		}
 
-		const page = parseInt((req.query.page as string) || "1", 10);
-		const limit = parseInt((req.query.limit as string) || "10", 10);
+		const query = req.validQuery || req.query;
+		const page = parseInt((query.page as string) || "1", 10);
+		const limit = parseInt((query.limit as string) || "10", 10);
 
-		const query = req.query;
 		const validQueryFields: Record<string, any> = {};
 
 		Object.keys(query).forEach((key) => {

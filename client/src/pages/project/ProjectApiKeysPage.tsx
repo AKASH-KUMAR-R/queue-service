@@ -8,8 +8,10 @@ import { Plus } from "lucide-react";
 import { Button } from "@shared/ui/button";
 
 import type { ApiKey, ApiKeyWithSecret } from "@entities/api-key/model/types";
+import type { ApiKeyFilterStatus } from "@entities/api-key/model/types";
 
 import { ApiKeyCreatedDialog } from "@features/api-keys/ApiKeyCreatedDialog";
+import { ApiKeyFilter } from "@features/api-keys/ApiKeyFilter";
 import { CreateApiKeyDialog } from "@features/api-keys/CreateApiKeyDialog";
 import { RevokeApiKeyDialog } from "@features/api-keys/RevokeApiKeyDialog";
 import { useApiKeyList } from "@features/api-keys/data/listApiKeys";
@@ -19,11 +21,15 @@ export function ProjectApiKeysPage() {
 	const { currentProject } = useProject();
 
 	const [searchQuery, setSearchQuery] = useSearchParams();
+	const selectedStatus: ApiKeyFilterStatus =
+		searchQuery.get("revoked") === "true";
+
 	const { data: apiKeysList, isPending: isLoadingKeysList } = useApiKeyList(
 		currentProject!.id,
 		{
 			page: Number(searchQuery.get("page")) || 1,
 			limit: 10,
+			revoked: selectedStatus,
 		},
 	);
 
@@ -69,6 +75,15 @@ export function ProjectApiKeysPage() {
 		});
 	};
 
+	const handleStatusChange = (revoked: string) => {
+		setSearchQuery((prev) => {
+			const newParams = new URLSearchParams(prev);
+			newParams.set("revoked", revoked);
+			newParams.set("page", "1");
+			return newParams;
+		});
+	};
+
 	return (
 		<div className="p-8">
 			{/* Header */}
@@ -85,6 +100,12 @@ export function ProjectApiKeysPage() {
 					project's queues and jobs. Keep your API keys secure and
 					never share them publicly.
 				</p>
+			</div>
+			<div className="mb-6">
+				<ApiKeyFilter
+					revoked={selectedStatus}
+					onStatusChange={handleStatusChange}
+				/>
 			</div>
 
 			{/* API Keys List */}
