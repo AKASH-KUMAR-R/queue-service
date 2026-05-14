@@ -12,6 +12,7 @@ import {
 
 import ProjectInsightsRequest from "@models/project-insights/requests/ProjectInsightsRequest";
 import { ProjectCreateRequest } from "@models/project/requests/ProjectCreateRequest";
+import { ProjectSearchRequest } from "@models/project/requests/ProjectSearchRequest";
 import { ProjectUpdateRequest } from "@models/project/requests/ProjectUpdateRequest";
 
 import projectInsightsController from "@controllers/project-insights/projectInsights.controller";
@@ -29,7 +30,8 @@ router.get(
 	"/search",
 	passport.authenticate("jwt", { session: false }),
 	attachPrismaContext,
-	commonController.search,
+	queryValidationMiddleware(ProjectSearchRequest),
+	projectController.searchProjects,
 );
 router.get(
 	"/:id/stats/summary",
