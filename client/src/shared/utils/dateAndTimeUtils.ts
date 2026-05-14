@@ -23,3 +23,16 @@ export const formatDateTimeSeperate = (timestamp: string) => {
 	});
 	return { timeStr, dateStr };
 };
+
+export const formatDurationMilliseconds = (durationMs: number): string => {
+	if (durationMs < 1000) {
+		return `${Math.round(durationMs)}ms`;
+	}
+
+	const seconds = durationMs / 1000;
+	const roundedSeconds = Number.isInteger(seconds)
+		? seconds.toString()
+		: seconds.toFixed(1);
+
+	return `${roundedSeconds}s`;
+};

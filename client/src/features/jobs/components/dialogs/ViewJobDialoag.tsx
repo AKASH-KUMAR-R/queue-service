@@ -2,36 +2,23 @@ import { useState } from "react";
 
 import { X } from "lucide-react";
 
-import { Badge } from "@shared/ui/badge";
 import { Button } from "@shared/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@shared/ui/card";
 import { Dialog, DialogContent, DialogTrigger } from "@shared/ui/dialog";
 import { Separator } from "@shared/ui/separator";
 import { Spinner } from "@shared/ui/spinner";
-import { formatDateTime } from "@shared/utils/dateAndTimeUtils";
+import {
+	formatDateTime,
+	formatDurationMilliseconds,
+} from "@shared/utils/dateAndTimeUtils";
 
-import type {
-	JobEventSearchParams,
-	JobStatus,
-} from "@entities/job/types/types";
+import { StatusBadge } from "@entities/StatusBadge";
+import type { JobEventSearchParams } from "@entities/job/types/types";
 
 import { useJobById } from "@features/jobs/data/getJobById";
 import { useJobEventsById } from "@features/jobs/data/getJobEventsById";
 
 import { JobEventsTimeline } from "../job-events/JobEventsList";
-
-const getStatusColor = (status: JobStatus) => {
-	switch (status) {
-		case "COMPLETED":
-			return "default";
-		case "FAILED":
-			return "destructive";
-		case "IN_PROGRESS":
-			return "secondary";
-		default:
-			return "outline";
-	}
-};
 
 type ViewJobDialogProps = {
 	jobId: string | null;
@@ -58,6 +45,15 @@ const ViewJobDialog: React.FC<ViewJobDialogProps> = ({
 
 	const job = jobRes?.data;
 	const jobEvents = jobEventsRes?.data.results || [];
+	const latency =
+		job?.startedAt && job?.createdAt
+			? new Date(job.startedAt).getTime() -
+				new Date(job.createdAt).getTime()
+			: null;
+	const latencyLabel =
+		latency !== null && latency >= 0
+			? formatDurationMilliseconds(latency)
+			: "—";
 	const jobEventsPagination = {
 		page: jobEventsRes?.data.page || 1,
 		limit: jobEventsRes?.data.limit || 20,
@@ -118,9 +114,7 @@ const ViewJobDialog: React.FC<ViewJobDialogProps> = ({
 					<CardHeader>
 						<div className="flex items-center justify-between">
 							<CardTitle>Job Details</CardTitle>
-							<Badge variant={getStatusColor(job?.status)}>
-								{job.status}
-							</Badge>
+							<StatusBadge status={job.status} type="job" />
 						</div>
 					</CardHeader>
 					<CardContent className="space-y-6">
@@ -210,13 +204,9 @@ const ViewJobDialog: React.FC<ViewJobDialogProps> = ({
 								</div>
 								<div>
 									<p className="text-sm font-medium text-muted-foreground">
-										Last Heartbeat
+										Latency
 									</p>
-									<p className="text-sm mt-1">
-										{job.heartbeatAt
-											? formatDateTime(job.heartbeatAt)
-											: "N/A"}
-									</p>
+									<p className="text-sm mt-1">{latencyLabel}</p>
 								</div>
 							</div>
 						</div>

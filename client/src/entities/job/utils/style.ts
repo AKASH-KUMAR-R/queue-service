@@ -32,6 +32,9 @@ export const getEventVariant = (eventType: JobEventType) => {
 			return "destructive";
 		case "JOB_REQUEUED":
 		case "JOB_HEARTBEAT":
+		case "JOB_STARTED":
+		case "JOB_ACQUIRED":
+		case "JOB_CREATED":
 			return "secondary";
 		default:
 			return "outline";
