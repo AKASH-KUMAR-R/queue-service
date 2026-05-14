@@ -54,9 +54,10 @@ function AnalyticsCard({ label, value, icon }: AnalyticsCardProps) {
 }
 
 export default function ProjectInsightsPage() {
-	const [searchQuery] = useSearchParams();
+	const [searchQuery, setSearchQuery] = useSearchParams();
 	const [timeRange, setTimeRange] = useState<TimeRange>("24hr");
 	const projectId = searchQuery.get("projectId") ?? "";
+	const autoRefresh = searchQuery.get("autoRefresh") === "true";
 
 	const { from, to } = useMemo(() => {
 		const now = new Date();
@@ -74,14 +75,18 @@ export default function ProjectInsightsPage() {
 		isLoading: isTrendsLoading,
 		isError: isTrendsError,
 		error: trendsError,
-	} = useProjectInsightsTrends(projectId, { from, to });
+	} = useProjectInsightsTrends(
+		projectId,
+		{ from, to },
+		autoRefresh,
+	);
 
 	const {
 		data: summaryResponse,
 		isLoading: isSummaryLoading,
 		isError: isSummaryError,
 		error: summaryError,
-	} = useProjectInsightsummary(projectId);
+	} = useProjectInsightsummary(projectId, autoRefresh);
 
 	const trends = useMemo(
 		() => trendsResponse?.data ?? [],
@@ -161,22 +166,44 @@ export default function ProjectInsightsPage() {
 						System-wide observability and performance
 					</p>
 				</div>
-				<div className="flex gap-1 bg-muted rounded p-1">
-					{(["1hr", "6hr", "24hr", "7d"] as TimeRange[]).map(
-						(range) => (
-							<button
-								key={range}
-								onClick={() => setTimeRange(range)}
-								className={`px-3 py-1 text-sm rounded transition-colors ${
-									timeRange === range
-										? "bg-card text-foreground shadow-sm"
-										: "text-muted-foreground hover:text-foreground"
-								}`}
-							>
-								{range}
-							</button>
-						),
-					)}
+				<div className="flex items-center gap-3">
+					<div className="flex items-center gap-2 text-sm">
+						<input
+							type="checkbox"
+							id="auto-refresh"
+							checked={autoRefresh}
+							onChange={(e) =>
+								setSearchQuery((prev) => {
+									prev.set(
+										"autoRefresh",
+										e.target.checked.toString(),
+									);
+									return prev;
+								})
+							}
+							className="w-4 h-4"
+						/>
+						<label htmlFor="auto-refresh" className="text-foreground">
+							Auto-refresh
+						</label>
+					</div>
+					<div className="flex gap-1 bg-muted rounded p-1">
+						{(["1hr", "6hr", "24hr", "7d"] as TimeRange[]).map(
+							(range) => (
+								<button
+									key={range}
+									onClick={() => setTimeRange(range)}
+									className={`px-3 py-1 text-sm rounded transition-colors ${
+										timeRange === range
+											? "bg-card text-foreground shadow-sm"
+											: "text-muted-foreground hover:text-foreground"
+									}`}
+								>
+									{range}
+								</button>
+							),
+						)}
+					</div>
 				</div>
 			</div>
 
