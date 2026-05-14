@@ -135,12 +135,6 @@ export const navGroups: NavGroup[] = [
 			// 	icon: Users,
 			// 	description: "Track worker health and status",
 			// },
-			{
-				path: "/metrics",
-				label: "Metrics",
-				icon: BarChart3,
-				description: "Queue and job performance metrics",
-			},
 		],
 	},
 

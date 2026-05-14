@@ -29,6 +29,7 @@ const ProjectsExistenceWrapper = () => {
 		isLoading: isProjectListLoading,
 		isError: isProjectListError,
 		isSuccess: isProjectListSuccess,
+		error: projectListError,
 	} = useProjectList({
 		page: pagination.page,
 		limit: pagination.limit,
@@ -61,6 +62,7 @@ const ProjectsExistenceWrapper = () => {
 
 		if (isProjectListError) {
 			setIsProjectsLoading(false);
+			console.error("Error loading projects:", projectListError);
 			toast.error("Failed to load projects. Please try again.");
 		}
 	}, [

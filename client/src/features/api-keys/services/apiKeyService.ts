@@ -1,9 +1,12 @@
 import api from "@shared/api";
 import { generateQueryParams } from "@shared/api/utils/requestUtils";
-import type { PaginationParams } from "@shared/types/types";
 import type { PaginatedResult } from "@shared/types/utils";
 
-import type { ApiKey, ApiKeyWithSecret } from "@entities/api-key/model/types";
+import type {
+	ApiKey,
+	ApiKeySearchParams,
+	ApiKeyWithSecret,
+} from "@entities/api-key/model/types";
 import {
 	toApiKey,
 	toApiKeyList,
@@ -38,7 +41,7 @@ export const create = async (
 
 export const list = async (
 	projectId: string,
-	filters: PaginationParams,
+	filters: ApiKeySearchParams,
 ): Promise<ApiKeyListResponse> => {
 	const urlParams = generateQueryParams({
 		project_id: projectId,

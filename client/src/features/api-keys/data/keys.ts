@@ -1,8 +1,8 @@
-import type { PaginationParams } from "@shared/types/types";
+import type { ApiKeySearchParams } from "@entities/api-key/model/types";
 
 export const apiKeys = {
 	all: ["api-keys"],
-	projectKeys: (projectId: string, filters: PaginationParams) => [
+	projectKeys: (projectId: string, filters: ApiKeySearchParams) => [
 		...apiKeys.all,
 		"project",
 		projectId,

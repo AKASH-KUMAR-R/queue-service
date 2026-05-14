@@ -1,8 +1,7 @@
 import api from "@shared/api";
-import type { PaginationParams } from "@shared/types/types";
 import type { PaginatedResult } from "@shared/types/utils";
 
-import type { Project } from "@entities/project/types";
+import type { Project, ProjectSearchParams } from "@entities/project/types";
 import { toProject, toProjectList } from "@entities/project/utils/transform";
 
 import type { UpdateProjectFormData } from "@pages/ProjectSettingsPage";
@@ -24,7 +23,7 @@ type UpdateProjectResponse = {
 type FetchProjectByIdResponse = { data: Project };
 
 export const fetchProjects = async (
-	filters: PaginationParams,
+	filters: ProjectSearchParams,
 ): Promise<ProjectListResponse> => {
 	const response = await api.get("/api/dashboard/project/search", {
 		params: filters,

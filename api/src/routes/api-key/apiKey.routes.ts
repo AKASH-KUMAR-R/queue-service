@@ -5,11 +5,13 @@ import passport from "@config/passport.config";
 import commonController from "@common/controller/common.controller";
 import { attachPrismaContext } from "@common/middleware/prisma.middleware";
 import {
+	queryValidationMiddleware,
 	validateId,
 	validationMiddleware,
 } from "@common/middleware/zod.middleware";
 
 import ApiKeyCreateRequest from "@models/api-key/requests/ApiKeyCreateRequest";
+import ApiKeySearchRequest from "@models/api-key/requests/ApiKeySearchRequest";
 
 import apiKeyController from "@controllers/api-key/apiKey.controller";
 
@@ -19,6 +21,7 @@ router.get(
 	"/search",
 	passport.authenticate("jwt", { session: false }),
 	attachPrismaContext,
+	queryValidationMiddleware(ApiKeySearchRequest),
 	commonController.search,
 );
 router.get(
