@@ -1,10 +1,11 @@
-import { SelectValue } from "@radix-ui/react-select";
-
+import { Checkbox } from "@shared/ui/checkbox";
+import { Label } from "@shared/ui/label";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
+	SelectValue,
 } from "@shared/ui/select";
 
 import type { JobSearchParams } from "@entities/job/types/types";
@@ -15,7 +16,7 @@ type JobViewProps = {
 	// viewMode: JobViewMode;
 	// onViewModeChange: (mode: JobViewMode) => void;
 	searchQuery: JobSearchParams;
-	onSearchChange: (field: string, query: string) => void;
+	onSearchChange: (field: string, query: any) => void;
 };
 
 export function JobViewControls({
@@ -25,7 +26,7 @@ export function JobViewControls({
 	onSearchChange,
 }: JobViewProps) {
 	return (
-		<div className="flex items-center justify-between gap-4 mb-6">
+		<div className="flex items-center  gap-4 mb-6">
 			{/* <div className="flex-1 max-w-md relative">
 				<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-neutral-400" />
 				<Input
@@ -58,6 +59,16 @@ export function JobViewControls({
 						<SelectItem value="FAILED">Failed</SelectItem>
 					</SelectContent>
 				</Select>
+			</div>
+			<div className=" flex items-center gap-2">
+				<Label htmlFor="scheduled-jobs">Scheduled Jobs</Label>
+				<Checkbox
+					id="scheduled-jobs"
+					checked={searchQuery.isScheduled}
+					onCheckedChange={(checked) =>
+						onSearchChange("isScheduled", checked)
+					}
+				/>
 			</div>
 
 			{/* <div className="flex items-center gap-2">

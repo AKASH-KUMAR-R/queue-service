@@ -24,6 +24,7 @@ export function JobsPage() {
 		status: "ALL",
 		page: 1,
 		limit: 10,
+		isScheduled: false,
 	});
 	const { data: jobs, isLoading: isJobListLoading } = useJobsList(
 		queueId ?? "",

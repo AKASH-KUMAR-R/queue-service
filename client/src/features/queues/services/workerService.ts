@@ -3,6 +3,7 @@ import { generateQueryParams } from "@shared/api/utils/requestUtils";
 import type { PaginationParams } from "@shared/types/types";
 
 import type { JobListResponse } from "@entities/job/types/apiTypes";
+import type { RawWorkerJobsFilters } from "@entities/job/types/types";
 import { toJobList } from "@entities/job/utils/transform";
 import type {
 	RawWorkerStatusSearchParams,
@@ -29,7 +30,7 @@ export const searchWorker = async (
 
 export const searchJobsDoneByWorker = async (
 	workerId: string,
-	query: PaginationParams,
+	query: RawWorkerJobsFilters,
 ): Promise<JobListResponse> => {
 	const queryParams = generateQueryParams(query);
 	const response = await api.get(

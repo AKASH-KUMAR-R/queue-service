@@ -40,6 +40,7 @@ export type JobSearchParams = {
 	status?: JobStatus | "ALL";
 	limit?: number;
 	page?: number;
+	isScheduled?: boolean;
 };
 
 export type RawJobSearchParams = {
@@ -48,6 +49,7 @@ export type RawJobSearchParams = {
 	status?: JobStatus;
 	limit?: number;
 	page?: number;
+	is_scheduled?: boolean;
 };
 
 // Job Events types
@@ -87,3 +89,11 @@ export type RawApiResponseJobEvent = RawApiResponseBase & {
 };
 
 export type JobEventSearchParams = PaginationParams & {};
+
+export type WorkerJobsFilters = PaginationParams & {
+	isScheduled?: boolean;
+};
+
+export type RawWorkerJobsFilters = PaginationParams & {
+	is_scheduled?: boolean;
+};

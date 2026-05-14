@@ -22,47 +22,39 @@ export function QueueCard({
 	onViewMetrics,
 }: QueueCardProps) {
 	return (
-		<div className="col-span-6 bg-white border border-neutral-200 rounded-lg p-6 hover:border-neutral-300 transition-colors">
+		<div className="col-span-6  rounded-lg p-6  transition-colors border border-foreground">
 			<div className="flex items-start justify-between mb-4">
 				<div className="flex-1">
 					<div className="flex items-center gap-3 mb-2">
-						<h3 className="text-base font-medium text-neutral-900">
+						<h3 className="text-base font-medium ">
 							{queue.label}
 						</h3>
 						<StatusBadge status={queue.status} type="queue" />
 					</div>
-					<p className="text-xs font-mono text-neutral-500">
-						{queue.id}
-					</p>
+					<p className="text-xs font-mono ">{queue.id}</p>
 				</div>
-				<button className="text-neutral-400 hover:text-neutral-600">
+				<Button type="button" size="sm" variant="ghost">
 					<MoreVertical className="w-5 h-5" />
-				</button>
+				</Button>
 			</div>
 
-			<div className="grid grid-cols-3 gap-4 mb-4 pb-4 border-b border-neutral-100">
+			<div className="grid grid-cols-3 gap-4 mb-4 pb-4 border-b ">
 				{queue.queueMetrics ? (
 					<>
 						<div>
-							<div className="text-xs text-neutral-500 mb-1">
-								Active
-							</div>
+							<div className="text-xs  mb-1">Active</div>
 							<div className="text-xl font-semibold text-blue-700">
 								{queue.queueMetrics.activeJobs}
 							</div>
 						</div>
 						<div>
-							<div className="text-xs text-neutral-500 mb-1">
-								Completed
-							</div>
-							<div className="text-xl font-semibold text-neutral-600">
+							<div className="text-xs  mb-1">Completed</div>
+							<div className="text-xl font-semibold ">
 								{queue.queueMetrics.completedJobs}
 							</div>
 						</div>
 						<div>
-							<div className="text-xs text-neutral-500 mb-1">
-								Failed
-							</div>
+							<div className="text-xs  mb-1">Failed</div>
 							<div className="text-xl font-semibold text-red-600">
 								{queue.queueMetrics.failedJobs}
 							</div>
@@ -73,12 +65,10 @@ export function QueueCard({
 				)}
 			</div>
 
-			<div className="flex items-center justify-between text-xs text-neutral-500 mb-4">
+			<div className="flex items-center justify-between text-xs  mb-4">
 				<div>
 					Rate limit:{" "}
-					<span className="font-mono text-neutral-700">
-						{queue.rateLimitCount}
-					</span>
+					<span className="font-mono ">{queue.rateLimitCount}</span>
 				</div>
 				{/* <div>Last: {queue.lastProcessed}</div> */}
 			</div>

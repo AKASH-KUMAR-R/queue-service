@@ -5,6 +5,8 @@ import type {
 	RawApiResponseJob,
 	RawApiResponseJobEvent,
 	RawJobSearchParams,
+	RawWorkerJobsFilters,
+	WorkerJobsFilters,
 } from "../types/types";
 
 export const toJob = (data: RawApiResponseJob): Job => {
@@ -38,6 +40,7 @@ export const toSearchJobRequestParams = (
 		status: data.status === "ALL" ? undefined : data.status,
 		page: data.page,
 		limit: data.limit,
+		is_scheduled: data.isScheduled,
 	};
 };
 
@@ -61,4 +64,14 @@ export const toJobEvent = (data: RawApiResponseJobEvent): JobEvent => {
 
 export const toJobEventList = (data: RawApiResponseJobEvent[]): JobEvent[] => {
 	return data.map((event) => toJobEvent(event));
+};
+
+export const toWorkerJobsFilters = (
+	data: WorkerJobsFilters,
+): RawWorkerJobsFilters => {
+	return {
+		is_scheduled: data.isScheduled,
+		page: data.page,
+		limit: data.limit,
+	};
 };

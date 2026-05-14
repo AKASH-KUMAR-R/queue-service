@@ -8,6 +8,8 @@ import { LoadingState } from "@shared/ui/LoadingState";
 import ViewJobDialog from "@features/jobs/components/dialogs/ViewJobDialoag";
 import { useWorkerDoneJobList } from "@features/queues/data/workerDoneJobList";
 
+import { WorkerJobsFilter } from "./WorkerJobsFilter";
+
 const ViewWorkerJobs = () => {
 	const { workerId } = useParams();
 	const [searchQuery, setSearchQuery] = useSearchParams();
@@ -16,6 +18,7 @@ const ViewWorkerJobs = () => {
 		useWorkerDoneJobList(
 			{
 				page: Number(searchQuery.get("page")) || 1,
+				isScheduled: searchQuery.get("isScheduled") === "true",
 			},
 			workerId || null,
 		);
@@ -44,6 +47,19 @@ const ViewWorkerJobs = () => {
 		});
 	};
 
+	const handleFilterChange = (name: string, value: string) => {
+		setSearchQuery((prev) => {
+			const newParams = new URLSearchParams(prev);
+			newParams.set(name, value);
+			return newParams;
+		});
+	};
+
+	const filters = {
+		page: Number(searchQuery.get("page")) || 1,
+		isScheduled: searchQuery.get("isScheduled") === "true",
+	};
+
 	return (
 		<div className=" space-y-4">
 			<h1 className=" text-lg">View Worker Jobs</h1>
@@ -51,7 +67,10 @@ const ViewWorkerJobs = () => {
 				View the list of jobs completed by this worker. Click on a job
 				to see more details about it.
 			</div>
-
+			<WorkerJobsFilter
+				filters={filters}
+				onFilterChange={handleFilterChange}
+			/>
 			{isWorkerDoneJobsLoading ? (
 				<LoadingState />
 			) : workerDoneJobs?.data.results.length === 0 ? (
