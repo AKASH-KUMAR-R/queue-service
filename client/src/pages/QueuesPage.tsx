@@ -14,10 +14,14 @@ import type { Queue, QueueSearchParams } from "@entities/queue/types/types";
 
 import { CreateQueueButton } from "@features/queues/components/CreateQueueButton";
 import { CreateQueueDialog } from "@features/queues/components/CreateQueueDialog";
+import { QueueStatusFilter } from "@features/queues/components/QueueStatusFilter";
 import { useQueueList } from "@features/queues/data/listQueue";
 
 const isAnyFilterActive = (filters: QueueSearchParams) => {
-	return filters.label?.trim() !== "" || filters.status !== undefined;
+	return (
+		filters.label?.trim() !== "" ||
+		(filters.status !== undefined && filters.status !== "ACTIVE")
+	);
 };
 
 export function QueuesPage() {
@@ -26,7 +30,7 @@ export function QueuesPage() {
 	const [filters, setFilters] = useState<QueueSearchParams>({
 		label: "",
 		projectId: currentProject?.id || "",
-		status: undefined,
+		status: "ACTIVE",
 		page: 1,
 		limit: 10,
 	});
@@ -85,6 +89,14 @@ export function QueuesPage() {
 					setFilters((prev) => ({ ...prev, label: value, page: 1 }));
 				}}
 			/>
+			<div className="mb-6">
+				<QueueStatusFilter
+					status={filters.status}
+					onStatusChange={(status) => {
+						setFilters((prev) => ({ ...prev, status, page: 1 }));
+					}}
+				/>
+			</div>
 
 			{filteredQueues.length === 0 ? (
 				<EmptyState
