@@ -1,5 +1,7 @@
 import type { Request, Response } from "express";
 
+import { MINUTES_IN_MILLISECOND } from "lib/time";
+
 import type { QueueJobsListRequestType } from "@models/queue/requests/QueueJobsListRequest";
 import type {
 	QueueFilters,
@@ -24,10 +26,11 @@ const addQueue = async (req: Request, res: Response) => {
 				label: data.label,
 				description: data.description,
 				project_id: data.project_id,
-				rate_limit_count: data.rate_limit_count,
-				rate_limit_window_ms: data.rate_limit_window_ms,
+				rate_limit_count: data.rate_limit_count || 1000,
+				rate_limit_window_ms:
+					data.rate_limit_window_ms || 15 * MINUTES_IN_MILLISECOND,
 			},
-			data.rate_limit_count ? { job_count: 0 } : undefined,
+			{ job_count: 0 },
 		);
 
 		res.status(201).json({ data: newQueue });

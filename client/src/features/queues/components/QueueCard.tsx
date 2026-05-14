@@ -1,6 +1,7 @@
 import { MoreVertical, RefreshCw } from "lucide-react";
 
 import { Button } from "@shared/ui/button";
+import { formatDurationMilliseconds } from "@shared/utils/dateAndTimeUtils";
 
 import { StatusBadge } from "@entities/StatusBadge";
 import type { QueueWithMetrics } from "@entities/queue/types/types";
@@ -66,9 +67,23 @@ export function QueueCard({
 			</div>
 
 			<div className="flex items-center justify-between text-xs  mb-4">
-				<div>
-					Rate limit:{" "}
-					<span className="font-mono ">{queue.rateLimitCount}</span>
+				<div className="grid grid-cols-2 gap-x-8 gap-y-2 text-xs">
+					<div className="flex justify-between">
+						<span className=" mr-1">Rate Limit:</span>
+						{!queue.rateLimitCount || !queue.rateLimitWindowMs ? (
+							<span>Unlimited</span>
+						) : (
+							<>
+								<span>{queue.rateLimitCount}</span>
+								<span className=" mx-1">per</span>
+								<span>
+									{formatDurationMilliseconds(
+										queue.rateLimitWindowMs,
+									)}
+								</span>
+							</>
+						)}
+					</div>
 				</div>
 				{/* <div>Last: {queue.lastProcessed}</div> */}
 			</div>

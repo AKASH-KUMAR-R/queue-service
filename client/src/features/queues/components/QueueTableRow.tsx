@@ -4,6 +4,7 @@ import { ExternalLink } from "lucide-react";
 
 import { Button } from "@shared/ui/button";
 import { TableCell, TableRow } from "@shared/ui/table";
+import { formatDurationMilliseconds } from "@shared/utils/dateAndTimeUtils";
 
 import { StatusBadge } from "@entities/StatusBadge";
 import type { QueueWithMetrics } from "@entities/queue/types/types";
@@ -54,8 +55,8 @@ export function QueueTableRow({ queue }: QueueTableRowProps) {
 			</TableCell>
 			<TableCell>
 				<span className="text-xs font-mono ">
-					{queue.rateLimitCount
-						? `${queue.rateLimitCount} per ${queue.rateLimitWindowMs} ms`
+					{queue.rateLimitCount && queue.rateLimitWindowMs
+						? `${queue.rateLimitCount} per ${formatDurationMilliseconds(queue.rateLimitWindowMs)}`
 						: "No limit"}
 				</span>
 			</TableCell>
