@@ -101,8 +101,15 @@ const findJobsByQueueId = async (
 
 	const whereFilters: Prisma.JobWhereInput = {
 		...(filters.status && { status: filters.status }),
+		...(filters.is_scheduled !== undefined && {
+			scheduled_at: filters.is_scheduled
+				? {
+						not: null,
+					}
+				: null,
+		}),
 	};
-
+	console.log("Where filters: ", whereFilters);
 	const results = await db.job.findMany({
 		where: {
 			...whereFilters,
