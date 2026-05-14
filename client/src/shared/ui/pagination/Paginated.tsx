@@ -27,7 +27,7 @@ export function Paginated({
 
 	const renderPages = () => {
 		const pages = [];
-		const delta = 1; // how many pages to show around current
+		const delta = 3; // how many pages to show around current
 
 		for (let i = 1; i <= totalPages; i++) {
 			// always show first, last, current and neighbors

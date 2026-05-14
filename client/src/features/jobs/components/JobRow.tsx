@@ -1,6 +1,7 @@
 import { ChevronDown, ChevronRight, Copy, ExternalLink } from "lucide-react";
 
 import { Button } from "@shared/ui/button";
+import { TableCell, TableRow } from "@shared/ui/table";
 import { copyToClipboard } from "@shared/utils/clipboard";
 import { formatDateTime } from "@shared/utils/dateAndTimeUtils";
 
@@ -39,9 +40,11 @@ export function JobRow({
 
 	return (
 		<>
-			<tr className="hover:bg-neutral-50">
-				<td className="px-4 py-3">
-					<button
+			<TableRow>
+				<TableCell>
+					<Button
+						size="sm"
+						variant="ghost"
 						onClick={onToggleExpand}
 						className="text-neutral-400 hover:text-neutral-600"
 					>
@@ -50,47 +53,42 @@ export function JobRow({
 						) : (
 							<ChevronRight className="w-4 h-4" />
 						)}
-					</button>
-				</td>
-				<td className="px-4 py-3">
+					</Button>
+				</TableCell>
+				<TableCell>
 					<div className="flex items-center gap-2">
-						<span className="font-mono text-sm text-neutral-900">
-							{job.id}
-						</span>
-						<button
+						<span className="font-mono text-sm ">{job.id}</span>
+						<Button
+							size="sm"
+							variant="ghost"
 							onClick={() => handleCopy(job.id)}
-							className="text-neutral-400 hover:text-neutral-600"
 						>
 							<Copy className="w-3 h-3" />
-						</button>
+						</Button>
 					</div>
-				</td>
-				<td className="px-4 py-3">
+				</TableCell>
+				<TableCell>
 					<StatusBadge status={job.status} type="job" />
-				</td>
-				<td className="px-4 py-3">
-					<span className="text-sm text-neutral-700">
-						{job.attempts} / 5
-					</span>
-				</td>
-				<td className="px-4 py-3">
-					<span className="text-sm text-neutral-700">
-						{job.priority}
-					</span>
-				</td>
-				<td className="px-4 py-3">
-					<span className="text-xs text-neutral-600">
+				</TableCell>
+				<TableCell>
+					<span className="text-sm ">{job.attempts} / 5</span>
+				</TableCell>
+				<TableCell>
+					<span className="text-sm ">{job.priority}</span>
+				</TableCell>
+				<TableCell>
+					<span className="text-xs ">
 						{job.scheduledAt
 							? formatDateTime(job.scheduledAt)
 							: "—"}
 					</span>
-				</td>
-				<td className="px-4 py-3">
-					<span className="text-xs text-neutral-600">
+				</TableCell>
+				<TableCell>
+					<span className="text-xs ">
 						{job.startedAt ? formatDateTime(job.startedAt) : "—"}
 					</span>
-				</td>
-				<td className="px-4 py-3">
+				</TableCell>
+				<TableCell>
 					<div className="flex items-center gap-2">
 						{job.status === "FAILED" && (
 							<RetryJobButton jobId={job.id} />
@@ -101,29 +99,31 @@ export function JobRow({
 						)}
 						<Button
 							type="button"
+							size="sm"
+							variant="ghost"
 							title="View details"
 							onClick={handleViewClick}
 						>
 							<ExternalLink className="w-3 h-3" />
 						</Button>
 					</div>
-				</td>
-			</tr>
+				</TableCell>
+			</TableRow>
 			{isExpanded && (
-				<tr>
-					<td colSpan={8} className="px-4 py-4 bg-neutral-50">
+				<TableRow>
+					<TableCell colSpan={8}>
 						<div className="space-y-3">
 							<div>
-								<div className="text-xs font-medium text-neutral-600 mb-2">
+								<div className="text-xs font-medium mb-2">
 									Payload
 								</div>
-								<pre className="font-mono text-xs text-neutral-800 bg-white border border-neutral-200 rounded p-3 overflow-x-auto">
+								<pre className="font-mono text-xs  rounded p-3 overflow-x-auto">
 									{JSON.stringify(job.payload, null, 2)}
 								</pre>
 							</div>
 						</div>
-					</td>
-				</tr>
+					</TableCell>
+				</TableRow>
 			)}
 		</>
 	);

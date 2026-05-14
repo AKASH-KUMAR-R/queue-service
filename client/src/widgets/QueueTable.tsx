@@ -1,5 +1,12 @@
 import type { PaginatedComponentProps } from "@shared/types/types";
 import { Paginated } from "@shared/ui/pagination/Paginated";
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableHeader,
+	TableRow,
+} from "@shared/ui/table";
 
 import type { QueueWithMetrics } from "@entities/queue/types/types";
 
@@ -16,49 +23,33 @@ export function QueueTable({
 	totalPages,
 }: QueueTableProps) {
 	return (
-		<div className="bg-white border border-neutral-200 rounded-lg overflow-hidden">
-			<div className="overflow-x-auto">
-				<table className="w-full">
-					<thead className="bg-neutral-50 border-b border-neutral-200 sticky top-0">
-						<tr>
-							<th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
-								Queue Name
-							</th>
-							<th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
-								Status
-							</th>
-							<th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
-								Active
-							</th>
-							<th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
-								Completed
-							</th>
-							<th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
-								Failed
-							</th>
-							<th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
-								Rate Limit Per Unit
-							</th>
-							{/* <th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
+		<>
+			<Table>
+				<TableHeader>
+					<TableRow>
+						<TableCell>Queue Name</TableCell>
+						<TableCell>Status</TableCell>
+						<TableCell>Active</TableCell>
+						<TableCell>Completed</TableCell>
+						<TableCell>Failed</TableCell>
+						<TableCell>Rate Limit Per Unit</TableCell>
+						{/* <TableCell >
 								Last Processed
-							</th> */}
-							<th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
-								Actions
-							</th>
-						</tr>
-					</thead>
-					<tbody className="divide-y divide-neutral-200">
-						{queues.map((queue) => (
-							<QueueTableRow key={queue.id} queue={queue} />
-						))}
-					</tbody>
-				</table>
-				<Paginated
-					page={page}
-					onPageChange={onPageChange}
-					totalPages={totalPages}
-				/>
-			</div>
-		</div>
+							</TableCell> */}
+						<TableCell>Actions</TableCell>
+					</TableRow>
+				</TableHeader>
+				<TableBody className="divide-y ">
+					{queues.map((queue) => (
+						<QueueTableRow key={queue.id} queue={queue} />
+					))}
+				</TableBody>
+			</Table>
+			<Paginated
+				page={page}
+				onPageChange={onPageChange}
+				totalPages={totalPages}
+			/>
+		</>
 	);
 }
