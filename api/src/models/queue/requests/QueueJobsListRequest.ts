@@ -6,6 +6,10 @@ const QueueJobsListRequest = zod
 		page: zod.coerce.number().min(1).default(1),
 		limit: zod.coerce.number().min(1).max(100).default(10),
 		status: zod.enum(JobStatus).optional(),
+		is_scheduled: zod
+			.string()
+			.transform((v) => v === "true")
+			.optional(),
 	})
 	.strip();
 
@@ -15,4 +19,5 @@ export type QueueJobsListRequestType = zod.infer<typeof QueueJobsListRequest>;
 
 export type QueueJobsFilters = {
 	status?: JobStatus | undefined;
+	is_scheduled?: boolean | undefined;
 };

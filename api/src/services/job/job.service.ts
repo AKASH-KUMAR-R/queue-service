@@ -7,6 +7,7 @@ import {
 } from "@db/client";
 
 import type { QueueJobsFilters } from "@models/queue/requests/QueueJobsListRequest";
+import type { WorkerCompletedFilters } from "@models/worker-status/requests/WorkerCompletedJobsListRequest";
 
 import jobEventsService from "@services/job-events/jobEvents.service";
 import queueRateLimiterService from "@services/queue-limit/queueRateLimiter.service";
@@ -57,11 +58,23 @@ const findJobsByWorkerId = async (
 	workerId: string,
 	page: number,
 	limit: number,
+	query: WorkerCompletedFilters,
 ) => {
 	const paginationParams = new PaginationParams(page, limit);
 
+	const whereFilters: Prisma.JobWhereInput = {
+		...(query.is_scheduled !== undefined && {
+			scheduled_at: query.is_scheduled
+				? {
+						not: null,
+					}
+				: null,
+		}),
+	};
+
 	const results = await db.job.findMany({
 		where: {
+			...whereFilters,
 			job_events: {
 				some: {
 					worker_id: workerId,
@@ -78,6 +91,7 @@ const findJobsByWorkerId = async (
 
 	const total = await db.job.count({
 		where: {
+			...whereFilters,
 			job_events: {
 				some: {
 					worker_id: workerId,
@@ -101,8 +115,15 @@ const findJobsByQueueId = async (
 
 	const whereFilters: Prisma.JobWhereInput = {
 		...(filters.status && { status: filters.status }),
+		...(filters.is_scheduled !== undefined && {
+			scheduled_at: filters.is_scheduled
+				? {
+						not: null,
+					}
+				: null,
+		}),
 	};
-
+	console.log("Where filters: ", whereFilters);
 	const results = await db.job.findMany({
 		where: {
 			...whereFilters,

@@ -10,13 +10,15 @@ const getJobsByWorker = async (req: Request, res: Response) => {
 	try {
 		const workerId = req.params.id as string;
 
-		const validQuery = req.validQuery as WorkerCompletedListRequest;
+		const { page, limit, ...validQuery } =
+			req.validQuery as WorkerCompletedListRequest;
 
 		const result = await jobService.findJobsByWorkerId(
 			req.db,
 			workerId,
-			validQuery.page || 1,
-			validQuery.limit || 10,
+			page || 1,
+			limit || 10,
+			validQuery,
 		);
 
 		return res.json(result);
