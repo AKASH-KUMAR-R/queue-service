@@ -40,6 +40,7 @@ export const toSearchJobRequestParams = (
 		status: data.status === "ALL" ? undefined : data.status,
 		page: data.page,
 		limit: data.limit,
+		is_scheduled: data.isScheduled,
 	};
 };
 
