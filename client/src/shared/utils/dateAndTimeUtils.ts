@@ -1,3 +1,9 @@
+import {
+	DAY_IN_HOUR,
+	HOUR_IN_MINUTES,
+	MINUTES_IN_SECONDS,
+} from "@shared/lib/time";
+
 export const formatDateTime = (dateString: string): string => {
 	const date = new Date(dateString);
 	return date.toLocaleString("en-US", {
@@ -34,5 +40,31 @@ export const formatDurationMilliseconds = (durationMs: number): string => {
 		? seconds.toString()
 		: seconds.toFixed(1);
 
-	return `${roundedSeconds}s`;
+	if (seconds < MINUTES_IN_SECONDS) {
+		return `${roundedSeconds}s`;
+	}
+	const minutes = seconds / MINUTES_IN_SECONDS;
+	const roundedMinutes = Number.isInteger(minutes)
+		? minutes.toString()
+		: minutes.toFixed(1);
+
+	if (minutes < HOUR_IN_MINUTES) {
+		return `${roundedMinutes}m`;
+	}
+
+	const hours = minutes / HOUR_IN_MINUTES;
+	const roundedHours = Number.isInteger(hours)
+		? hours.toString()
+		: hours.toFixed(1);
+
+	if (hours < DAY_IN_HOUR) {
+		return `${roundedHours}h`;
+	}
+
+	const days = hours / DAY_IN_HOUR;
+	const roundedDays = Number.isInteger(days)
+		? days.toString()
+		: days.toFixed(1);
+
+	return `${roundedDays}d`;
 };
