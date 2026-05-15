@@ -15,6 +15,7 @@ import { prismaMiddleware } from "@common/middleware/prisma.middleware";
 
 import apiKeyRouter from "@routes/api-key/apiKey.routes";
 import authRouter from "@routes/auth/auth.routes";
+import environmentRouter from "@routes/environment/environment.routes";
 import jobEventsRouter from "@routes/job-events/jobEvents.routes";
 import jobDashboardRouter from "@routes/job/job.dashboard.routes";
 import jobWorkerRouter from "@routes/job/job.worker.routes";
@@ -62,6 +63,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/dashboard/queue", queueRouter);
 app.use("/api/dashboard/user", userRouter);
 app.use("/api/dashboard/project", projectRouter);
+app.use("/api/dashboard/environment", environmentRouter);
 app.use("/api/dashboard/api-key", apiKeyRouter);
 app.use("/api/dashboard/job-events", jobEventsRouter);
 app.use("/api/dashboard/queue-metrics", queueMetricsRouter);
