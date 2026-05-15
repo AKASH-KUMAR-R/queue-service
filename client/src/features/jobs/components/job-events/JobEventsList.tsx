@@ -1,4 +1,4 @@
-import { ArrowRight } from "lucide-react";
+import { Dot } from "lucide-react";
 
 import { Badge } from "@shared/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@shared/ui/card";
@@ -20,6 +20,7 @@ import {
 	getEventMessage,
 	getEventVariant,
 } from "@entities/job/utils/style";
+import { getStatusStyle } from "@entities/status/utils/style";
 
 interface JobEventsTimelineProps {
 	events: JobEvent[];
@@ -90,35 +91,40 @@ export function JobEventsTimeline({
 													{timeStr}
 												</span>
 												<span className="text-xs">
-													·
+													<Dot />
 												</span>
 												<span>{dateStr}</span>
 											</div>
-											<div className="flex items-center gap-3 text-xs">
-												<span>
+											<div className="flex flex-col gap-3 text-xs">
+												<div>
 													<span className="text-foreground/70">
 														Status:
-													</span>{" "}
-													<span className="font-medium">
+													</span>
+													<span
+														className={`font-medium px-1 py-0.5 mx-1 rounded border ${getStatusStyle(event.prevStatus)}`}
+													>
 														{event.prevStatus}
 													</span>
-													{<ArrowRight size={12} />}
-													<span className="font-medium">
+													<span className=" mx-1">
+														To
+													</span>
+													<span
+														className={`font-medium px-1 py-0.5 rounded border ${getStatusStyle(event.nextStatus)}`}
+													>
 														{event.nextStatus}
 													</span>
-												</span>
+												</div>
 												{event.workerId && (
-													<>
-														<span>·</span>
+													<div>
 														<span>
-															<span className="text-foreground/70">
+															<span className="text-foreground/70 mr-0.5">
 																Worker:
-															</span>{" "}
+															</span>
 															<span className="font-mono">
 																{event.workerId}
 															</span>
 														</span>
-													</>
+													</div>
 												)}
 											</div>
 											{event.metadata &&
