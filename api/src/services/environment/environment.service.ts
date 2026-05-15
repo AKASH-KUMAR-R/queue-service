@@ -55,6 +55,7 @@ const findEnvironments = async (
 			name: { contains: trimmedName, mode: "insensitive" },
 		}),
 		...(query.is_default !== undefined && { is_default: query.is_default }),
+		is_active: true,
 	};
 
 	const results = await db.environment.findMany({
@@ -80,7 +81,7 @@ const updateById = async (
 ) => {
 	return await db.$transaction(async (tx) => {
 		const existingEnvironment = await tx.environment.findUnique({
-			where: { id },
+			where: { id, is_active: true },
 		});
 
 		if (!existingEnvironment) {
@@ -110,7 +111,7 @@ const updateById = async (
 const setDefaultById = async (db: PrismaClient, id: string) => {
 	return await db.$transaction(async (tx) => {
 		const existingEnvironment = await tx.environment.findUnique({
-			where: { id },
+			where: { id, is_active: true },
 		});
 
 		if (!existingEnvironment) {

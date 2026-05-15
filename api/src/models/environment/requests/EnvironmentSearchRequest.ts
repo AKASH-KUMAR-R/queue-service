@@ -5,7 +5,7 @@ const EnvironmentSearchRequest = zod
 		project_id: zod.string().optional(),
 		name: zod.string().toLowerCase().optional(),
 		is_default: zod
-			.string()
+			.enum(["true", "false"])
 			.transform((value) => value === "true")
 			.optional(),
 		page: zod.coerce.number().min(1).optional(),
