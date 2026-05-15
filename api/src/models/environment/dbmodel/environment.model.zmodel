@@ -7,6 +7,7 @@ model Environment extends Base {
     project     Project  @relation("ProjectEnvironments", fields: [project_id], references: [id])
     name        String
     is_default  Boolean  @default(false)
+    is_active  Boolean  @default(true)
 
     @@unique([project_id, name])
 
