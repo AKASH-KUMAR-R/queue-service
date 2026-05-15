@@ -6,6 +6,7 @@ import "../../project-insights/dbmodel/projectInsights.model.zmodel";
 import "../../api-key/dbmodel/apiKey.model.zmodel";
 import "../../job/dbmodel/job.model.zmodel";
 import "../../job-event/dbmodel/jobEvent.model.zmodel";
+import "../../environment/dbmodel/environment.model.zmodel";
 
 model Project extends Base {
 
@@ -22,6 +23,7 @@ model Project extends Base {
     apiKeys ApiKey[] @relation("ProjectApiKeys")
     jobs Job[] @relation("ProjectJobs")
     job_events JobEvents[] @relation("Project Job Events")
+    environments Environment[] @relation("ProjectEnvironments")
 
     @@index([user_id])
 

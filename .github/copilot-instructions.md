@@ -60,6 +60,7 @@ Single-test command support: no package currently has a real test framework conf
 
 - **Migrations:**The source of truth is `schema.zmodel`. Always use `npm run generate` followed by `npm run migrate:dev` or the specific ZenStack migration flow.
     - For local development, Copilot CLI actions that update/generated DB code should run `cd api && npm run generate` and then `cd api && npm run migrate:dev` (or the ZenStack equivalent). Do NOT run any production migration commands or destructive migration resets without explicit user approval.
+    - Do not hand-write new migration scripts first. Generate the migration from schema changes (`npm run migrate:dev` or `prisma migrate dev --create-only`) and only then edit the generated SQL if needed (e.g., partial indexes not expressible in schema).
     - Data migration scripts: Ask for approval before executing any Prisma data migration script along with the migration sql query.
 - **Dependency Management:** Before adding a new npm package, the agent must ask for permission. Do not autonomously run `npm install`.
 - **Environment Variables:** Never create or modify `.env` files with real credentials. Only suggest changes to `.env.example`.

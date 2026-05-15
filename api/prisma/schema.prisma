@@ -62,6 +62,7 @@ model Project {
     apiKeys ApiKey[] @relation("ProjectApiKeys")
     jobs Job[] @relation("ProjectJobs")
     job_events JobEvents[] @relation("Project Job Events")
+    environments Environment[] @relation("ProjectEnvironments")
 
     @@index([user_id])
 }
@@ -218,6 +219,19 @@ model ApiKey {
     project_id String
 
     @@index([project_id, revoked])
+}
+
+model Environment {
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt()
+    id String @id() @default(uuid())
+    project_id String
+    project Project @relation("ProjectEnvironments", fields: [project_id], references: [id])
+    name String
+    is_default Boolean @default(false)
+    is_active Boolean @default(true)
+
+    @@unique([project_id, name])
 }
 
 model CronState {
