@@ -1,0 +1,14 @@
+import "../../base/base.model.zmodel";
+import "../../project/dbmodel/project.model.zmodel";
+
+model Environment extends Base {
+    id String @id @default(uuid())
+    project_id  String
+    project     Project  @relation("ProjectEnvironments", fields: [project_id], references: [id])
+    name        String
+    is_default  Boolean  @default(false)
+
+    @@unique([project_id, name])
+
+    @@allow('all', auth() != null && auth().id == project.user_id)
+}
