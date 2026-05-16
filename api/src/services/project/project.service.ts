@@ -1,5 +1,6 @@
 import type { Prisma, PrismaClient } from "@db/client";
 
+import { DEFAULT_ENVIRONMENTS } from "@common/constants/environment.constants";
 import type { ProjectFilters } from "@models/project/requests/ProjectSearchRequest";
 
 import { PaginationParams, PaginationResults } from "@utils/pagination.util";
@@ -17,8 +18,20 @@ const create = async (
 			},
 		},
 	};
-	return await db.project.create({
-		data: enrichedData,
+	return await db.$transaction(async (tx) => {
+		const project = await tx.project.create({
+			data: enrichedData,
+		});
+
+		await tx.environment.createMany({
+			data: DEFAULT_ENVIRONMENTS.map((environment) => ({
+				project_id: project.id,
+				name: environment.name.toLowerCase(),
+				is_default: environment.is_default,
+			})),
+		});
+
+		return project;
 	});
 };
 
