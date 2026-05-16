@@ -8,7 +8,7 @@ model QueueInsights extends Base {
     id String @id @default(uuid())
     queue_id String
     project_id String
-    environment_id String?
+    environment_id String
     bucket_hour DateTime
 
     jobs_completed Int @default(0)
@@ -26,7 +26,7 @@ model QueueInsights extends Base {
 
     queue Queue @relation("QueueInsights", fields: [queue_id], references: [id])
     project Project @relation("QueueInsights", fields: [project_id], references: [id])
-    environment Environment? @relation("EnvironmentQueueInsights", fields: [environment_id], references: [id])
+    environment Environment @relation("EnvironmentQueueInsights", fields: [environment_id], references: [id])
 
     @@unique([queue_id, bucket_hour])
     @@index([queue_id, bucket_hour])

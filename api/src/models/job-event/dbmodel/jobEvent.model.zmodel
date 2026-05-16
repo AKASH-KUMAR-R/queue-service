@@ -16,8 +16,8 @@ model JobEvents extends Base {
 
     project Project @relation("Project Job Events", fields: [project_id], references: [id])
     project_id String
-    environment_id String?
-    environment Environment? @relation("EnvironmentJobEvents", fields: [environment_id], references: [id])
+    environment_id String
+    environment Environment @relation("EnvironmentJobEvents", fields: [environment_id], references: [id])
 
     event_type JobEventType
     prev_status JobStatus
