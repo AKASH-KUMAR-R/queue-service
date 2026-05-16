@@ -58,6 +58,7 @@ const findByLabel = async (
 	db: PrismaClient,
 	label: string,
 	project_id: string,
+	environment_id: string,
 ) => {
 	return await db.queue.findUnique({
 		where: {
@@ -65,6 +66,7 @@ const findByLabel = async (
 				project_id,
 				label,
 			},
+			environment_id,
 		},
 	});
 };

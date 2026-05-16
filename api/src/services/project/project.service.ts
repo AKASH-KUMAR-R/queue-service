@@ -1,6 +1,7 @@
 import type { Prisma, PrismaClient } from "@db/client";
 
 import { DEFAULT_ENVIRONMENTS } from "@common/constants/environment.constants";
+
 import type { ProjectFilters } from "@models/project/requests/ProjectSearchRequest";
 
 import { PaginationParams, PaginationResults } from "@utils/pagination.util";
