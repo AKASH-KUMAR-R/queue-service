@@ -50,6 +50,7 @@ const runQueueInsightsCron = async (): Promise<void> => {
 		for (const affectedBucket of affectedProjectBuckets) {
 			await projectInsightsService.recomputeBucket(
 				affectedBucket.project_id,
+				affectedBucket.environment_id,
 				affectedBucket.bucket_hour,
 				now,
 			);

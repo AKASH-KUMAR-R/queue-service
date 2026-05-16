@@ -6,6 +6,7 @@ import { generateUtcHourBuckets } from "@utils/time.util";
 
 export type AffectedProjectBucket = {
 	project_id: string;
+	environment_id: string;
 	bucket_hour: Date;
 };
 
@@ -17,28 +18,27 @@ const getAffectedBuckets = async (
 	return (
 		(await prisma.$queryRaw<AffectedProjectBucket[]>(Prisma.sql`
 			SELECT DISTINCT
-				"Queue"."project_id" AS "project_id",
-				date_trunc('hour', "JobEvents"."created_at") AS "bucket_hour"
+				"project_id",
+				"environment_id",
+				date_trunc('hour', "created_at") AS "bucket_hour"
 			FROM "JobEvents"
-			INNER JOIN "Queue"
-				ON "Queue"."id" = "JobEvents"."queue_id"
-			WHERE "JobEvents"."created_at" >= ${sinceLastRun}
-			ORDER BY "project_id", "bucket_hour"
+			WHERE "created_at" >= ${sinceLastRun}
+			ORDER BY "project_id", "environment_id", "bucket_hour"
 		`)) || []
 	);
 };
 
 const recomputeBucket = async (
 	project_id: string,
+	environment_id: string,
 	bucket_hour: Date,
 	now: Date = new Date(),
 ): Promise<ProjectInsights> => {
 	const queueInsightsRows = await prisma.queueInsights.findMany({
 		where: {
 			bucket_hour,
-			queue: {
-				project_id,
-			},
+			project_id,
+			environment_id,
 		},
 		select: {
 			jobs_enqueued: true,
@@ -72,6 +72,7 @@ const recomputeBucket = async (
 			},
 			queue: {
 				project_id,
+				environment_id,
 			},
 		},
 	});
@@ -98,6 +99,7 @@ const recomputeBucket = async (
 		},
 		create: {
 			project_id,
+			environment_id,
 			bucket_hour,
 			jobs_enqueued,
 			jobs_completed,
@@ -113,10 +115,12 @@ const recomputeBucket = async (
 const getProjectSummary = async (
 	db: PrismaClient,
 	project_id: string,
+	environment_id: string,
 ): Promise<ProjectInsights | null> => {
 	return await db.projectInsights.findFirst({
 		where: {
 			project_id,
+			environment_id,
 		},
 		orderBy: {
 			bucket_hour: "desc",
@@ -127,12 +131,14 @@ const getProjectSummary = async (
 const getProjectTrends = async (
 	db: PrismaClient,
 	project_id: string,
+	environment_id: string,
 	from: Date,
 	to: Date,
 ): Promise<ProjectInsights[]> => {
 	const realRows = await db.projectInsights.findMany({
 		where: {
 			project_id,
+			environment_id,
 			bucket_hour: {
 				gte: from,
 				lte: to,
@@ -152,6 +158,7 @@ const getProjectTrends = async (
 	const emptyBucket = (bucket_hour: Date): ProjectInsights => ({
 		id: "",
 		project_id,
+		environment_id: "",
 		bucket_hour,
 		jobs_enqueued: 0,
 		jobs_completed: 0,

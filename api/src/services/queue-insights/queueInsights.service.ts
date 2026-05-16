@@ -46,6 +46,16 @@ const recomputeBucket = async (
 		bucket_hour.getTime() + HOUR_IN_MILLISECONDS,
 	);
 
+	const queue = await prisma.queue.findUnique({
+		where: {
+			id: queue_id,
+		},
+	});
+
+	if (!queue) {
+		throw new Error(`Queue with id ${queue_id} not found`);
+	}
+
 	const events = await prisma.jobEvents.findMany({
 		where: {
 			queue_id,
@@ -142,6 +152,8 @@ const recomputeBucket = async (
 		},
 		create: {
 			queue_id,
+			project_id: queue.project_id,
+			environment_id: queue.environment_id,
 			bucket_hour,
 			jobs_enqueued,
 			jobs_completed,
@@ -185,6 +197,8 @@ const getInsights = async (
 	const emptyBucket = (bucket_hour: Date): QueueInsights => ({
 		id: "",
 		queue_id,
+		project_id: "",
+		environment_id: "",
 		bucket_hour,
 		jobs_completed: 0,
 		jobs_failed: 0,
