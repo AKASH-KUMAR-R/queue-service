@@ -10,6 +10,7 @@ import {
 	validationMiddleware,
 } from "@common/middleware/zod.middleware";
 
+import ProjectInsightSummaryRequest from "@models/project-insights/requests/ProjectInsightSummaryRequest";
 import ProjectInsightsRequest from "@models/project-insights/requests/ProjectInsightsRequest";
 import { ProjectCreateRequest } from "@models/project/requests/ProjectCreateRequest";
 import { ProjectSearchRequest } from "@models/project/requests/ProjectSearchRequest";
@@ -38,6 +39,7 @@ router.get(
 	passport.authenticate("jwt", { session: false }),
 	attachPrismaContext,
 	validateId,
+	queryValidationMiddleware(ProjectInsightSummaryRequest),
 	projectInsightsController.getProjectSummary,
 );
 router.get(

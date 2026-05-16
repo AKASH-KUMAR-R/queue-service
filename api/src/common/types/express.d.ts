@@ -6,7 +6,9 @@ declare global {
 			validQuery?: any;
 			db: PrismaClient;
 			user?: Omit<User, "password">;
-			project?: Project;
+			project?: Project & {
+				environment_id: string;
+			};
 			worker_id?: string;
 			producer_id?: string;
 		}

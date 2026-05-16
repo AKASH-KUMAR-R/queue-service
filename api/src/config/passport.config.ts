@@ -63,7 +63,10 @@ passport.use(
 				return done(null, false);
 			}
 
-			return done(null, result.project);
+			return done(null, {
+				...result.project,
+				environment_id: result.environment_id,
+			});
 		} catch (err) {
 			done(err, false);
 		}

@@ -24,7 +24,7 @@ const queryFields: Record<string, string[]> = {
 	project: ["id", "title", "description"],
 	queue: ["id", "status", "created_at", "project_id"],
 	job: ["id", "status", "queue_id"],
-	"api-key": ["project_id", "revoked"],
+	"api-key": ["project_id", "environment_id", "revoked"],
 	"job-events": [
 		"id",
 		"job_id",

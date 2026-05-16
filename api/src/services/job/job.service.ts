@@ -39,6 +39,7 @@ const createJob = async (
 			event_type: JobEventType.JOB_CREATED,
 			prev_status: JobStatus.PENDING,
 			next_status: JobStatus.PENDING,
+			environment_id: newJob.environment_id,
 		});
 
 		return newJob;
@@ -212,6 +213,7 @@ const findNextJob = async (
 			event_type: JobEventType.JOB_ACQUIRED,
 			prev_status: JobStatus.PENDING,
 			next_status: JobStatus.IN_PROGRESS,
+			environment_id: queue.environment_id,
 		});
 
 		return job[0];
@@ -249,6 +251,7 @@ const updateHeartbeat = async (
 			event_type: JobEventType.JOB_HEARTBEAT,
 			prev_status: updatedJob.status,
 			next_status: updatedJob.status,
+			environment_id: updatedJob.environment_id,
 		});
 
 		return updatedJob;
@@ -301,6 +304,7 @@ const updateStatusAsCompleted = async (
 			event_type: JobEventType.JOB_COMPLETED,
 			prev_status: JobStatus.IN_PROGRESS,
 			next_status: JobStatus.COMPLETED,
+			environment_id: updatedJob.environment_id,
 		});
 
 		return updatedJob;
@@ -340,6 +344,7 @@ const updateStatusAsFailed = async (
 			event_type: JobEventType.JOB_FAILED,
 			prev_status: JobStatus.IN_PROGRESS,
 			next_status: JobStatus.FAILED,
+			environment_id: updatedJob.environment_id,
 		});
 
 		return updatedJob;
@@ -379,6 +384,7 @@ const updateStatusAsPendingByRetry = async (
 			event_type: JobEventType.JOB_REQUEUED,
 			prev_status: JobStatus.IN_PROGRESS,
 			next_status: JobStatus.PENDING,
+			environment_id: updatedJob.environment_id,
 		});
 
 		return updatedJob;

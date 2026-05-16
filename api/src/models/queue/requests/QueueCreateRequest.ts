@@ -1,3 +1,4 @@
+import { env } from "process";
 import zod from "zod";
 
 const QueueCreateRequest = zod
@@ -5,6 +6,7 @@ const QueueCreateRequest = zod
 		label: zod.string(),
 		description: zod.string().optional(),
 		project_id: zod.uuid(),
+		environment_id: zod.uuid(),
 		rate_limit_count: zod.number().min(1).optional(),
 		rate_limit_window_ms: zod.number().min(1).optional(),
 	})

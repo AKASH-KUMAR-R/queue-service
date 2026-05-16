@@ -5,6 +5,7 @@ const ProjectInsightsRequest = zod
 	.object({
 		from: zod.iso.datetime(),
 		to: zod.iso.datetime(),
+		environment_id: zod.string(),
 	})
 	.strip()
 	.superRefine(({ from, to }, ctx) => {

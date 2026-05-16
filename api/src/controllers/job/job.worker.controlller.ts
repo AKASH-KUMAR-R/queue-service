@@ -19,6 +19,7 @@ const addJobToQueue = async (req: Request, res: Response) => {
 			req.db,
 			req.body.queue_label,
 			req.project.id,
+			req.project.environment_id,
 		);
 
 		if (!queue) {
@@ -36,6 +37,11 @@ const addJobToQueue = async (req: Request, res: Response) => {
 				project: {
 					connect: {
 						id: queue.project_id,
+					},
+				},
+				environment: {
+					connect: {
+						id: queue.environment_id,
 					},
 				},
 				payload: req.body.payload,
@@ -114,6 +120,7 @@ const getNextJobFromQueue = async (req: Request, res: Response) => {
 			req.db,
 			queue_label,
 			req.project.id,
+			req.project.environment_id,
 		);
 
 		if (!queue) {
