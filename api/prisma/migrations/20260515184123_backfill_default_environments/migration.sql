@@ -1,4 +1,4 @@
--- NOTE: Backfill default environments for projects that currently have none, changes to this default environment list should be made in the file api/src/common/constants/environment.constants.ts.
+-- Backfill default environments for projects that currently have none
 WITH projects_without_environment AS (
 	SELECT p."id"
 	FROM "Project" AS p

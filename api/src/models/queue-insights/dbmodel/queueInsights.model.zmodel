@@ -1,10 +1,12 @@
 
 import "../../queue/dbmodel/queue.model.zmodel";
+import "../../project/dbmodel/project.model.zmodel";
 import "../../base/base.model.zmodel";
 
 model QueueInsights extends Base {
     id String @id @default(uuid())
     queue_id String
+    project_id String?
     bucket_hour DateTime
 
     jobs_completed Int @default(0)
@@ -21,6 +23,7 @@ model QueueInsights extends Base {
     p99_latency Float?
 
     queue Queue @relation("QueueInsights", fields: [queue_id], references: [id])
+    project Project? @relation("QueueInsights", fields: [project_id], references: [id])
 
     @@unique([queue_id, bucket_hour])
     @@index([queue_id, bucket_hour])

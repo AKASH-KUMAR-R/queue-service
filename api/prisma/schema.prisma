@@ -59,6 +59,7 @@ model Project {
     user_id String
     queues Queue[] @relation("ProjectQueues")
     project_insights ProjectInsights[] @relation("ProjectInsights")
+    queue_insights QueueInsights[] @relation("QueueInsights")
     apiKeys ApiKey[] @relation("ProjectApiKeys")
     jobs Job[] @relation("ProjectJobs")
     job_events JobEvents[] @relation("Project Job Events")
@@ -157,6 +158,7 @@ model QueueInsights {
     updated_at DateTime @updatedAt()
     id String @id() @default(uuid())
     queue_id String
+    project_id String?
     bucket_hour DateTime
     jobs_completed Int @default(0)
     jobs_failed Int @default(0)
@@ -169,6 +171,7 @@ model QueueInsights {
     p95_latency Float?
     p99_latency Float?
     queue Queue @relation("QueueInsights", fields: [queue_id], references: [id])
+    project Project? @relation("QueueInsights", fields: [project_id], references: [id])
 
     @@unique([queue_id, bucket_hour])
     @@index([queue_id, bucket_hour])
