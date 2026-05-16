@@ -29,6 +29,7 @@ const addQueue = async (req: Request, res: Response) => {
 				rate_limit_count: data.rate_limit_count || 1000,
 				rate_limit_window_ms:
 					data.rate_limit_window_ms || 15 * MINUTES_IN_MILLISECOND,
+				environment_id: data.environment_id,
 			},
 			{ job_count: 0 },
 		);

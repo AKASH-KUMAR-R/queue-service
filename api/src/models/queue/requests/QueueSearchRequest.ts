@@ -5,7 +5,8 @@ const QueueSearchRequest = zod
 	.object({
 		label: zod.string().optional(),
 		status: zod.enum(QueueStatus).optional(),
-		project_id: zod.string().optional(),
+		project_id: zod.uuid().optional(),
+		environment_id: zod.uuid().optional(),
 		page: zod.coerce.number().optional(),
 		limit: zod.coerce.number().optional(),
 	})
@@ -19,4 +20,5 @@ export type QueueFilters = {
 	label?: string;
 	status?: QueueStatus;
 	project_id?: string;
+	environment_id?: string;
 };

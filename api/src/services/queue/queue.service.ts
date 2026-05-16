@@ -19,6 +19,9 @@ const createQueue = async (
 		project: {
 			connect: { id: data.project_id },
 		},
+		environment: {
+			connect: { id: data.environment_id },
+		},
 	};
 
 	if (queueLimiter) {
@@ -113,6 +116,7 @@ const findQueues = async (
 		}),
 		...(query.status && { status: query.status }),
 		...(query.project_id && { project_id: query.project_id }),
+		...(query.environment_id && { environment_id: query.environment_id }),
 	};
 
 	const results = await db.queue.findMany({
