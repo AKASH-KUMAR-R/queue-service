@@ -1,5 +1,6 @@
 
 import "../../base/base.model.zmodel";
+import "../../environment/dbmodel/environment.model.zmodel";
 import "../../queue/dbmodel/queue.model.zmodel";
 import "../../job-event/dbmodel/jobEvent.model.zmodel";
 import "../../project/dbmodel/project.model.zmodel";
@@ -12,6 +13,8 @@ model Job extends Base {
 
     project Project @relation("ProjectJobs", fields: [project_id], references: [id])
     project_id String
+    environment_id String
+    environment Environment @relation("EnvironmentJobs", fields: [environment_id], references: [id])
 
     payload Json    
     status JobStatus @default(PENDING)

@@ -1,5 +1,11 @@
 import "../../base/base.model.zmodel";
 import "../../project/dbmodel/project.model.zmodel";
+import "../../api-key/dbmodel/apiKey.model.zmodel";
+import "../../job/dbmodel/job.model.zmodel";
+import "../../job-event/dbmodel/jobEvent.model.zmodel";
+import "../../queue/dbmodel/queue.model.zmodel";
+import "../../queue-insights/dbmodel/queueInsights.model.zmodel";
+import "../../project-insights/dbmodel/projectInsights.model.zmodel";
 
 model Environment extends Base {
     id String @id @default(uuid())
@@ -8,6 +14,14 @@ model Environment extends Base {
     name        String
     is_default  Boolean  @default(false)
     is_active  Boolean  @default(true)
+
+    // Relations
+    apiKeys ApiKey[] @relation("EnvironmentApiKeys")
+    jobs Job[] @relation("EnvironmentJobs")
+    job_events JobEvents[] @relation("EnvironmentJobEvents")
+    queues Queue[] @relation("EnvironmentQueues")
+    queue_insights QueueInsights[] @relation("EnvironmentQueueInsights")
+    project_insights ProjectInsights[] @relation("EnvironmentProjectInsights")
 
     @@unique([project_id, name])
 

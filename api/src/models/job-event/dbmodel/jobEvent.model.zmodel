@@ -3,6 +3,7 @@ import "../../base/base.model.zmodel";
 import "../../job/dbmodel/job.model.zmodel";
 import "../../queue/dbmodel/queue.model.zmodel";
 import "../../project/dbmodel/project.model.zmodel";
+import "../../environment/dbmodel/environment.model.zmodel";
 
 model JobEvents extends Base {
     id String @id @default(uuid())
@@ -15,6 +16,8 @@ model JobEvents extends Base {
 
     project Project @relation("Project Job Events", fields: [project_id], references: [id])
     project_id String
+    environment_id String
+    environment Environment @relation("EnvironmentJobEvents", fields: [environment_id], references: [id])
 
     event_type JobEventType
     prev_status JobStatus

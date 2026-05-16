@@ -1,6 +1,7 @@
 
 import "../../base/base.model.zmodel";
 import "../../project/dbmodel/project.model.zmodel";
+import "../../environment/dbmodel/environment.model.zmodel";
 import "../../job/dbmodel/job.model.zmodel";
 import "../../queue-limit/dbmodel/queueRateLimit.model.zmodel";
 import "../../job-event/dbmodel/jobEvent.model.zmodel";
@@ -15,6 +16,8 @@ model Queue extends Base {
     description String?
     project Project @relation( "ProjectQueues", fields: [project_id], references: [id])
     project_id String
+    environment_id String
+    environment Environment @relation("EnvironmentQueues", fields: [environment_id], references: [id])
     status QueueStatus @default(ACTIVE)
     // order_no Int
 
