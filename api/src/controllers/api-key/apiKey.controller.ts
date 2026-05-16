@@ -20,6 +20,9 @@ const create = async (req: Request, res: Response) => {
 			project: {
 				connect: { id: requestBody.project_id },
 			},
+			environment: {
+				connect: { id: requestBody.environment_id },
+			},
 		});
 		return res
 			.status(201)

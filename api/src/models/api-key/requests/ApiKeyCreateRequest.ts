@@ -3,6 +3,7 @@ import zod from "zod";
 const ApiKeyCreateRequest = zod
 	.object({
 		project_id: zod.uuid(),
+		environment_id: zod.string(),
 		description: zod.string().default(""),
 	})
 	.strip();

@@ -3,6 +3,7 @@ import zod from "zod";
 const ApiKeySearchRequest = zod
 	.object({
 		project_id: zod.string().optional(),
+		environment_id: zod.string().optional(),
 		revoked: zod
 			.string()
 			.transform((val) => val === "true")
