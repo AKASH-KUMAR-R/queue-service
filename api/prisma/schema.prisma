@@ -76,6 +76,8 @@ model Queue {
     description String?
     project Project @relation("ProjectQueues", fields: [project_id], references: [id])
     project_id String
+    environment_id String?
+    environment Environment? @relation("EnvironmentQueues", fields: [environment_id], references: [id])
     status QueueStatus @default(ACTIVE)
     rate_limit_count Int?
     rate_limit_window_ms Int?
@@ -90,6 +92,41 @@ model Queue {
     @@index([project_id])
 }
 
+model Environment {
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt()
+    id String @id() @default(uuid())
+    project_id String
+    project Project @relation("ProjectEnvironments", fields: [project_id], references: [id])
+    name String
+    is_default Boolean @default(false)
+    is_active Boolean @default(true)
+    apiKeys ApiKey[] @relation("EnvironmentApiKeys")
+    jobs Job[] @relation("EnvironmentJobs")
+    job_events JobEvents[] @relation("EnvironmentJobEvents")
+    queues Queue[] @relation("EnvironmentQueues")
+    queue_insights QueueInsights[] @relation("EnvironmentQueueInsights")
+    project_insights ProjectInsights[] @relation("EnvironmentProjectInsights")
+
+    @@unique([project_id, name])
+}
+
+model ApiKey {
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt()
+    id String @id() @default(uuid())
+    secret String @unique()
+    description String @default("")
+    revoked Boolean @default(false)
+    revoked_at DateTime?
+    project Project @relation("ProjectApiKeys", fields: [project_id], references: [id])
+    project_id String
+    environment_id String?
+    environment Environment? @relation("EnvironmentApiKeys", fields: [environment_id], references: [id])
+
+    @@index([project_id, revoked])
+}
+
 model Job {
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt()
@@ -98,6 +135,8 @@ model Job {
     queue_id String
     project Project @relation("ProjectJobs", fields: [project_id], references: [id])
     project_id String
+    environment_id String?
+    environment Environment? @relation("EnvironmentJobs", fields: [environment_id], references: [id])
     payload Json
     status JobStatus @default(PENDING)
     attempts Int @default(0)
@@ -122,6 +161,8 @@ model JobEvents {
     queue_id String
     project Project @relation("Project Job Events", fields: [project_id], references: [id])
     project_id String
+    environment_id String?
+    environment Environment? @relation("EnvironmentJobEvents", fields: [environment_id], references: [id])
     event_type JobEventType
     prev_status JobStatus
     next_status JobStatus
@@ -130,6 +171,53 @@ model JobEvents {
 
     @@index([job_id, created_at(sort: Desc)])
     @@index([queue_id, created_at, event_type])
+}
+
+model QueueInsights {
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt()
+    id String @id() @default(uuid())
+    queue_id String
+    project_id String
+    environment_id String?
+    bucket_hour DateTime
+    jobs_completed Int @default(0)
+    jobs_failed Int @default(0)
+    jobs_requeued Int @default(0)
+    jobs_enqueued Int @default(0)
+    success_rate Float @default(0)
+    failure_rate Float @default(0)
+    retry_rate Float @default(0)
+    p50_latency Float?
+    p95_latency Float?
+    p99_latency Float?
+    queue Queue @relation("QueueInsights", fields: [queue_id], references: [id])
+    project Project @relation("QueueInsights", fields: [project_id], references: [id])
+    environment Environment? @relation("EnvironmentQueueInsights", fields: [environment_id], references: [id])
+
+    @@unique([queue_id, bucket_hour])
+    @@index([queue_id, bucket_hour])
+}
+
+model ProjectInsights {
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt()
+    id String @id() @default(uuid())
+    project_id String
+    environment_id String?
+    bucket_hour DateTime
+    jobs_enqueued Int @default(0)
+    jobs_completed Int @default(0)
+    jobs_failed Int @default(0)
+    success_rate Float @default(0)
+    failure_rate Float @default(0)
+    active_workers Int @default(0)
+    active_queues Int @default(0)
+    project Project @relation("ProjectInsights", fields: [project_id], references: [id])
+    environment Environment? @relation("EnvironmentProjectInsights", fields: [environment_id], references: [id])
+
+    @@unique([project_id, bucket_hour])
+    @@index([project_id, bucket_hour])
 }
 
 model QueueRateLimiter {
@@ -153,30 +241,6 @@ model QueueMetrics {
     completed_jobs BigInt @default(0)
 }
 
-model QueueInsights {
-    created_at DateTime @default(now())
-    updated_at DateTime @updatedAt()
-    id String @id() @default(uuid())
-    queue_id String
-    project_id String
-    bucket_hour DateTime
-    jobs_completed Int @default(0)
-    jobs_failed Int @default(0)
-    jobs_requeued Int @default(0)
-    jobs_enqueued Int @default(0)
-    success_rate Float @default(0)
-    failure_rate Float @default(0)
-    retry_rate Float @default(0)
-    p50_latency Float?
-    p95_latency Float?
-    p99_latency Float?
-    queue Queue @relation("QueueInsights", fields: [queue_id], references: [id])
-    project Project @relation("QueueInsights", fields: [project_id], references: [id])
-
-    @@unique([queue_id, bucket_hour])
-    @@index([queue_id, bucket_hour])
-}
-
 model WorkerStatus {
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt()
@@ -189,52 +253,6 @@ model WorkerStatus {
     metadata Json?
 
     @@index([queue_id, last_seen(sort: Desc)])
-}
-
-model ProjectInsights {
-    created_at DateTime @default(now())
-    updated_at DateTime @updatedAt()
-    id String @id() @default(uuid())
-    project_id String
-    bucket_hour DateTime
-    jobs_enqueued Int @default(0)
-    jobs_completed Int @default(0)
-    jobs_failed Int @default(0)
-    success_rate Float @default(0)
-    failure_rate Float @default(0)
-    active_workers Int @default(0)
-    active_queues Int @default(0)
-    project Project @relation("ProjectInsights", fields: [project_id], references: [id])
-
-    @@unique([project_id, bucket_hour])
-    @@index([project_id, bucket_hour])
-}
-
-model ApiKey {
-    created_at DateTime @default(now())
-    updated_at DateTime @updatedAt()
-    id String @id() @default(uuid())
-    secret String @unique()
-    description String @default("")
-    revoked Boolean @default(false)
-    revoked_at DateTime?
-    project Project @relation("ProjectApiKeys", fields: [project_id], references: [id])
-    project_id String
-
-    @@index([project_id, revoked])
-}
-
-model Environment {
-    created_at DateTime @default(now())
-    updated_at DateTime @updatedAt()
-    id String @id() @default(uuid())
-    project_id String
-    project Project @relation("ProjectEnvironments", fields: [project_id], references: [id])
-    name String
-    is_default Boolean @default(false)
-    is_active Boolean @default(true)
-
-    @@unique([project_id, name])
 }
 
 model CronState {

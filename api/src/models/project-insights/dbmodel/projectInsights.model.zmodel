@@ -1,10 +1,12 @@
 
 import "../../base/base.model.zmodel";
 import "../../project/dbmodel/project.model.zmodel";
+import "../../environment/dbmodel/environment.model.zmodel";
 
 model ProjectInsights extends Base {
     id String @id @default(uuid())
     project_id String
+    environment_id String?
     bucket_hour DateTime
 
     jobs_enqueued Int @default(0)
@@ -18,10 +20,10 @@ model ProjectInsights extends Base {
     active_queues Int @default(0)
 
     project Project @relation("ProjectInsights", fields: [project_id], references: [id])
+    environment Environment? @relation("EnvironmentProjectInsights", fields: [environment_id], references: [id])
 
     @@unique([project_id, bucket_hour])
     @@index([project_id, bucket_hour])
 
     @@allow('read', auth() != null && auth().id == project.user_id)
 }
-

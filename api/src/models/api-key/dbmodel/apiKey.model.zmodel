@@ -1,4 +1,5 @@
 import "../../base/base.model.zmodel";
+import "../../environment/dbmodel/environment.model.zmodel";
 import "../../project/dbmodel/project.model.zmodel";
 
 model ApiKey extends Base {
@@ -10,6 +11,8 @@ model ApiKey extends Base {
     
     project Project @relation("ProjectApiKeys", fields: [project_id], references: [id])
     project_id String
+    environment_id String?
+    environment Environment? @relation("EnvironmentApiKeys", fields: [environment_id], references: [id])
 
     @@index([project_id, revoked]) // for quick lookup of API keys by project_id
     
