@@ -6,6 +6,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@shared/ui/sonner";
 
 import AuthProvider from "@features/auth/context/AuthContext";
+import { EnvironmentProvider } from "@features/environment/context/EnvironmentContext";
 
 import { queryClient } from "./config/reactQuery";
 
@@ -16,7 +17,9 @@ export default function App() {
 			<QueryClientProvider client={queryClient}>
 				<AuthProvider>
 					<ProjectProvider>
-						<AppLayout />
+						<EnvironmentProvider>
+							<AppLayout />
+						</EnvironmentProvider>
 					</ProjectProvider>
 				</AuthProvider>
 			</QueryClientProvider>
