@@ -32,8 +32,7 @@ model Queue extends Base {
     queue_insights QueueInsights[] @relation("QueueInsights")
     queue_workers WorkerStatus[] @relation("QueueWorkers")
 
-    @@unique([project_id, label])
-    @@index([project_id])
+    @@unique([project_id, environment_id, label]) // Ensure unique queue labels within the same project and environment
 
     @@allow('all', auth() != null && auth().id == project.user_id) //If the multiple user model is implemented, change this to check project ownership
 }

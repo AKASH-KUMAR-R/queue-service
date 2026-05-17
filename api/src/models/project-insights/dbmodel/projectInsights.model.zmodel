@@ -23,7 +23,6 @@ model ProjectInsights extends Base {
     environment Environment @relation("EnvironmentProjectInsights", fields: [environment_id], references: [id])
 
     @@unique([project_id, bucket_hour])
-    @@index([project_id, bucket_hour])
 
     @@allow('read', auth() != null && auth().id == project.user_id)
 }

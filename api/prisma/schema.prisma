@@ -88,8 +88,7 @@ model Queue {
     queue_insights QueueInsights[] @relation("QueueInsights")
     queue_workers WorkerStatus[] @relation("QueueWorkers")
 
-    @@unique([project_id, label])
-    @@index([project_id])
+    @@unique([project_id, environment_id, label])
 }
 
 model Environment {
@@ -124,7 +123,7 @@ model ApiKey {
     environment_id String
     environment Environment @relation("EnvironmentApiKeys", fields: [environment_id], references: [id])
 
-    @@index([project_id, revoked])
+    @@index([project_id, environment_id, revoked])
 }
 
 model Job {
@@ -196,7 +195,6 @@ model QueueInsights {
     environment Environment @relation("EnvironmentQueueInsights", fields: [environment_id], references: [id])
 
     @@unique([queue_id, bucket_hour])
-    @@index([queue_id, bucket_hour])
 }
 
 model ProjectInsights {
@@ -217,7 +215,6 @@ model ProjectInsights {
     environment Environment @relation("EnvironmentProjectInsights", fields: [environment_id], references: [id])
 
     @@unique([project_id, bucket_hour])
-    @@index([project_id, bucket_hour])
 }
 
 model QueueRateLimiter {
