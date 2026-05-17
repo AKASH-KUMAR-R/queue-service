@@ -1,4 +1,4 @@
-import { MoreVertical, RefreshCw } from "lucide-react";
+import { MoreVertical, RefreshCw, SquarePen } from "lucide-react";
 
 import { Button } from "@shared/ui/button";
 import { formatDurationMilliseconds } from "@shared/utils/dateAndTimeUtils";
@@ -14,6 +14,7 @@ type QueueCardProps = {
 	onSelectQueue: (queueId: string) => void;
 	onViewWorkers: (queueId: string) => void;
 	onViewMetrics: (queueId: string, projectId: string) => void;
+	onEdit: (queue: QueueWithMetrics) => void;
 };
 
 export function QueueCard({
@@ -21,6 +22,7 @@ export function QueueCard({
 	onSelectQueue,
 	onViewWorkers,
 	onViewMetrics,
+	onEdit,
 }: QueueCardProps) {
 	return (
 		<div className="col-span-6  rounded-lg p-6  transition-colors border border-foreground">
@@ -121,6 +123,9 @@ export function QueueCard({
 					className="flex-1 px-3 py-2 text-sm "
 				>
 					Metrics
+				</Button>
+				<Button onClick={() => onEdit(queue)} title="Edit queue">
+					<SquarePen className="w-4 h-4" />
 				</Button>
 				<Button className="">
 					<RefreshCw className="w-4 h-4" />

@@ -15,6 +15,7 @@ import type { Queue, QueueSearchParams } from "@entities/queue/types/types";
 import { useEnvironmentContext } from "@features/environment/context/EnvironmentContext";
 import { CreateQueueButton } from "@features/queues/components/CreateQueueButton";
 import { CreateQueueDialog } from "@features/queues/components/CreateQueueDialog";
+import { EditQueueDialog } from "@features/queues/components/EditQueueDialog";
 import { QueueStatusFilter } from "@features/queues/components/QueueStatusFilter";
 import { useQueueList } from "@features/queues/data/listQueue";
 
@@ -39,6 +40,8 @@ export function QueuesPage() {
 	const [debouncedLabel, setDebouncedLabel] = useState("");
 
 	const [showCreateDialog, setShowCreateDialog] = useState(false);
+	const [editingQueue, setEditingQueue] = useState<Queue | null>(null);
+	const [showEditDialog, setShowEditDialog] = useState(false);
 
 	useEffect(() => {
 		const timer = setTimeout(() => {
@@ -61,6 +64,10 @@ export function QueuesPage() {
 
 	const handlePageChange = (newPage: number) => {
 		setFilters((prev) => ({ ...prev, page: newPage }));
+	};
+	const handleEditQueue = (queue: Queue) => {
+		setEditingQueue(queue);
+		setShowEditDialog(true);
 	};
 
 	const filteredQueues = data?.data.results || [];
@@ -130,6 +137,7 @@ export function QueuesPage() {
 					page={pagination.page}
 					totalPages={pagination.totalPages}
 					onPageChange={handlePageChange}
+					onEditQueue={handleEditQueue}
 				/>
 			) : (
 				<QueueTable
@@ -137,6 +145,7 @@ export function QueuesPage() {
 					page={pagination.page}
 					totalPages={pagination.totalPages}
 					onPageChange={handlePageChange}
+					onEditQueue={handleEditQueue}
 				/>
 			)}
 
@@ -147,6 +156,18 @@ export function QueuesPage() {
 					projectId={currentProject?.id || ""}
 					environmentId={currentEnvironment?.id || ""}
 					onSubmit={handleCreateQueue}
+				/>
+			)}
+			{showEditDialog && (
+				<EditQueueDialog
+					open={showEditDialog}
+					queue={editingQueue}
+					onOpenChange={(isOpen) => {
+						setShowEditDialog(isOpen);
+						if (!isOpen) {
+							setEditingQueue(null);
+						}
+					}}
 				/>
 			)}
 		</div>
