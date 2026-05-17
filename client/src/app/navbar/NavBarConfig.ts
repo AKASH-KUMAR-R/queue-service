@@ -9,7 +9,7 @@
  * - Queue Management: Operational queue tasks
  * - General: User preferences and app settings
  */
-import { BarChart3, Key, Layers, Palette, Settings } from "lucide-react";
+import { BarChart3, Boxes, Key, Layers, Palette, Settings } from "lucide-react";
 
 // ============================================================================
 // Types & Interfaces
@@ -97,6 +97,12 @@ export const navGroups: NavGroup[] = [
 				label: "API Keys",
 				icon: Key,
 				description: "Manage API keys and authentication",
+			},
+			{
+				path: "/environments",
+				label: "Environments",
+				icon: Boxes,
+				description: "Manage project environments",
 			},
 			{
 				path: "/project/settings",

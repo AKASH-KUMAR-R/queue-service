@@ -1,8 +1,23 @@
 import type {
+	CreateEnvironmentRequest,
+	UpdateEnvironmentRequest,
+} from "../types/apiTypes";
+import type {
 	Environment,
 	EnvironmentSearchParams,
 	RawEnvironment,
 } from "../types/types";
+
+export type EnvironmentFormData = {
+	projectId: string;
+	name: string;
+	isDefault?: boolean;
+};
+
+export type EnvironmentUpdateFormData = {
+	name?: string;
+	isDefault?: boolean;
+};
 
 export const toEnvironment = (raw: RawEnvironment): Environment => ({
 	id: raw.id,
@@ -26,4 +41,19 @@ export const toRawEnvironmentSearchParams = (
 	is_default: params.isDefault,
 	page: params.page,
 	limit: params.limit,
+});
+
+export const toCreateEnvironmentRequest = (
+	data: EnvironmentFormData,
+): CreateEnvironmentRequest => ({
+	project_id: data.projectId,
+	name: data.name,
+	is_default: data.isDefault,
+});
+
+export const toUpdateEnvironmentRequest = (
+	data: EnvironmentUpdateFormData,
+): UpdateEnvironmentRequest => ({
+	name: data.name,
+	is_default: data.isDefault,
 });

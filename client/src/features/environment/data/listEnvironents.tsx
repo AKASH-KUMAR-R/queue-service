@@ -10,10 +10,11 @@ export const useListEnvironments = (
 	projectId: string,
 	params: EnvironmentSearchParams,
 ) => {
-	const rawParams = toRawEnvironmentSearchParams(params);
+	const queryParams = { ...params, projectId };
+	const rawParams = toRawEnvironmentSearchParams(queryParams);
 
 	return useQuery({
-		queryKey: environmentKeys.list(projectId),
+		queryKey: environmentKeys.list(projectId, queryParams),
 		queryFn: () => listEnvironment(rawParams),
 		enabled: !!projectId,
 	});
