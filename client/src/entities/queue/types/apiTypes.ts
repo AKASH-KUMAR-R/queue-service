@@ -6,7 +6,7 @@ export type CreateQueueData = {
 	label: string;
 	description?: string;
 	project_id: string;
-
+	environment_id: string;
 	rate_limit_count?: number;
 	rate_limit_window_ms?: number;
 };

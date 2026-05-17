@@ -12,6 +12,7 @@ import { EmptyState } from "@shared/ui/EmptyState";
 
 import type { Queue, QueueSearchParams } from "@entities/queue/types/types";
 
+import { useEnvironmentContext } from "@features/environment/context/EnvironmentContext";
 import { CreateQueueButton } from "@features/queues/components/CreateQueueButton";
 import { CreateQueueDialog } from "@features/queues/components/CreateQueueDialog";
 import { QueueStatusFilter } from "@features/queues/components/QueueStatusFilter";
@@ -26,6 +27,7 @@ const isAnyFilterActive = (filters: QueueSearchParams) => {
 
 export function QueuesPage() {
 	const { currentProject } = useProject();
+	const { currentEnvironment } = useEnvironmentContext();
 	const [viewMode, setViewMode] = useState<QueueViewMode>("card");
 	const [filters, setFilters] = useState<QueueSearchParams>({
 		label: "",
@@ -50,6 +52,7 @@ export function QueuesPage() {
 		...filters,
 		label: debouncedLabel,
 		projectId: currentProject?.id || "",
+		environmentId: currentEnvironment?.id || "",
 	});
 
 	const handleCreateQueue = (newQueue: Queue) => {
@@ -142,6 +145,7 @@ export function QueuesPage() {
 					open={showCreateDialog}
 					onClose={() => setShowCreateDialog(false)}
 					projectId={currentProject?.id || ""}
+					environmentId={currentEnvironment?.id || ""}
 					onSubmit={handleCreateQueue}
 				/>
 			)}

@@ -57,11 +57,13 @@ export type RawApiResponseQueue = RawApiResponseBase & {
 export type QueueSearchParams = PaginationParams & {
 	label?: string;
 	projectId?: string;
+	environmentId?: string;
 	status?: QueueStatus;
 };
 
 export type RawQueueSearchParams = PaginationParams & {
 	label?: string;
 	project_id?: string;
+	environment_id?: string;
 	status?: QueueStatus;
 };

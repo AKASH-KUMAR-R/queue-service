@@ -70,6 +70,7 @@ export const toCreateQueueRequest = (
 		label: data.label,
 		description: data.description,
 		project_id: data.projectId,
+		environment_id: data.environmentId,
 		rate_limit_count: data.rateLimitCount,
 		rate_limit_window_ms: data.rateLimitWindowMs,
 	};
@@ -93,6 +94,7 @@ export const toSearchQueueRequestParams = (
 	return {
 		label: data.label,
 		project_id: data.projectId,
+		environment_id: data.environmentId,
 		status: data.status,
 		page: data.page,
 		limit: data.limit,
