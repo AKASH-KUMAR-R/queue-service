@@ -77,7 +77,11 @@ export default function ProjectInsightsPage() {
 		error: trendsError,
 	} = useProjectInsightsTrends(
 		projectId,
-		{ from, to },
+		{
+			from,
+			to,
+			environmentId: searchQuery.get("environmentId") ?? undefined,
+		},
 		autoRefresh,
 	);
 
@@ -86,7 +90,11 @@ export default function ProjectInsightsPage() {
 		isLoading: isSummaryLoading,
 		isError: isSummaryError,
 		error: summaryError,
-	} = useProjectInsightsummary(projectId, autoRefresh);
+	} = useProjectInsightsummary(
+		projectId,
+		searchQuery.get("environmentId") ?? undefined,
+		autoRefresh,
+	);
 
 	const trends = useMemo(
 		() => trendsResponse?.data ?? [],
@@ -183,7 +191,10 @@ export default function ProjectInsightsPage() {
 							}
 							className="w-4 h-4"
 						/>
-						<label htmlFor="auto-refresh" className="text-foreground">
+						<label
+							htmlFor="auto-refresh"
+							className="text-foreground"
+						>
 							Auto-refresh
 						</label>
 					</div>

@@ -3,11 +3,14 @@ import { generateQueryParams } from "@shared/api/utils/requestUtils";
 
 import type {
 	ProjectInsightsSummaryResponse as RawProjectInsightsSummaryResponse,
-	ProjectInsightsTrendsResponse as RawProjectInsightsTrendsResponse,
 	RawProjectInsightsTrendsParams,
+	ProjectInsightsTrendsResponse as RawProjectInsightsTrendsResponse,
 } from "@entities/project-insights/types/apiTypes";
 import type { ProjectInsights } from "@entities/project-insights/types/types";
-import { toProjectInsights, toProjectInsightsList } from "@entities/project-insights/utils/transform";
+import {
+	toProjectInsights,
+	toProjectInsightsList,
+} from "@entities/project-insights/utils/transform";
 
 export type ProjectInsightsummaryResponse = {
 	data: ProjectInsights;
@@ -19,9 +22,10 @@ export type ProjectInsightsTrendsResponse = {
 
 export const getProjectSummary = async (
 	projectId: string,
+	environmentId?: string,
 ): Promise<ProjectInsightsummaryResponse> => {
 	const response = await api.get<RawProjectInsightsSummaryResponse>(
-		`/api/dashboard/project/${projectId}/stats/summary`,
+		`/api/dashboard/project/${projectId}/stats/summary?environment_id=${environmentId ?? ""}`,
 	);
 
 	return {
@@ -42,4 +46,3 @@ export const getProjectTrends = async (
 		data: toProjectInsightsList(response.data.data),
 	};
 };
-

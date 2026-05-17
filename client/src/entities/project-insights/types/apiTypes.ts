@@ -16,6 +16,7 @@ export type RawProjectInsights = RawApiResponseBase & {
 export type RawProjectInsightsTrendsParams = {
 	from: string;
 	to: string;
+	environment_id?: string;
 };
 
 export type ProjectInsightsSummaryResponse = {
@@ -25,4 +26,3 @@ export type ProjectInsightsSummaryResponse = {
 export type ProjectInsightsTrendsResponse = {
 	data: RawProjectInsights[];
 };
-

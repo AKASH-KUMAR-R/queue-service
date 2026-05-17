@@ -349,6 +349,13 @@ export function getGroupItemCount(groupId: string): number {
 // ============================================================================
 
 /**
+ * Paths that should not show the navigation bar
+ *
+ * Useful for authentication pages or standalone views.
+ */
+export const CONTEXT_FREE_PATHS: string[] = ["/general"];
+
+/**
  * Route redirects for backward compatibility
  *
  * Maps old paths to new paths. Useful in router configuration.

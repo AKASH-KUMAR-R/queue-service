@@ -21,7 +21,11 @@ export const useCreateApiKeyForm = (onError: CreateApiKeyFormErrorHandler) => {
 		mutationFn: create,
 		onSuccess(_, data) {
 			client.invalidateQueries({
-				queryKey: apiKeys.projectKeys(data.project_id, {}),
+				queryKey: apiKeys.projectKeys(
+					data.project_id,
+					data.environment_id,
+					{},
+				),
 			});
 		},
 		onError(err) {

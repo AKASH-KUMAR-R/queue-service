@@ -7,10 +7,11 @@ import { apiKeys } from "./keys";
 
 export const useApiKeyList = (
 	projectId: string,
+	environmentId: string,
 	filters: ApiKeySearchParams,
 ) => {
 	return useQuery({
-		queryKey: apiKeys.projectKeys(projectId, filters),
-		queryFn: () => list(projectId, filters),
+		queryKey: apiKeys.projectKeys(projectId, environmentId, filters),
+		queryFn: () => list(projectId, environmentId, filters),
 	});
 };

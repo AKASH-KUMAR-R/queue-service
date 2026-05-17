@@ -2,7 +2,9 @@ import { createBrowserRouter } from "react-router-dom";
 
 import RouteErrorBoundary from "@app/error/ErrorBoundary";
 import { CommonLayoutWrapper } from "@app/wrapper/CommonLayoutWrapper";
+import { CurrentEnvironmentAttachWrapper } from "@app/wrapper/CurrentEnvironmentAttachWrapper";
 import { CurrentProjectAttachWrapper } from "@app/wrapper/CurrentProjectAttachWrapper";
+import EnvironmentExistanceWrapper from "@app/wrapper/EnvironmentExistanceWrapper";
 import ProjectsExistenceWrapper from "@app/wrapper/ProjectsExistenceWrapper";
 
 import { AuthRoutes } from "./authRoutes";
@@ -19,13 +21,26 @@ export const router = createBrowserRouter([
 		children: [
 			{
 				element: <ProjectsExistenceWrapper />,
+
 				children: [
 					{
 						element: <CurrentProjectAttachWrapper />,
 						children: [
-							ProjectRoutes,
-							QueueRoutes,
-							PerformanceRoutes,
+							{
+								element: <EnvironmentExistanceWrapper />,
+								children: [
+									{
+										element: (
+											<CurrentEnvironmentAttachWrapper />
+										),
+										children: [
+											ProjectRoutes,
+											QueueRoutes,
+											PerformanceRoutes,
+										],
+									},
+								],
+							},
 						],
 					},
 					{

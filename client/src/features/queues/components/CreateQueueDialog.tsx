@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 
+import { MINUTES_IN_MILLISECOND } from "@shared/lib/time";
 import { Button } from "@shared/ui/button";
 import { Dialog, DialogContent } from "@shared/ui/dialog";
 import { Input } from "@shared/ui/input";
@@ -17,6 +18,7 @@ import {
 } from "@shared/ui/radix-form";
 import { Spinner } from "@shared/ui/spinner";
 import { Textarea } from "@shared/ui/textarea";
+import { formatDurationMilliseconds } from "@shared/utils/dateAndTimeUtils";
 import { mapServerFieldErrorToFormFields } from "@shared/utils/formUtils";
 
 import {
@@ -34,6 +36,7 @@ import {
 type CreateQueueDialogProps = {
 	open: boolean;
 	projectId: string;
+	environmentId: string;
 	onClose: () => void;
 	onSubmit: (data: Queue) => void;
 };
@@ -42,6 +45,7 @@ export function CreateQueueDialog({
 	open,
 	onClose,
 	projectId,
+	environmentId,
 	onSubmit,
 }: CreateQueueDialogProps) {
 	const form = useForm<QueueCreateSchemaType>({
@@ -50,8 +54,9 @@ export function CreateQueueDialog({
 			label: "",
 			description: "",
 			projectId,
-			rateLimitCount: undefined,
-			rateLimitWindowMs: undefined,
+			environmentId: environmentId,
+			rateLimitCount: 1000,
+			rateLimitWindowMs: MINUTES_IN_MILLISECOND * 15,
 		},
 	});
 
@@ -229,7 +234,10 @@ export function CreateQueueDialog({
 										<span className="">Rate Limit:</span>
 										<span className="font-mono ">
 											{formValues.rateLimitCount}/
-											{formValues.rateLimitWindowMs}
+											{formatDurationMilliseconds(
+												formValues.rateLimitWindowMs ||
+													0,
+											)}
 										</span>
 									</div>
 								</div>

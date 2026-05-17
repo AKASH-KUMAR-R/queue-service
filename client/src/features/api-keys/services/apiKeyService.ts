@@ -15,6 +15,7 @@ import {
 
 export type ApiKeyCreateData = {
 	project_id: string;
+	environment_id: string;
 	description: string;
 };
 
@@ -41,10 +42,12 @@ export const create = async (
 
 export const list = async (
 	projectId: string,
+	environmentId: string,
 	filters: ApiKeySearchParams,
 ): Promise<ApiKeyListResponse> => {
 	const urlParams = generateQueryParams({
 		project_id: projectId,
+		environment_id: environmentId,
 		...filters,
 	});
 

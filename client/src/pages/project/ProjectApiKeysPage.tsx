@@ -15,10 +15,12 @@ import { ApiKeyFilter } from "@features/api-keys/ApiKeyFilter";
 import { CreateApiKeyDialog } from "@features/api-keys/CreateApiKeyDialog";
 import { RevokeApiKeyDialog } from "@features/api-keys/RevokeApiKeyDialog";
 import { useApiKeyList } from "@features/api-keys/data/listApiKeys";
+import { useEnvironmentContext } from "@features/environment/context/EnvironmentContext";
 
 //INFO The ProjectExistenceWrapper ensures that this page is only rendered if a project is selected, so we can safely assume currentProject is always defined here.
 export function ProjectApiKeysPage() {
 	const { currentProject } = useProject();
+	const { currentEnvironment } = useEnvironmentContext();
 
 	const [searchQuery, setSearchQuery] = useSearchParams();
 	const selectedStatus: ApiKeyFilterStatus =
@@ -26,6 +28,7 @@ export function ProjectApiKeysPage() {
 
 	const { data: apiKeysList, isPending: isLoadingKeysList } = useApiKeyList(
 		currentProject!.id,
+		currentEnvironment!.id,
 		{
 			page: Number(searchQuery.get("page")) || 1,
 			limit: 10,
@@ -125,6 +128,7 @@ export function ProjectApiKeysPage() {
 				onClose={() => setShowCreateDialog(false)}
 				onSubmit={handleCreateApiKey}
 				projectId={currentProject!.id}
+				environmentId={currentEnvironment!.id}
 			/>
 
 			<ApiKeyCreatedDialog

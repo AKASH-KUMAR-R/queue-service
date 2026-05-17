@@ -3,14 +3,19 @@ import { Outlet, useSearchParams } from "react-router-dom";
 
 import { useProject } from "@app/ProjectContext";
 
+// import { useEnvironmentContext } from "@features/environment/context/EnvironmentContext";
+
 //INFO: This component is responsible for attaching the current project context to the URL as a query parameter. It listens for changes in the current project and updates the URL accordingly. If no current project is found, it prompts the user to select or create a project. This ensures that the project context is always reflected in the URL, allowing for better navigation and sharing of specific project views.
 export const CurrentProjectAttachWrapper = () => {
-	const [, setSearchParams] = useSearchParams();
+	const [searchParams, setSearchParams] = useSearchParams();
 
 	const { currentProject } = useProject();
+	// const { currentEnvironment, environments } = useEnvironmentContext();
 
 	useEffect(() => {
 		if (!currentProject) return;
+
+		if (searchParams.get("projectId") === currentProject.id) return;
 
 		setSearchParams((prev) => {
 			const newParams = new URLSearchParams(prev);
