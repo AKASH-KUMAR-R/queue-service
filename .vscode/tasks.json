@@ -1,0 +1,159 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Start Api Server",
+            "type": "shell",
+            "command": "npm run dev",
+            "options": {
+                "cwd": "${workspaceFolder}/api"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": true
+            }
+        },
+        {
+            "label": "Start Worker Test Server",
+            "type": "shell",
+            "command": "npm run dev",
+            "options": {
+                "cwd": "${workspaceFolder}/test/playground/worker-test"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": true
+            }
+        },
+        {
+            "label": "Start React Server",
+            "type": "shell",
+            "command": "npm run dev",
+            "options": {
+                "cwd": "${workspaceFolder}/client"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": true
+            }
+        },
+        {
+            "label": "Start Docker DB Container",
+            "type": "shell",
+            "command": "docker start my-postgres",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "presentation": {
+                "reveal": "never",
+                "close": true
+            }
+        },
+        {
+            "label": "Start All Server",
+            "dependsOn": [
+                "Start Docker DB Container",
+                "Start Api Server",
+                "Start React Server",
+                "Start Worker Test Server"
+            ],
+            "dependsOrder": "parallel"
+        },
+        {
+            "label": "Start Development Servers",
+            "dependsOn": [
+                "Start Docker DB Container",
+                "Start Api Server",
+                "Start React Server"
+            ],
+            "dependsOrder": "parallel"
+        },
+        {
+            "label": "Start Client and Api Server",
+            "dependsOn": [
+                "Start Docker DB Container",
+                "Start Api Server",
+                "Start React Server"
+            ],
+            "dependsOrder": "parallel"
+        },
+        {
+            "label": "Build Worker SDK",
+            "type": "shell",
+            "command": "npm run build",
+            "options": {
+                "cwd": "${workspaceFolder}/worker-sdk"
+            },
+            "presentation": {
+                "reveal": "never",
+                "close": true
+            }
+        },
+        {
+            "label": "Build Producer SDK",
+            "type": "shell",
+            "command": "npm run build",
+            "options": {
+                "cwd": "${workspaceFolder}/producer-sdk"
+            },
+            "presentation": {
+                "reveal": "never",
+                "close": true
+            }
+        },
+        {
+            "label": "Install Worker SDK in Test Server",
+            "type": "shell",
+            "command": "npm i ../../../worker-sdk",
+            "options": {
+                "cwd": "${workspaceFolder}/test/playground/worker-test"
+            },
+            "presentation": {
+                "reveal": "never",
+                "close": true
+            }
+        },
+        {
+            "label": "Install Producer SDK in Test Server",
+            "type": "shell",
+            "command": "npm i ../../../producer-sdk",
+            "options": {
+                "cwd": "${workspaceFolder}/test/playground/worker-test"
+            },
+            "presentation": {
+                "reveal": "never",
+                "close": true
+            }
+        },
+        {
+            "label": "Refresh Worker SDK Build and Install in Test Server",
+            "dependsOn": [
+                "Build Worker SDK",
+                "Install Worker SDK in Test Server",
+                "Start Worker Test Server"
+            ],
+            "dependsOrder": "sequence"
+        },
+        {
+            "label": "Refresh Producer SDK Build and Install in Test Server",
+            "dependsOn": [
+                "Build Producer SDK",
+                "Install Producer SDK in Test Server",
+                "Start Worker Test Server"
+            ],
+            "dependsOrder": "sequence"
+        }
+    ]
+}
