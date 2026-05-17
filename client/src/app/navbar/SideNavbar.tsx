@@ -1,6 +1,7 @@
 import { type MouseEvent, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
+import { useContextNavigate } from "@app/hooks/useContextNavigate";
 import { LogOut } from "lucide-react";
 import { toast } from "sonner";
 
@@ -26,6 +27,8 @@ import NavGroup from "./NavGroup";
 const SideNavbar = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
+	const contextNavigate = useContextNavigate();
+	const [searchParams] = useSearchParams();
 
 	const {
 		isOpen: isLogoutConfirmOpen,
@@ -43,7 +46,7 @@ const SideNavbar = () => {
 
 	const handleNavBarItemClick = (event: MouseEvent<HTMLButtonElement>) => {
 		const link = event.currentTarget.dataset.link;
-		navigate(link || "/");
+		contextNavigate(link || "/");
 		setOpenMobile(false);
 	};
 
@@ -95,6 +98,15 @@ const SideNavbar = () => {
 
 	const handleProjectChange = (project: Project) => {
 		setCurrentProject(project);
+
+		const newSearchParams = new URLSearchParams(searchParams);
+		newSearchParams.set("projectId", project.id);
+		newSearchParams.delete("environmentId");
+		navigate({
+			pathname: location.pathname,
+			search: newSearchParams.toString(),
+		});
+
 		toast.info("Switched to project: " + project.label);
 	};
 

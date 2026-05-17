@@ -1,5 +1,8 @@
 import { type ReactNode, createContext, useContext, useState } from "react";
 
+import { useLocalStorage } from "@shared/hooks/useLocalStorage";
+import { STORAGE_KEYS } from "@shared/lib/storage";
+
 import type { Environment } from "@entities/environment/types/types";
 
 type EnvironmentContextType = {
@@ -15,13 +18,28 @@ export const EnvironmentProvider = ({ children }: { children: ReactNode }) => {
 	const [currentEnvironment, setCurrentEnvironment] =
 		useState<Environment | null>(null);
 	const [environments, setEnvironments] = useState<Environment[]>([]);
+	const [, setLocalStorageEnvironmentValue] = useLocalStorage(
+		STORAGE_KEYS.currentEnvironment,
+		currentEnvironment?.id || null,
+	);
+
+	const handleChangeCurrentEnvironment = (
+		environment: Environment | null,
+	) => {
+		setCurrentEnvironment(environment);
+		if (environment) {
+			setLocalStorageEnvironmentValue(environment.id);
+		} else {
+			setLocalStorageEnvironmentValue(null);
+		}
+	};
 
 	return (
 		<EnvironmentContext.Provider
 			value={{
 				currentEnvironment,
 				environments,
-				setCurrentEnvironment,
+				setCurrentEnvironment: handleChangeCurrentEnvironment,
 				setEnvironments,
 			}}
 		>

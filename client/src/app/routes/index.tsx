@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 
 import RouteErrorBoundary from "@app/error/ErrorBoundary";
 import { CommonLayoutWrapper } from "@app/wrapper/CommonLayoutWrapper";
+import { CurrentEnvironmentAttachWrapper } from "@app/wrapper/CurrentEnvironmentAttachWrapper";
 import { CurrentProjectAttachWrapper } from "@app/wrapper/CurrentProjectAttachWrapper";
 import EnvironmentExistanceWrapper from "@app/wrapper/EnvironmentExistanceWrapper";
 import ProjectsExistenceWrapper from "@app/wrapper/ProjectsExistenceWrapper";
@@ -23,21 +24,28 @@ export const router = createBrowserRouter([
 
 				children: [
 					{
-						element: <EnvironmentExistanceWrapper />,
+						element: <CurrentProjectAttachWrapper />,
 						children: [
 							{
-								element: <CurrentProjectAttachWrapper />,
+								element: <EnvironmentExistanceWrapper />,
 								children: [
-									ProjectRoutes,
-									QueueRoutes,
-									PerformanceRoutes,
+									{
+										element: (
+											<CurrentEnvironmentAttachWrapper />
+										),
+										children: [
+											ProjectRoutes,
+											QueueRoutes,
+											PerformanceRoutes,
+										],
+									},
 								],
 							},
-							{
-								path: "general/*",
-								children: [GeneralRoutes],
-							},
 						],
+					},
+					{
+						path: "general/*",
+						children: [GeneralRoutes],
 					},
 				],
 			},
