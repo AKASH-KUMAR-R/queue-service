@@ -1,9 +1,17 @@
 import api from "@shared/api";
 import { generateQueryParams } from "@shared/api/utils/requestUtils";
 
-import type { EnvironmentSearchResponse } from "@entities/environment/types/apiTypes";
+import type {
+	CreateEnvironmentRequest,
+	EnvironmentResponse,
+	EnvironmentSearchResponse,
+	UpdateEnvironmentRequest,
+} from "@entities/environment/types/apiTypes";
 import type { RawEnvironmentSearchParams } from "@entities/environment/types/types";
-import { toEnvironments } from "@entities/environment/utils/transform";
+import {
+	toEnvironment,
+	toEnvironments,
+} from "@entities/environment/utils/transform";
 
 export const listEnvironment = async (params: RawEnvironmentSearchParams) => {
 	const queryParams = generateQueryParams(params);
@@ -18,4 +26,25 @@ export const listEnvironment = async (params: RawEnvironmentSearchParams) => {
 			results: toEnvironments(response.data.data.results),
 		},
 	};
+};
+
+export const createEnvironment = async (data: CreateEnvironmentRequest) => {
+	const response = await api.post<EnvironmentResponse>(
+		"/api/dashboard/environment/create",
+		data,
+	);
+
+	return { data: toEnvironment(response.data.data) };
+};
+
+export const updateEnvironment = async (
+	environmentId: string,
+	data: UpdateEnvironmentRequest,
+) => {
+	const response = await api.put<EnvironmentResponse>(
+		`/api/dashboard/environment/${environmentId}`,
+		data,
+	);
+
+	return { data: toEnvironment(response.data.data) };
 };

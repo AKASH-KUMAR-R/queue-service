@@ -8,6 +8,7 @@ import EnvironmentExistanceWrapper from "@app/wrapper/EnvironmentExistanceWrappe
 import ProjectsExistenceWrapper from "@app/wrapper/ProjectsExistenceWrapper";
 
 import { AuthRoutes } from "./authRoutes";
+import { EnvironmentRoutes } from "./environmentRoutes";
 import { GeneralRoutes } from "./generalRoutes";
 import { PerformanceRoutes } from "./performanceRoutes";
 import { ProjectRoutes } from "./projectRoutes";
@@ -26,6 +27,7 @@ export const router = createBrowserRouter([
 					{
 						element: <CurrentProjectAttachWrapper />,
 						children: [
+							EnvironmentRoutes,
 							{
 								element: <EnvironmentExistanceWrapper />,
 								children: [
