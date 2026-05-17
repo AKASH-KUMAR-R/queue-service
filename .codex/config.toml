@@ -1,0 +1,5 @@
+
+# Global default — used for general coding
+model = "gpt-5.4"
+model_reasoning_effort = "medium"
+model_instructions_file = "instructions.md"
