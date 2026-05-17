@@ -27,7 +27,6 @@ const EnvironmentSwitcher = ({
 		}
 	};
 
-	console.log("Current Environment:", currentEnvironment, environments);
 	return (
 		<div>
 			<Select

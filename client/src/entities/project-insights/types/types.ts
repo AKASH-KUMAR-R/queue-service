@@ -16,4 +16,11 @@ export type ProjectInsights = Base & {
 export type ProjectInsightsTrendsParams = {
 	from: Date;
 	to: Date;
+	environmentId?: string;
+};
+
+export type RawProjectInsightsTrendsParams = {
+	from: Date;
+	to: Date;
+	environment_id?: string;
 };

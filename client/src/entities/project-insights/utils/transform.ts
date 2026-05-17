@@ -36,5 +36,16 @@ export const toProjectInsightsTrendsRequestParams = (
 	return {
 		from: params.from.toISOString(),
 		to: params.to.toISOString(),
+		environment_id: params.environmentId,
+	};
+};
+
+export const toRawProjectInsightsTrendsParams = (
+	params: ProjectInsightsTrendsParams,
+): RawProjectInsightsTrendsParams => {
+	return {
+		from: params.from.toISOString(),
+		to: params.to.toISOString(),
+		environment_id: params.environmentId,
 	};
 };
