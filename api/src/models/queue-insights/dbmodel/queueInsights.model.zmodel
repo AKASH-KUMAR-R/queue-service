@@ -29,7 +29,6 @@ model QueueInsights extends Base {
     environment Environment @relation("EnvironmentQueueInsights", fields: [environment_id], references: [id])
 
     @@unique([queue_id, bucket_hour])
-    @@index([queue_id, bucket_hour])
 
     @@allow('read', auth() != null && auth().id == queue.project.user_id)
 }
