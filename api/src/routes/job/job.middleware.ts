@@ -26,6 +26,7 @@ const jobRateLimiter = async (
 			req.db,
 			queueLabel,
 			req.project.id,
+			req.project.environment_id,
 		);
 
 		const queueRateLimit = queue?.queueRateLimiter;

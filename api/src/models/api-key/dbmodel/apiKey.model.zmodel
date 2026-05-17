@@ -14,7 +14,7 @@ model ApiKey extends Base {
     environment_id String
     environment Environment @relation("EnvironmentApiKeys", fields: [environment_id], references: [id])
 
-    @@index([project_id, revoked]) // for quick lookup of API keys by project_id
+    @@index([project_id, environment_id, revoked]) // for quick lookup of API keys by project_id and environment_id, and to filter out revoked keys
     
     @@allow('all', auth() != null && auth().id == project.user_id) //If the multiple user model is implemented, change this to check project ownership
 }
