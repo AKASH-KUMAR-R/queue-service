@@ -12,9 +12,9 @@ export const QueueCreateSchema = zod.object({
 export const QueueUpdateSchema = zod.object({
 	label: zod.string().min(3).max(100),
 	description: zod.string().max(500).optional(),
-	projectId: zod.uuid(),
+	status: zod.enum(["ACTIVE", "PAUSED", "DELETED"]),
 	rateLimitCount: zod.number().min(1).optional(),
-	rateLimitWindowMs: zod.number().min(1000).optional(),
+	rateLimitWindowMs: zod.number().min(1).optional(),
 });
 
 export type QueueCreateSchemaType = zod.infer<typeof QueueCreateSchema>;

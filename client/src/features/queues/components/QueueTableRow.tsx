@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, SquarePen } from "lucide-react";
 
 import { Button } from "@shared/ui/button";
 import { TableCell, TableRow } from "@shared/ui/table";
@@ -14,9 +14,10 @@ import { ResumeQueueButton } from "./ResumeQueueButton";
 
 type QueueTableRowProps = {
 	queue: QueueWithMetrics;
+	onEdit: (queue: QueueWithMetrics) => void;
 };
 
-export function QueueTableRow({ queue }: QueueTableRowProps) {
+export function QueueTableRow({ queue, onEdit }: QueueTableRowProps) {
 	const navigate = useNavigate();
 	const queueMetricsQuery = new URLSearchParams({
 		projectId: queue.projectId,
@@ -77,6 +78,9 @@ export function QueueTableRow({ queue }: QueueTableRowProps) {
 						title="View jobs"
 					>
 						<ExternalLink className="w-4 h-4" />
+					</Button>
+					<Button onClick={() => onEdit(queue)} title="Edit queue">
+						<SquarePen className="w-4 h-4" />
 					</Button>
 					<Button
 						onClick={() =>

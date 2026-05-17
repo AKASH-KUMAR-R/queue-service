@@ -14,6 +14,7 @@ import { QueueTableRow } from "@features/queues/components/QueueTableRow";
 
 type QueueTableProps = PaginatedComponentProps & {
 	queues: QueueWithMetrics[];
+	onEditQueue: (queue: QueueWithMetrics) => void;
 };
 
 export function QueueTable({
@@ -21,6 +22,7 @@ export function QueueTable({
 	page,
 	onPageChange,
 	totalPages,
+	onEditQueue,
 }: QueueTableProps) {
 	return (
 		<>
@@ -41,7 +43,11 @@ export function QueueTable({
 				</TableHeader>
 				<TableBody className="divide-y ">
 					{queues.map((queue) => (
-						<QueueTableRow key={queue.id} queue={queue} />
+						<QueueTableRow
+							key={queue.id}
+							queue={queue}
+							onEdit={onEditQueue}
+						/>
 					))}
 				</TableBody>
 			</Table>

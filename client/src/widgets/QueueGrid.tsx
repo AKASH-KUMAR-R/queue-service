@@ -9,6 +9,7 @@ import { QueueCard } from "@features/queues/components/QueueCard";
 
 type QueueGridProps = PaginatedComponentProps & {
 	queues: QueueWithMetrics[];
+	onEditQueue: (queue: QueueWithMetrics) => void;
 };
 
 export function QueueGrid({
@@ -16,6 +17,7 @@ export function QueueGrid({
 	page,
 	totalPages,
 	onPageChange,
+	onEditQueue,
 }: QueueGridProps) {
 	const navigate = useNavigate();
 
@@ -44,6 +46,7 @@ export function QueueGrid({
 						onSelectQueue={handleSelectQueue}
 						onViewWorkers={handleViewWorkers}
 						onViewMetrics={handleViewMetrics}
+						onEdit={onEditQueue}
 					/>
 				))}
 			</div>

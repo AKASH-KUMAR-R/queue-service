@@ -77,12 +77,12 @@ export const toCreateQueueRequest = (
 };
 
 export const toUpdateQueueRequest = (
-	data: QueueUpdateSchemaType,
+	data: Partial<QueueUpdateSchemaType>,
 ): UpdateQueueData => {
 	return {
 		label: data.label,
 		description: data.description,
-		project_id: data.projectId,
+		status: data.status,
 		rate_limit_count: data.rateLimitCount,
 		rate_limit_window_ms: data.rateLimitWindowMs,
 	};
