@@ -20,6 +20,7 @@ interface CreateApiKeyDialogProps {
 	onClose: () => void;
 	onSubmit: (data: ApiKeyWithSecret) => void;
 	projectId: string;
+	environmentId: string;
 }
 
 export function CreateApiKeyDialog({
@@ -27,6 +28,7 @@ export function CreateApiKeyDialog({
 	onClose,
 	onSubmit,
 	projectId,
+	environmentId,
 }: CreateApiKeyDialogProps) {
 	const [description, setDescription] = useState("");
 
@@ -50,7 +52,11 @@ export function CreateApiKeyDialog({
 	) => {
 		event.preventDefault();
 		createApiKey(
-			{ project_id: projectId, description },
+			{
+				project_id: projectId,
+				environment_id: environmentId,
+				description,
+			},
 			{
 				onSuccess({ data: resData }) {
 					toast.success("API Key created successfully.");
