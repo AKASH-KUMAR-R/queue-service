@@ -52,7 +52,7 @@
         {
             "label": "Start Docker DB Container",
             "type": "shell",
-            "command": "docker start my-postgres",
+            "command": "docker start local-db",
             "options": {
                 "cwd": "${workspaceFolder}"
             },
