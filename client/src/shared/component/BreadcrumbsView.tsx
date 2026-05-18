@@ -1,5 +1,6 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+
+import { ContextLink } from "@app/component/ContextLink";
 
 import { useBreadCrumbs } from "@shared/hooks/useBreadCrumbs";
 import {
@@ -24,9 +25,9 @@ const BreadcrumbsView = () => {
 								<BreadcrumbPage>{crumb.label}</BreadcrumbPage>
 							) : (
 								<BreadcrumbLink asChild>
-									<NavLink to={crumb.path}>
+									<ContextLink to={crumb.path}>
 										{crumb.label}
-									</NavLink>
+									</ContextLink>
 								</BreadcrumbLink>
 							)}
 						</BreadcrumbItem>

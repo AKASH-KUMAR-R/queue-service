@@ -1,4 +1,6 @@
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
+
+import { useContextNavigate } from "@app/hooks/useContextNavigate";
 
 import { EmptyState } from "@shared/ui/EmptyState";
 import { LoadingState } from "@shared/ui/LoadingState";
@@ -8,7 +10,7 @@ import { useWorkerList } from "@features/queues/data/workerList";
 
 export const WorkerStatusPage: React.FC = () => {
 	const { queueId } = useParams();
-	const navigate = useNavigate();
+	const navigate = useContextNavigate();
 
 	const [searchQuery, setSearchQuery] = useSearchParams();
 

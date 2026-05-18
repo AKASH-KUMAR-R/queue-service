@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useContextNavigate } from "@app/hooks/useContextNavigate";
 
 import type { PaginatedComponentProps } from "@shared/types/types";
 import { Paginated } from "@shared/ui/pagination/Paginated";
@@ -19,7 +19,7 @@ export function QueueGrid({
 	onPageChange,
 	onEditQueue,
 }: QueueGridProps) {
-	const navigate = useNavigate();
+	const navigate = useContextNavigate();
 
 	const handleSelectQueue = (queueId: string) => {
 		navigate(`/queues/${queueId}/jobs`);
@@ -27,13 +27,12 @@ export function QueueGrid({
 	const handleViewWorkers = (queueId: string) => {
 		navigate(`/queues/${queueId}/workers`);
 	};
-	const handleViewMetrics = (queueId: string, projectId: string) => {
-		const queryParams = new URLSearchParams({
-			projectId,
-			queueId,
+	const handleViewMetrics = (queueId: string) => {
+		navigate(`/metrics`, {
+			params: {
+				queueId,
+			},
 		});
-
-		navigate(`/metrics?${queryParams.toString()}`);
 	};
 
 	return (
