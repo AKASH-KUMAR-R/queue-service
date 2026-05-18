@@ -1,5 +1,4 @@
-import { useNavigate } from "react-router-dom";
-
+import { useContextNavigate } from "@app/hooks/useContextNavigate";
 import { ExternalLink, SquarePen } from "lucide-react";
 
 import { Button } from "@shared/ui/button";
@@ -18,11 +17,15 @@ type QueueTableRowProps = {
 };
 
 export function QueueTableRow({ queue, onEdit }: QueueTableRowProps) {
-	const navigate = useNavigate();
-	const queueMetricsQuery = new URLSearchParams({
-		projectId: queue.projectId,
-		queueId: queue.id,
-	}).toString();
+	const navigate = useContextNavigate();
+
+	const handleQueueMetrics = () => {
+		navigate(`/metrics`, {
+			params: {
+				queueId: queue.id,
+			},
+		});
+	};
 
 	return (
 		<TableRow>
@@ -82,13 +85,7 @@ export function QueueTableRow({ queue, onEdit }: QueueTableRowProps) {
 					<Button onClick={() => onEdit(queue)} title="Edit queue">
 						<SquarePen className="w-4 h-4" />
 					</Button>
-					<Button
-						onClick={() =>
-							navigate(`/metrics?${queueMetricsQuery}`)
-						}
-					>
-						Metrics
-					</Button>
+					<Button onClick={handleQueueMetrics}>Metrics</Button>
 				</div>
 			</TableCell>
 		</TableRow>

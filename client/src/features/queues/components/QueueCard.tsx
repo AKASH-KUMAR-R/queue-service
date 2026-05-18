@@ -13,7 +13,7 @@ type QueueCardProps = {
 	queue: QueueWithMetrics;
 	onSelectQueue: (queueId: string) => void;
 	onViewWorkers: (queueId: string) => void;
-	onViewMetrics: (queueId: string, projectId: string) => void;
+	onViewMetrics: (queueId: string) => void;
 	onEdit: (queue: QueueWithMetrics) => void;
 };
 
@@ -119,7 +119,7 @@ export function QueueCard({
 					View Workers
 				</Button>
 				<Button
-					onClick={() => onViewMetrics(queue.id, queue.projectId)}
+					onClick={() => onViewMetrics(queue.id)}
 					className="flex-1 px-3 py-2 text-sm "
 				>
 					Metrics

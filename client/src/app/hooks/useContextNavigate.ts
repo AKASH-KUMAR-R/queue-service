@@ -5,12 +5,16 @@ import { CONTEXT_FREE_PATHS } from "@app/navbar/NavBarConfig";
 
 import { useContextParams } from "./useContextParams";
 
+type NavigateOptions = {
+	params: Record<string, string>;
+};
+
 export const useContextNavigate = () => {
 	const navigate = useNavigate();
 	const { projectId, environmentId } = useContextParams();
 
 	return useCallback(
-		(path: string) => {
+		(path: string, options?: NavigateOptions) => {
 			if (
 				CONTEXT_FREE_PATHS.some((freePath) => path.startsWith(freePath))
 			) {
@@ -25,6 +29,10 @@ export const useContextNavigate = () => {
 			if (environmentId) {
 				searchParams.set("environmentId", environmentId);
 			}
+
+			Object.entries(options?.params ?? {}).forEach(([key, value]) => {
+				searchParams.set(key, value);
+			});
 
 			navigate({
 				pathname: path,
