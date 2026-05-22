@@ -22,7 +22,7 @@ router.get(
 	passport.authenticate("jwt", { session: false }),
 	attachPrismaContext,
 	queryValidationMiddleware(ApiKeySearchRequest),
-	commonController.search,
+	apiKeyController.search,
 );
 router.get(
 	"/:id",

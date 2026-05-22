@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 
 import type { ApiKeyCreateRequestType } from "@models/api-key/requests/ApiKeyCreateRequest";
+import type { ApiKeySearchRequest } from "@models/api-key/requests/ApiKeySearchRequest";
 
 import apiKeyService from "@services/api-key/apiKey.service";
 
@@ -46,7 +47,26 @@ const revoke = async (req: Request, res: Response) => {
 	}
 };
 
+const search = async (req: Request, res: Response) => {
+	try {
+		const { page, limit, ...filters } =
+			req.validQuery as ApiKeySearchRequest;
+
+		const result = await apiKeyService.search(
+			req.db,
+			filters,
+			page || 1,
+			limit || 10,
+		);
+
+		return res.status(200).json({ data: result, success: true });
+	} catch (error) {
+		return handleError(res, error);
+	}
+};
+
 export default {
 	create,
 	revoke,
+	search,
 };
