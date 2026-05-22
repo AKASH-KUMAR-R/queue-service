@@ -41,7 +41,26 @@ const revoke = async (req: Request, res: Response) => {
 			{ revoked: true, revoked_at: new Date() },
 		);
 
-		return res.status(200).json({ data: result, success: true });
+		const { secret, ...rest } = result;
+		return res.status(200).json({ data: rest, success: true });
+	} catch (error) {
+		return handleError(res, error);
+	}
+};
+
+const getById = async (req: Request, res: Response) => {
+	try {
+		const result = await apiKeyService.findApiKeyById(
+			req.db,
+			req.params.id as string,
+		);
+
+		if (!result) {
+			return handleError(res, "API key not found", 404);
+		}
+
+		const { secret, ...rest } = result;
+		return res.status(200).json({ data: rest, success: true });
 	} catch (error) {
 		return handleError(res, error);
 	}
@@ -68,5 +87,6 @@ const search = async (req: Request, res: Response) => {
 export default {
 	create,
 	revoke,
+	getById,
 	search,
 };

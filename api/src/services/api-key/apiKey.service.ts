@@ -58,7 +58,9 @@ const search = async (
 
 	const whereQuery: Prisma.ApiKeyWhereInput = {
 		...(filters.project_id && { project_id: filters.project_id }),
-		...(filters.environment_id && { environment_id: filters.environment_id }),
+		...(filters.environment_id && {
+			environment_id: filters.environment_id,
+		}),
 		...(filters.revoked !== undefined && { revoked: filters.revoked }),
 	};
 

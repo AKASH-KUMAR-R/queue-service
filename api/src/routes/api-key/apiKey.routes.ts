@@ -29,7 +29,7 @@ router.get(
 	passport.authenticate("jwt", { session: false }),
 	attachPrismaContext,
 	validateId,
-	commonController.getById,
+	apiKeyController.getById,
 );
 
 router.put(
