@@ -15,22 +15,34 @@ export default function createProducer(options: ProducerOptions) {
         producerId,
     });
 
+    let inflight = 0,
+        success = 0,
+        failed = 0;
+
     async function addJob(queueLabel: string, options: AddJobOptions) {
         try {
+            inflight++;
             const res = await client.post("/api/worker/job/create", {
                 ...options,
                 queue_label: queueLabel,
             });
 
             logger.info(`Job added to ${queueLabel}`);
+            success++;
             return res.data;
         } catch (err) {
+            failed++;
             handleError(err);
             throw err;
+        } finally {
+            inflight--;
         }
     }
 
     return {
         addJob,
+        inflight: () => inflight,
+        success: () => success,
+        failed: () => failed,
     };
 }

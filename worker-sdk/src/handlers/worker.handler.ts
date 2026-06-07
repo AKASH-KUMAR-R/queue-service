@@ -27,7 +27,7 @@ export default function createWorker(workerOptions: WorkerOptions) {
 
     async function findNextJob() {
         const res = await api.get(
-            `/api/worker/job/next-job?queue_label=${options.queueLabel}`
+            `/api/worker/job/next-job?queue_label=${options.queueLabel}`,
         );
 
         logger.info("Fetched next job:", { data: res.data });
@@ -50,7 +50,7 @@ export default function createWorker(workerOptions: WorkerOptions) {
     async function jobCompleted(jobId: string) {
         const res = await api.put(`/api/worker/job/mark-as-completed/${jobId}`);
 
-        logger.info("Marked job as completed:", { jobId });
+        // logger.info("Marked job as completed:", { jobId });
         return res.data || null;
     }
 
@@ -149,7 +149,7 @@ export default function createWorker(workerOptions: WorkerOptions) {
 
         while (activeJobs.size > 0) {
             logger.info(
-                `Worker shutdown will be initiated after finishing ${activeJobs.size} jobs`
+                `Worker shutdown will be initiated after finishing ${activeJobs.size} jobs`,
             );
             await wait(1000);
         }
@@ -165,7 +165,7 @@ export default function createWorker(workerOptions: WorkerOptions) {
         setupSignalHandlers();
 
         logger.info(
-            `Starting workers with concurrency: ${options.concurrency}.`
+            `Starting workers with concurrency: ${options.concurrency}.`,
         );
         logger.info(`Worker ID: ${workerId}`);
 
@@ -183,5 +183,11 @@ export default function createWorker(workerOptions: WorkerOptions) {
     return {
         run: initiateWorkersWithConcurrency,
         stop,
+        info: () => ({
+            workerId,
+            queueLabel: options.queueLabel,
+            concurrency: options.concurrency,
+            jobsCount: activeJobs.size,
+        }),
     };
 }
