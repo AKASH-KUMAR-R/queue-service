@@ -27,10 +27,11 @@ export const logger = pino(
 									__dirname,
 									"..",
 									"..",
-									"./logs/all.log",
+									"./logs/info.log",
 								),
 								mkdir: true,
 							},
+							level: "info",
 						},
 						{
 							target: "pino/file",
