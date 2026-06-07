@@ -35,6 +35,9 @@ export function QueueCard({
 						<StatusBadge status={queue.status} type="queue" />
 					</div>
 					<p className="text-xs font-mono ">{queue.id}</p>
+					<p className="text-xs font-mono pt-2">
+						{queue.description}
+					</p>
 				</div>
 				<Button type="button" size="sm" variant="ghost">
 					<MoreVertical className="w-5 h-5" />

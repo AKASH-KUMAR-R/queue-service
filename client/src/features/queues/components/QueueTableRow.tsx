@@ -35,6 +35,9 @@ export function QueueTableRow({ queue, onEdit }: QueueTableRowProps) {
 						{queue.label}
 					</div>
 					<div className="text-xs font-mono ">{queue.id}</div>
+					<div className="text-xs font-mono pt-1">
+						{queue.description}
+					</div>
 				</div>
 			</TableCell>
 			<TableCell>
