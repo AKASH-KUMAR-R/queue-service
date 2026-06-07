@@ -81,8 +81,13 @@ export function ProjectSwitcherDialog({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={handleDialogOpenChange}>
-			<DialogContent className=" w-full sm:max-w-7xl sm:h-[calc(100%-4rem)]">
-				<DialogTitle>Project Switcher</DialogTitle>
+			<DialogContent className="w-full sm:max-w-7xl sm:h-[calc(100%-4rem)]">
+				<DialogTitle className=" flex justify-between py-6">
+					Project Switcher
+					<Button type="button" onClick={onCreateProject}>
+						Create Project
+					</Button>
+				</DialogTitle>
 
 				<div className="relative">
 					<Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />

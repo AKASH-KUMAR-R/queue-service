@@ -173,6 +173,7 @@ export function CreateProjectDialog({
 						<DialogFooter className="flex items-center justify-end gap-3 p-6 ">
 							<Button
 								type="button"
+								variant="secondary"
 								onClick={() => handleOpenChange(false)}
 								className="px-4 py-2 text-sm "
 							>
