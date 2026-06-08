@@ -11,7 +11,6 @@ import type { WorkerCompletedFilters } from "@models/worker-status/requests/Work
 
 import jobEventsService from "@services/job-events/jobEvents.service";
 import queueService from "@services/queue/queue.service";
-import workerStatusService from "@services/worker-status/workerStatus.service";
 
 import { logger } from "@utils/logger.util";
 import { PaginationParams, PaginationResults } from "@utils/pagination.util";
@@ -185,10 +184,6 @@ const findNextJob = async (
 			return null;
 		}
 
-		await workerStatusService.upsertForJobAcquired(tx, worker_id, {
-			queue_id: queue.id,
-		});
-
 		await jobEventsService.createJobEvent(tx, {
 			project_id: queue.project_id,
 			queue_id: job[0].queue_id,
@@ -222,10 +217,6 @@ const updateHeartbeat = async (
 		if (!updatedJob) {
 			throw new Error("Job not found");
 		}
-
-		await workerStatusService.upsertForHeartbeat(tx, worker_id, {
-			queue_id: updatedJob.queue_id,
-		});
 
 		await jobEventsService.createJobEvent(tx, {
 			project_id: updatedJob.project_id,
@@ -274,10 +265,6 @@ const updateStatusAsCompleted = async (
 			throw new Error("Job not found");
 		}
 
-		await workerStatusService.upsertForJobReleased(tx, worker_id, {
-			queue_id: updatedJob.queue_id,
-		});
-
 		await jobEventsService.createJobEvent(tx, {
 			project_id: updatedJob.project_id,
 			queue_id: updatedJob.queue_id,
@@ -312,10 +299,6 @@ const updateStatusAsFailed = async (
 			throw new Error("Job not found");
 		}
 
-		await workerStatusService.upsertForJobReleased(tx, worker_id, {
-			queue_id: updatedJob.queue_id,
-		});
-
 		await jobEventsService.createJobEvent(tx, {
 			project_id: updatedJob.project_id,
 			queue_id: updatedJob.queue_id,
@@ -349,10 +332,6 @@ const updateStatusAsPendingByRetry = async (
 		if (!updatedJob) {
 			throw new Error("Job not found");
 		}
-
-		await workerStatusService.upsertForJobReleased(tx, worker_id, {
-			queue_id: updatedJob.queue_id,
-		});
 
 		await jobEventsService.createJobEvent(tx, {
 			project_id: updatedJob.project_id,
