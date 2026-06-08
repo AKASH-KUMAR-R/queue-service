@@ -87,6 +87,7 @@ export const detectAndHandleTimeoutJobs = async () => {
 				project_id: updatedJob.project_id,
 				queue_id: updatedJob.queue_id,
 				job_id: updatedJob.id,
+				environment_id: updatedJob.environment_id,
 				worker_id: SCHEDULER_WORKER_ID,
 				event_type: isTerminated
 					? JobEventType.JOB_FAILED
@@ -175,6 +176,7 @@ export const detectAndHandleDeadJobs = async () => {
 				project_id: updatedJob.project_id,
 				queue_id: updatedJob.queue_id,
 				job_id: updatedJob.id,
+				environment_id: updatedJob.environment_id,
 				worker_id: SCHEDULER_WORKER_ID,
 				event_type: isTerminated
 					? JobEventType.JOB_FAILED
