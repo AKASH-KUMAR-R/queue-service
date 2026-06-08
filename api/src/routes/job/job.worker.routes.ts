@@ -14,10 +14,7 @@ import NextJobQueryParams from "@models/job/requests/NextJobQueryParams";
 
 import jobWorkerController from "@controllers/job/job.worker.controlller";
 
-import jobRateLimiter, {
-	extractProducerId,
-	extractWorkerId,
-} from "./job.middleware";
+import { extractProducerId, extractWorkerId } from "./job.middleware";
 
 const router = Router();
 
@@ -28,7 +25,6 @@ router.get(
 		assignProperty: "project",
 	}),
 	queryValidationMiddleware(NextJobQueryParams),
-	jobRateLimiter,
 	extractWorkerId,
 	jobWorkerController.getNextJobFromQueue,
 );

@@ -10,14 +10,11 @@ import type { QueueJobsFilters } from "@models/queue/requests/QueueJobsListReque
 import type { WorkerCompletedFilters } from "@models/worker-status/requests/WorkerCompletedJobsListRequest";
 
 import jobEventsService from "@services/job-events/jobEvents.service";
-import queueRateLimiterService from "@services/queue-limit/queueRateLimiter.service";
-import queueMetricsService from "@services/queue-metrics/queueMetrics.service";
 import queueService from "@services/queue/queue.service";
 import workerStatusService from "@services/worker-status/workerStatus.service";
 
+import { logger } from "@utils/logger.util";
 import { PaginationParams, PaginationResults } from "@utils/pagination.util";
-
-import { QueueRateLimitExceeded } from "@errors/QueueRateLimitExceeded";
 
 const createJob = async (
 	db: PrismaClient,
@@ -154,20 +151,13 @@ const findNextJob = async (
 	worker_id: string,
 ) => {
 	return await db.$transaction(async (tx) => {
-		const queue = await queueService.findByIdWithQueueLimiter(tx, queue_id);
+		const queue = await queueService.findById(tx, queue_id);
 
 		if (!queue) {
 			throw new Error("Queue not found");
 		}
 
-		if (
-			queue.queueRateLimiter &&
-			queue.queueRateLimiter.job_count >= queue.rate_limit_count!
-		) {
-			throw new QueueRateLimitExceeded(
-				"Queue rate limit exceeded. Please try again later.",
-			);
-		}
+		const jobSearchTime = new Date();
 
 		const job: Job[] = await tx.$queryRaw`
 			UPDATE "Job"
@@ -185,21 +175,15 @@ const findNextJob = async (
 			RETURNING *;
 		`;
 
+		logger.info(
+			`Job Search Time Taken(${queue_id}): ${
+				new Date().getTime() - jobSearchTime.getTime()
+			} ms`,
+		);
+
 		if (!job[0]) {
-			await workerStatusService.upsertForHeartbeat(tx, worker_id, {
-				queue_id,
-			});
 			return null;
 		}
-
-		if (queue.queueRateLimiter) {
-			await queueRateLimiterService.incQueueRateLimitCounter(
-				tx,
-				queue.queueRateLimiter.id,
-			);
-		}
-
-		await queueMetricsService.incActiveMetric(tx, queue.id);
 
 		await workerStatusService.upsertForJobAcquired(tx, worker_id, {
 			queue_id: queue.id,
@@ -290,8 +274,6 @@ const updateStatusAsCompleted = async (
 			throw new Error("Job not found");
 		}
 
-		await queueMetricsService.incCompletedMetric(tx, updatedJob.queue_id);
-
 		await workerStatusService.upsertForJobReleased(tx, worker_id, {
 			queue_id: updatedJob.queue_id,
 		});
@@ -334,8 +316,6 @@ const updateStatusAsFailed = async (
 			queue_id: updatedJob.queue_id,
 		});
 
-		await queueMetricsService.incFailedMetric(tx, updatedJob.queue_id);
-
 		await jobEventsService.createJobEvent(tx, {
 			project_id: updatedJob.project_id,
 			queue_id: updatedJob.queue_id,
@@ -369,8 +349,6 @@ const updateStatusAsPendingByRetry = async (
 		if (!updatedJob) {
 			throw new Error("Job not found");
 		}
-
-		await queueMetricsService.decActiveMetric(tx, updatedJob.queue_id);
 
 		await workerStatusService.upsertForJobReleased(tx, worker_id, {
 			queue_id: updatedJob.queue_id,

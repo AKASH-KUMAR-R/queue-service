@@ -8,6 +8,7 @@ import jobService from "@services/job/job.service";
 import queueService from "@services/queue/queue.service";
 
 import { handleError } from "@utils/error.util";
+import { logger } from "@utils/logger.util";
 
 const addJobToQueue = async (req: Request, res: Response) => {
 	try {
@@ -127,10 +128,18 @@ const getNextJobFromQueue = async (req: Request, res: Response) => {
 			return handleError(res, "No queue found", 404);
 		}
 
+		const startTime = new Date();
+
 		const nextJob = await jobService.findNextJob(
 			req.db,
 			queue.id,
 			req.worker_id as string,
+		);
+
+		logger.info(
+			`Full Time Job Search(${queue.id}): ${
+				new Date().getTime() - startTime.getTime()
+			} ms`,
 		);
 
 		if (!nextJob) {
