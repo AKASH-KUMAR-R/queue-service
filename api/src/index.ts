@@ -29,6 +29,7 @@ import { handleError } from "@utils/error.util";
 import { logger } from "@utils/logger.util";
 
 import { startCronJobs } from "./scheduler/insights";
+import { startWorkerStatusCronJob } from "./scheduler/worker-status";
 
 const app = Express();
 
@@ -82,4 +83,5 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 app.listen(process.env.PORT, () => {
 	console.log("Server listening at port ", process.env.PORT);
 	startCronJobs();
+	startWorkerStatusCronJob();
 });
