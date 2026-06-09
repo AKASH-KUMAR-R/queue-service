@@ -1,9 +1,4 @@
-import {
-	JobEventType,
-	JobStatus,
-	Prisma,
-	type PrismaClient,
-} from "@db/client";
+import { JobEventType, JobStatus, Prisma, type PrismaClient } from "@db/client";
 
 import { prisma } from "@utils/prisma.util";
 
@@ -35,49 +30,23 @@ const upsert = async (
 };
 
 const findAffectedWorkerIds = async (from: Date, to: Date) => {
-	const rows = await prisma.$queryRaw<AffectedWorkerRow[]>(Prisma.sql`
-		WITH "direct_workers" AS (
-			SELECT DISTINCT "worker_id"
-			FROM "JobEvents"
-			WHERE "created_at" >= ${from}
-				AND "created_at" < ${to}
-				AND "worker_id" IS NOT NULL
-				AND "worker_id" <> ${MONITOR_WORKER_ID}
-		),
-		"resolved_monitor_workers" AS (
-			SELECT DISTINCT "resolved"."worker_id"
-			FROM "JobEvents" AS "monitor"
-			JOIN LATERAL (
-				SELECT "worker_id"
-				FROM "JobEvents"
-				WHERE "job_id" = "monitor"."job_id"
-					AND "worker_id" IS NOT NULL
-					AND "worker_id" <> ${MONITOR_WORKER_ID}
-					AND "event_type" IN (
-						${JobEventType.JOB_HEARTBEAT}::"JobEventType",
-						${JobEventType.JOB_ACQUIRED}::"JobEventType"
-					)
-				ORDER BY "created_at" DESC
-				LIMIT 1
-			) AS "resolved" ON TRUE
-			WHERE "monitor"."created_at" >= ${from}
-				AND "monitor"."created_at" < ${to}
-				AND "monitor"."worker_id" = ${MONITOR_WORKER_ID}
-				AND "monitor"."event_type" IN (
-					${JobEventType.JOB_FAILED}::"JobEventType",
-					${JobEventType.JOB_REQUEUED}::"JobEventType"
-				)
-		)
-		SELECT DISTINCT "worker_id"
-		FROM (
-			SELECT "worker_id" FROM "direct_workers"
-			UNION
-			SELECT "worker_id" FROM "resolved_monitor_workers"
-		) AS "affected_workers"
-		ORDER BY "worker_id" ASC
-	`);
+	const workers = await prisma.jobEvents.findMany({
+		where: {
+			worker_id: {
+				not: null,
+			},
+			created_at: {
+				gte: from,
+				lte: to,
+			},
+		},
+		select: {
+			worker_id: true,
+		},
+		distinct: ["worker_id"],
+	});
 
-	return rows.map((row) => row.worker_id);
+	return workers.map((worker) => worker.worker_id);
 };
 
 const findLatestWorkerEvent = async (worker_id: string) => {

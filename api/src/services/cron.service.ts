@@ -85,24 +85,24 @@ const runWorkerStatusCron = async (): Promise<void> => {
 	try {
 		const now = new Date();
 		const from = new Date(
-			now.getTime() - WORKER_STATUS_LOOKBACK_MINUTES * MINUTES_IN_MILLISECOND,
+			now.getTime() -
+				WORKER_STATUS_LOOKBACK_MINUTES * MINUTES_IN_MILLISECOND,
 		);
 
 		logger.info(
 			`[${WORKER_STATUS_CRON_NAME}] cron started. using window_start=${from.toISOString()} window_end=${now.toISOString()}`,
 		);
 
-		const affectedWorkerIds = await workerStatusService.findAffectedWorkerIds(
-			from,
-			now,
-		);
+		const affectedWorkerIds =
+			await workerStatusService.findAffectedWorkerIds(from, now);
 
 		logger.info(
 			`[${WORKER_STATUS_CRON_NAME}] affected worker count=${affectedWorkerIds.length}`,
 		);
 
 		for (const worker_id of affectedWorkerIds) {
-			await workerStatusService.recomputeWorkerStatus(worker_id);
+			if (worker_id)
+				await workerStatusService.recomputeWorkerStatus(worker_id);
 		}
 
 		logger.info(`[${WORKER_STATUS_CRON_NAME}] cron completed.`);
