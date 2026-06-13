@@ -5,6 +5,7 @@ import {
 	type Prisma,
 	PrismaClient,
 } from "@db/client";
+import { incrementCounters, setValue } from "@lib/inMemoryStore.lib";
 
 import type { QueueJobsFilters } from "@models/queue/requests/QueueJobsListRequest";
 import type { WorkerCompletedFilters } from "@models/worker-status/requests/WorkerCompletedJobsListRequest";
@@ -14,6 +15,19 @@ import queueService from "@services/queue/queue.service";
 
 import { logger } from "@utils/logger.util";
 import { PaginationParams, PaginationResults } from "@utils/pagination.util";
+
+const setWorkerLastSeen = (workerId: string, queueId: string) => {
+	setValue(`worker:lastSeen:${workerId}`, {
+		lastSeenAt: Date.now(),
+		queueId,
+	});
+};
+
+const incrementWorkerActiveJobs = (workerId: string, delta: number) => {
+	incrementCounters(`worker:activeJobs:${workerId}`, {
+		activeJobs: delta,
+	});
+};
 
 const createJob = async (
 	db: PrismaClient,
@@ -149,7 +163,7 @@ const findNextJob = async (
 	queue_id: string,
 	worker_id: string,
 ) => {
-	return await db.$transaction(async (tx) => {
+	const acquiredJob = await db.$transaction(async (tx) => {
 		const queue = await queueService.findById(tx, queue_id);
 
 		if (!queue) {
@@ -197,6 +211,13 @@ const findNextJob = async (
 
 		return job[0];
 	});
+
+	if (acquiredJob) {
+		setWorkerLastSeen(worker_id, acquiredJob.queue_id);
+		incrementWorkerActiveJobs(worker_id, 1);
+	}
+
+	return acquiredJob;
 };
 
 const updateHeartbeat = async (
@@ -204,7 +225,7 @@ const updateHeartbeat = async (
 	id: string,
 	worker_id: string,
 ) => {
-	return await db.$transaction(async (tx) => {
+	const updatedJob = await db.$transaction(async (tx) => {
 		const updatedJob = await tx.job.update({
 			where: {
 				id,
@@ -231,6 +252,10 @@ const updateHeartbeat = async (
 
 		return updatedJob;
 	});
+
+	setWorkerLastSeen(worker_id, updatedJob.queue_id);
+
+	return updatedJob;
 };
 
 const updateById = async (
@@ -251,7 +276,7 @@ const updateStatusAsCompleted = async (
 	id: string,
 	worker_id: string,
 ) => {
-	return await db.$transaction(async (tx) => {
+	const updatedJob = await db.$transaction(async (tx) => {
 		const updatedJob = await tx.job.update({
 			where: {
 				id,
@@ -278,6 +303,11 @@ const updateStatusAsCompleted = async (
 
 		return updatedJob;
 	});
+
+	setWorkerLastSeen(worker_id, updatedJob.queue_id);
+	incrementWorkerActiveJobs(worker_id, -1);
+
+	return updatedJob;
 };
 
 const updateStatusAsFailed = async (
@@ -285,7 +315,7 @@ const updateStatusAsFailed = async (
 	id: string,
 	worker_id: string,
 ) => {
-	return await db.$transaction(async (tx) => {
+	const updatedJob = await db.$transaction(async (tx) => {
 		const updatedJob = await tx.job.update({
 			where: {
 				id,
@@ -312,6 +342,11 @@ const updateStatusAsFailed = async (
 
 		return updatedJob;
 	});
+
+	setWorkerLastSeen(worker_id, updatedJob.queue_id);
+	incrementWorkerActiveJobs(worker_id, -1);
+
+	return updatedJob;
 };
 
 const updateStatusAsPendingByRetry = async (
