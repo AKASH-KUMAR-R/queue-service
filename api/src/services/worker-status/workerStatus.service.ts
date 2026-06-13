@@ -1,15 +1,21 @@
-import { JobEventType, JobStatus, Prisma, type PrismaClient } from "@db/client";
+import { type Prisma, type PrismaClient } from "@db/client";
+import { getAllAndClear } from "@lib/inMemoryStore.lib";
 
+import { logger } from "@utils/logger.util";
 import { prisma } from "@utils/prisma.util";
 
-const MONITOR_WORKER_ID = "scheduler:monitor-worker";
+const WORKER_LAST_SEEN_PREFIX = "worker:lastSeen:";
+const WORKER_ACTIVE_JOBS_PREFIX = "worker:activeJobs:";
 
-type ActiveJobsCountRow = {
-	active_jobs: bigint | number;
+type WorkerLastSeenSnapshot = {
+	lastSeenAt: number;
+	queueId: string;
 };
 
-type AffectedWorkerRow = {
-	worker_id: string;
+type WorkerStatusSnapshot = {
+	queueId?: string;
+	lastSeenAt?: number;
+	activeJobsDelta?: number;
 };
 
 const upsert = async (
@@ -29,26 +35,6 @@ const upsert = async (
 	});
 };
 
-const findAffectedWorkerIds = async (from: Date, to: Date) => {
-	const workers = await prisma.jobEvents.findMany({
-		where: {
-			worker_id: {
-				not: null,
-			},
-			created_at: {
-				gte: from,
-				lte: to,
-			},
-		},
-		select: {
-			worker_id: true,
-		},
-		distinct: ["worker_id"],
-	});
-
-	return workers.map((worker) => worker.worker_id);
-};
-
 const findLatestWorkerEvent = async (worker_id: string) => {
 	return await prisma.jobEvents.findFirst({
 		where: {
@@ -60,57 +46,6 @@ const findLatestWorkerEvent = async (worker_id: string) => {
 		select: {
 			queue_id: true,
 			created_at: true,
-		},
-	});
-};
-
-const countActiveJobs = async (worker_id: string) => {
-	const [row] = await prisma.$queryRaw<ActiveJobsCountRow[]>(Prisma.sql`
-		WITH "latest_real_activity" AS (
-			SELECT DISTINCT ON ("job_id")
-				"job_id",
-				"worker_id",
-				"created_at"
-			FROM "JobEvents"
-			WHERE "worker_id" IS NOT NULL
-				AND "worker_id" <> ${MONITOR_WORKER_ID}
-				AND "event_type" IN (
-					${JobEventType.JOB_ACQUIRED}::"JobEventType",
-					${JobEventType.JOB_HEARTBEAT}::"JobEventType"
-				)
-			ORDER BY "job_id", "created_at" DESC
-		)
-		SELECT COUNT(*)::bigint AS "active_jobs"
-		FROM "latest_real_activity"
-		INNER JOIN "Job"
-			ON "Job"."id" = "latest_real_activity"."job_id"
-		WHERE "latest_real_activity"."worker_id" = ${worker_id}
-			AND "Job"."status" = ${JobStatus.IN_PROGRESS}::"JobStatus"
-	`);
-
-	return BigInt(row?.active_jobs ?? 0);
-};
-
-const recomputeWorkerStatus = async (worker_id: string) => {
-	const latestWorkerEvent = await findLatestWorkerEvent(worker_id);
-
-	if (!latestWorkerEvent) {
-		return null;
-	}
-
-	const active_jobs = await countActiveJobs(worker_id);
-
-	return await upsert(prisma, worker_id, {
-		create: {
-			worker_id,
-			queue_id: latestWorkerEvent.queue_id,
-			last_seen: latestWorkerEvent.created_at,
-			active_jobs,
-		},
-		update: {
-			queue_id: latestWorkerEvent.queue_id,
-			last_seen: latestWorkerEvent.created_at,
-			active_jobs,
 		},
 	});
 };
@@ -129,96 +64,134 @@ const findByQueueId = async (
 	});
 };
 
-const upsertForJobAcquired = async (
-	db: PrismaClient | Prisma.TransactionClient,
-	worker_id: string,
-	data: {
-		queue_id: string;
-	},
-) => {
-	const create: Prisma.WorkerStatusUncheckedCreateInput = {
-		worker_id,
-		queue_id: data.queue_id,
-		last_seen: new Date(),
-		active_jobs: 1,
-	};
-
-	const update: Prisma.WorkerStatusUncheckedUpdateInput = {
-		active_jobs: {
-			increment: 1,
-		},
-		last_seen: new Date(),
-	};
-
-	return await db.workerStatus.upsert({
-		create,
-		update,
-		where: {
-			worker_id,
-		},
-	});
+const extractWorkerId = (key: string, prefix: string) => {
+	return key.slice(prefix.length);
 };
 
-const upsertForJobReleased = async (
-	db: PrismaClient | Prisma.TransactionClient,
-	worker_id: string,
-	data: {
-		queue_id: string;
-	},
-) => {
-	const create: Prisma.WorkerStatusUncheckedCreateInput = {
-		worker_id,
-		queue_id: data.queue_id,
-		last_seen: new Date(),
-	};
-
-	const update: Prisma.WorkerStatusUncheckedUpdateInput = {
-		active_jobs: {
-			decrement: 1,
-		},
-		last_seen: new Date(),
-	};
-
-	return await db.workerStatus.upsert({
-		create,
-		update,
-		where: {
-			worker_id,
-		},
-	});
+const isWorkerLastSeenSnapshot = (
+	value: unknown,
+): value is WorkerLastSeenSnapshot => {
+	return (
+		typeof value === "object" &&
+		value !== null &&
+		"lastSeenAt" in value &&
+		"queueId" in value &&
+		typeof value.lastSeenAt === "number" &&
+		typeof value.queueId === "string"
+	);
 };
 
-const upsertForHeartbeat = async (
-	db: PrismaClient | Prisma.TransactionClient,
-	worker_id: string,
-	data: {
-		queue_id: string;
-	},
-) => {
-	return await db.workerStatus.upsert({
-		create: {
-			queue_id: data.queue_id,
-			worker_id,
-			last_seen: new Date(),
-			active_jobs: 0,
-		},
-		update: {
-			last_seen: new Date(),
-		},
-		where: {
-			worker_id: worker_id,
-		},
-	});
+const getWorkerSnapshots = (): Map<string, WorkerStatusSnapshot> => {
+	const workerSnapshots = new Map<string, WorkerStatusSnapshot>();
+
+	const lastSeenEntries = getAllAndClear(WORKER_LAST_SEEN_PREFIX);
+	for (const [key, entry] of lastSeenEntries.entries()) {
+		if (entry.type !== "value" || !isWorkerLastSeenSnapshot(entry.data)) {
+			logger.warn(
+				`[worker_status_reconciliation] ignoring invalid last-seen snapshot for key=${key}`,
+			);
+			continue;
+		}
+
+		const workerId = extractWorkerId(key, WORKER_LAST_SEEN_PREFIX);
+		workerSnapshots.set(workerId, {
+			...(workerSnapshots.get(workerId) ?? {}),
+			queueId: entry.data.queueId,
+			lastSeenAt: entry.data.lastSeenAt,
+		});
+	}
+
+	const activeJobEntries = getAllAndClear(WORKER_ACTIVE_JOBS_PREFIX);
+	for (const [key, entry] of activeJobEntries.entries()) {
+		if (entry.type !== "counter") {
+			logger.warn(
+				`[worker_status_reconciliation] ignoring invalid active-jobs snapshot for key=${key}`,
+			);
+			continue;
+		}
+
+		const workerId = extractWorkerId(key, WORKER_ACTIVE_JOBS_PREFIX);
+		const activeJobsDelta = entry.counts.activeJobs ?? 0;
+
+		workerSnapshots.set(workerId, {
+			...(workerSnapshots.get(workerId) ?? {}),
+			activeJobsDelta,
+		});
+	}
+
+	return workerSnapshots;
+};
+
+const flushWorkerStatusSnapshots = async () => {
+	const workerSnapshots = getWorkerSnapshots();
+
+	for (const [worker_id, snapshot] of workerSnapshots.entries()) {
+		const existingWorkerStatus = await prisma.workerStatus.findUnique({
+			where: {
+				worker_id,
+			},
+		});
+
+		if (existingWorkerStatus) {
+			const updateData: Prisma.WorkerStatusUncheckedUpdateInput = {};
+
+			if (snapshot.queueId) {
+				updateData.queue_id = snapshot.queueId;
+			}
+
+			if (snapshot.lastSeenAt !== undefined) {
+				updateData.last_seen = new Date(snapshot.lastSeenAt);
+			}
+
+			if (snapshot.activeJobsDelta !== undefined) {
+				updateData.active_jobs = {
+					increment: snapshot.activeJobsDelta,
+				};
+			}
+
+			await prisma.workerStatus.update({
+				where: {
+					worker_id,
+				},
+				data: updateData,
+			});
+
+			continue;
+		}
+
+		const latestWorkerEvent = await findLatestWorkerEvent(worker_id);
+		const queueId = snapshot.queueId ?? latestWorkerEvent?.queue_id;
+		const lastSeen =
+			snapshot.lastSeenAt !== undefined
+				? new Date(snapshot.lastSeenAt)
+				: latestWorkerEvent?.created_at;
+
+		if (!queueId || !lastSeen) {
+			logger.warn(
+				`[worker_status_reconciliation] skipping worker_id=${worker_id} because queue_id or last_seen could not be resolved`,
+			);
+			continue;
+		}
+
+		await prisma.workerStatus.create({
+			data: {
+				worker_id,
+				queue_id: queueId,
+				last_seen: lastSeen,
+				active_jobs:
+					snapshot.activeJobsDelta === undefined
+						? 0
+						: Math.max(snapshot.activeJobsDelta, 0),
+			},
+		});
+	}
+
+	return workerSnapshots.size;
 };
 
 export default {
-	upsert,
-	countActiveJobs,
-	findAffectedWorkerIds,
 	findByQueueId,
 	findLatestWorkerEvent,
-	recomputeWorkerStatus,
-	upsertForHeartbeat,
-	upsertForJobAcquired,
-	upsertForJobReleased,
+	flushWorkerStatusSnapshots,
+	upsert,
 };

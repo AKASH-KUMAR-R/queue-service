@@ -1,4 +1,4 @@
-import { HOUR_IN_MILLISECONDS, MINUTES_IN_MILLISECOND } from "lib/time";
+import { HOUR_IN_MILLISECONDS } from "@lib/time";
 
 import projectInsightsService from "@services/project-insights/projectInsights.service";
 import queueInsightsService from "@services/queue-insights/queueInsights.service";
@@ -9,7 +9,6 @@ import { prisma } from "@utils/prisma.util";
 
 const QUEUE_INSIGHTS_CRON_NAME = "queue_insights";
 const WORKER_STATUS_CRON_NAME = "worker_status_reconciliation";
-const WORKER_STATUS_LOOKBACK_MINUTES = 10;
 
 // TODO: Needs to consider batching and cuncurrency if the affected bucket count is large. For now, we expect the affected bucket count to be small and can be processed within the cron interval.
 const runQueueInsightsCron = async (): Promise<void> => {
@@ -83,27 +82,20 @@ const runQueueInsightsCron = async (): Promise<void> => {
 
 const runWorkerStatusCron = async (): Promise<void> => {
 	try {
-		const now = new Date();
-		const from = new Date(
-			now.getTime() -
-				WORKER_STATUS_LOOKBACK_MINUTES * MINUTES_IN_MILLISECOND,
+		logger.info(
+			`[${WORKER_STATUS_CRON_NAME}] cron started. flushing in-memory worker snapshots`,
 		);
 
 		logger.info(
-			`[${WORKER_STATUS_CRON_NAME}] cron started. using window_start=${from.toISOString()} window_end=${now.toISOString()}`,
+			`[${WORKER_STATUS_CRON_NAME}] flushing pending worker updates`,
 		);
 
-		const affectedWorkerIds =
-			await workerStatusService.findAffectedWorkerIds(from, now);
+		const affectedWorkerCount =
+			await workerStatusService.flushWorkerStatusSnapshots();
 
 		logger.info(
-			`[${WORKER_STATUS_CRON_NAME}] affected worker count=${affectedWorkerIds.length}`,
+			`[${WORKER_STATUS_CRON_NAME}] affected worker count=${affectedWorkerCount}`,
 		);
-
-		for (const worker_id of affectedWorkerIds) {
-			if (worker_id)
-				await workerStatusService.recomputeWorkerStatus(worker_id);
-		}
 
 		logger.info(`[${WORKER_STATUS_CRON_NAME}] cron completed.`);
 	} catch (err: unknown) {
