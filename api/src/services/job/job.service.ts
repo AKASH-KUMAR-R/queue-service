@@ -29,6 +29,14 @@ const incrementWorkerActiveJobs = (workerId: string, delta: number) => {
 	});
 };
 
+const incrementQueueMetrics = (queueId: string, deltas: {
+	activeJobs?: number;
+	failedJobs?: number;
+	completedJobs?: number;
+}) => {
+	incrementCounters(`queueMetrics:${queueId}`, deltas);
+};
+
 const createJob = async (
 	db: PrismaClient,
 	data: Prisma.JobCreateInput,
@@ -215,6 +223,9 @@ const findNextJob = async (
 	if (acquiredJob) {
 		setWorkerLastSeen(worker_id, acquiredJob.queue_id);
 		incrementWorkerActiveJobs(worker_id, 1);
+		incrementQueueMetrics(acquiredJob.queue_id, {
+			activeJobs: 1,
+		});
 	}
 
 	return acquiredJob;
@@ -306,6 +317,10 @@ const updateStatusAsCompleted = async (
 
 	setWorkerLastSeen(worker_id, updatedJob.queue_id);
 	incrementWorkerActiveJobs(worker_id, -1);
+	incrementQueueMetrics(updatedJob.queue_id, {
+		activeJobs: -1,
+		completedJobs: 1,
+	});
 
 	return updatedJob;
 };
@@ -345,6 +360,10 @@ const updateStatusAsFailed = async (
 
 	setWorkerLastSeen(worker_id, updatedJob.queue_id);
 	incrementWorkerActiveJobs(worker_id, -1);
+	incrementQueueMetrics(updatedJob.queue_id, {
+		activeJobs: -1,
+		failedJobs: 1,
+	});
 
 	return updatedJob;
 };

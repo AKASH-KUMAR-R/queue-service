@@ -1,7 +1,7 @@
 import { JobEventType, JobStatus } from "@db/client";
+import { incrementCounters } from "@lib/inMemoryStore.lib";
 
 import jobEventsService from "@services/job-events/jobEvents.service";
-import queueMetricsService from "@services/queue-metrics/queueMetrics.service";
 
 import { logger } from "@utils/logger.util";
 import { prisma } from "@utils/prisma.util";
@@ -9,6 +9,17 @@ import { prisma } from "@utils/prisma.util";
 const MAX_ATTEMPTS = 5;
 const ALLOWED_HEARTBEAT_GAP = 30000;
 const SCHEDULER_WORKER_ID = "scheduler:monitor-worker";
+
+const incrementQueueMetrics = (
+	queueId: string,
+	deltas: {
+		activeJobs?: number;
+		failedJobs?: number;
+		completedJobs?: number;
+	},
+) => {
+	incrementCounters(`queueMetrics:${queueId}`, deltas);
+};
 
 export const detectAndHandleTimeoutJobs = async () => {
 	const timeoutedJobs = await prisma.job.findMany({
@@ -72,15 +83,14 @@ export const detectAndHandleTimeoutJobs = async () => {
 			}
 
 			if (isTerminated) {
-				await queueMetricsService.incFailedMetric(
-					tx,
-					updatedJob.queue_id,
-				);
+				incrementQueueMetrics(updatedJob.queue_id, {
+					activeJobs: -1,
+					failedJobs: 1,
+				});
 			} else {
-				await queueMetricsService.decActiveMetric(
-					tx,
-					updatedJob.queue_id,
-				);
+				incrementQueueMetrics(updatedJob.queue_id, {
+					activeJobs: -1,
+				});
 			}
 
 			await jobEventsService.createJobEvent(tx, {
@@ -161,15 +171,14 @@ export const detectAndHandleDeadJobs = async () => {
 			});
 
 			if (isTerminated) {
-				await queueMetricsService.incFailedMetric(
-					tx,
-					updatedJob.queue_id,
-				);
+				incrementQueueMetrics(updatedJob.queue_id, {
+					activeJobs: -1,
+					failedJobs: 1,
+				});
 			} else {
-				await queueMetricsService.decActiveMetric(
-					tx,
-					updatedJob.queue_id,
-				);
+				incrementQueueMetrics(updatedJob.queue_id, {
+					activeJobs: -1,
+				});
 			}
 
 			await jobEventsService.createJobEvent(tx, {
