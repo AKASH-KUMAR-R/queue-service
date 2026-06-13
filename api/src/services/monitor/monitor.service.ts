@@ -66,8 +66,8 @@ export const detectAndHandleTimeoutJobs = async () => {
 		const currAttempts = job.attempts;
 		const isTerminated = currAttempts + 1 > MAX_ATTEMPTS;
 
-		await prisma.$transaction(async (tx) => {
-			const updatedJob = await tx.job.update({
+		const updatedJob = await prisma.$transaction(async (tx) => {
+			const txUpdatedJob = await tx.job.update({
 				where: {
 					id: job.id,
 					status: JobStatus.IN_PROGRESS,
@@ -78,26 +78,15 @@ export const detectAndHandleTimeoutJobs = async () => {
 				},
 			});
 
-			if (!updatedJob) {
+			if (!txUpdatedJob) {
 				throw new Error("Job not found");
 			}
 
-			if (isTerminated) {
-				incrementQueueMetrics(updatedJob.queue_id, {
-					activeJobs: -1,
-					failedJobs: 1,
-				});
-			} else {
-				incrementQueueMetrics(updatedJob.queue_id, {
-					activeJobs: -1,
-				});
-			}
-
 			await jobEventsService.createJobEvent(tx, {
-				project_id: updatedJob.project_id,
-				queue_id: updatedJob.queue_id,
-				job_id: updatedJob.id,
-				environment_id: updatedJob.environment_id,
+				project_id: txUpdatedJob.project_id,
+				queue_id: txUpdatedJob.queue_id,
+				job_id: txUpdatedJob.id,
+				environment_id: txUpdatedJob.environment_id,
 				worker_id: SCHEDULER_WORKER_ID,
 				event_type: isTerminated
 					? JobEventType.JOB_FAILED
@@ -111,7 +100,22 @@ export const detectAndHandleTimeoutJobs = async () => {
 					info: `The job exceeded its timeout of ${job.timeout_ms} ms.`,
 				},
 			});
+
+			return txUpdatedJob;
 		});
+
+		if (updatedJob) {
+			if (isTerminated) {
+				incrementQueueMetrics(updatedJob.queue_id, {
+					activeJobs: -1,
+					failedJobs: 1,
+				});
+			} else {
+				incrementQueueMetrics(updatedJob.queue_id, {
+					activeJobs: -1,
+				});
+			}
+		}
 
 		logger.info(
 			`Job with id ${job.id} is marked as ${isTerminated ? "failed" : "pending"} due to timeout...`,
@@ -158,8 +162,8 @@ export const detectAndHandleDeadJobs = async () => {
 		const currAttempts = job.attempts;
 		const isTerminated = currAttempts + 1 > MAX_ATTEMPTS;
 
-		await prisma.$transaction(async (tx) => {
-			const updatedJob = await tx.job.update({
+		const updatedJob = await prisma.$transaction(async (tx) => {
+			const txUpdatedJob = await tx.job.update({
 				where: {
 					id: job.id,
 					status: JobStatus.IN_PROGRESS,
@@ -170,22 +174,15 @@ export const detectAndHandleDeadJobs = async () => {
 				},
 			});
 
-			if (isTerminated) {
-				incrementQueueMetrics(updatedJob.queue_id, {
-					activeJobs: -1,
-					failedJobs: 1,
-				});
-			} else {
-				incrementQueueMetrics(updatedJob.queue_id, {
-					activeJobs: -1,
-				});
+			if (!txUpdatedJob) {
+				return null;
 			}
 
 			await jobEventsService.createJobEvent(tx, {
-				project_id: updatedJob.project_id,
-				queue_id: updatedJob.queue_id,
-				job_id: updatedJob.id,
-				environment_id: updatedJob.environment_id,
+				project_id: txUpdatedJob.project_id,
+				queue_id: txUpdatedJob.queue_id,
+				job_id: txUpdatedJob.id,
+				environment_id: txUpdatedJob.environment_id,
 				worker_id: SCHEDULER_WORKER_ID,
 				event_type: isTerminated
 					? JobEventType.JOB_FAILED
@@ -198,10 +195,26 @@ export const detectAndHandleDeadJobs = async () => {
 					reason: "dead_heartbeat",
 					info:
 						"The job's heartbeat was not received in time. Last heartbeat at " +
-						updatedJob.heartbeated_at?.toISOString(),
+						txUpdatedJob.heartbeated_at?.toISOString(),
 				},
 			});
+
+			return txUpdatedJob;
 		});
+
+		if (updatedJob) {
+			if (isTerminated) {
+				incrementQueueMetrics(updatedJob.queue_id, {
+					activeJobs: -1,
+					failedJobs: 1,
+				});
+			} else {
+				incrementQueueMetrics(updatedJob.queue_id, {
+					activeJobs: -1,
+				});
+			}
+		}
+
 		logger.info(
 			`Job with id ${job.id} is marked as ${isTerminated ? "failed" : "pending"} due to dead heartbeat...`,
 		);
