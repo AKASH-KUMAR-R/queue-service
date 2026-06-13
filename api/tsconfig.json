@@ -53,7 +53,8 @@
       "@errors/*": ["errors/*"],
       "@config/*": ["config/*"],
       "@db/*": ["generated/prisma-cli/*"],
-      "@zenstack/*": ["generated/prisma/*"]
+      "@zenstack/*": ["generated/prisma/*"],
+      "@lib/*": ["lib/*"]
     }
   },
   "include": ["src/**/*"]
