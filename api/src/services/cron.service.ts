@@ -1,6 +1,7 @@
 import { HOUR_IN_MILLISECONDS } from "@lib/time";
 
 import projectInsightsService from "@services/project-insights/projectInsights.service";
+import queueMetricsFlushService from "@services/queue-metrics/queueMetricsFlush.service";
 import queueInsightsService from "@services/queue-insights/queueInsights.service";
 import workerStatusService from "@services/worker-status/workerStatus.service";
 
@@ -8,6 +9,7 @@ import { logger } from "@utils/logger.util";
 import { prisma } from "@utils/prisma.util";
 
 const QUEUE_INSIGHTS_CRON_NAME = "queue_insights";
+const QUEUE_METRICS_CRON_NAME = "queue_metrics_flush";
 const WORKER_STATUS_CRON_NAME = "worker_status_reconciliation";
 
 // TODO: Needs to consider batching and cuncurrency if the affected bucket count is large. For now, we expect the affected bucket count to be small and can be processed within the cron interval.
@@ -106,4 +108,30 @@ const runWorkerStatusCron = async (): Promise<void> => {
 	}
 };
 
-export { runQueueInsightsCron, runWorkerStatusCron };
+const runQueueMetricsCron = async (): Promise<void> => {
+	try {
+		logger.info(
+			`[${QUEUE_METRICS_CRON_NAME}] cron started. flushing in-memory queue snapshots`,
+		);
+
+		logger.info(
+			`[${QUEUE_METRICS_CRON_NAME}] flushing pending queue metric updates`,
+		);
+
+		const affectedQueueCount =
+			await queueMetricsFlushService.flushQueueMetricsSnapshots();
+
+		logger.info(
+			`[${QUEUE_METRICS_CRON_NAME}] affected queue count=${affectedQueueCount}`,
+		);
+
+		logger.info(`[${QUEUE_METRICS_CRON_NAME}] cron completed.`);
+	} catch (err: unknown) {
+		logger.error(
+			`[${QUEUE_METRICS_CRON_NAME}] cron error: ${err instanceof Error ? err.message : String(err)}`,
+		);
+		throw err;
+	}
+};
+
+export { runQueueInsightsCron, runQueueMetricsCron, runWorkerStatusCron };
