@@ -5,7 +5,12 @@ import {
 	type Prisma,
 	PrismaClient,
 } from "@db/client";
-import { incrementCounters, setValue } from "@lib/inMemoryStore.lib";
+import {
+	incrementCounters,
+	isRateLimited,
+	recordRateLimitUsage,
+	setValue,
+} from "@lib/inMemoryStore.lib";
 
 import type { QueueJobsFilters } from "@models/queue/requests/QueueJobsListRequest";
 import type { WorkerCompletedFilters } from "@models/worker-status/requests/WorkerCompletedJobsListRequest";
@@ -15,6 +20,8 @@ import queueService from "@services/queue/queue.service";
 
 import { logger } from "@utils/logger.util";
 import { PaginationParams, PaginationResults } from "@utils/pagination.util";
+
+import { QueueRateLimitExceeded } from "@errors/QueueRateLimitExceeded";
 
 const setWorkerLastSeen = (workerId: string, queueId: string) => {
 	setValue(`worker:lastSeen:${workerId}`, {
@@ -29,11 +36,14 @@ const incrementWorkerActiveJobs = (workerId: string, delta: number) => {
 	});
 };
 
-const incrementQueueMetrics = (queueId: string, deltas: {
-	activeJobs?: number;
-	failedJobs?: number;
-	completedJobs?: number;
-}) => {
+const incrementQueueMetrics = (
+	queueId: string,
+	deltas: {
+		activeJobs?: number;
+		failedJobs?: number;
+		completedJobs?: number;
+	},
+) => {
 	incrementCounters(`queueMetrics:${queueId}`, deltas);
 };
 
@@ -171,13 +181,33 @@ const findNextJob = async (
 	queue_id: string,
 	worker_id: string,
 ) => {
+	let rateLimitCount: number | null = null;
+	let rateLimitWindowMs: number | null = null;
+
+	const queue = await queueService.findById(db, queue_id);
+
+	if (!queue) {
+		throw new Error("Queue not found");
+	}
+
+	rateLimitCount = queue.rate_limit_count;
+	rateLimitWindowMs = queue.rate_limit_window_ms;
+
+	if (
+		rateLimitCount &&
+		rateLimitWindowMs &&
+		isRateLimited(
+			`ratelimit:${queue_id}`,
+			rateLimitCount,
+			rateLimitWindowMs,
+		)
+	) {
+		throw new QueueRateLimitExceeded(
+			"Queue rate limit exceeded. Please try again later.",
+		);
+	}
+
 	const acquiredJob = await db.$transaction(async (tx) => {
-		const queue = await queueService.findById(tx, queue_id);
-
-		if (!queue) {
-			throw new Error("Queue not found");
-		}
-
 		const jobSearchTime = new Date();
 
 		const job: Job[] = await tx.$queryRaw`
@@ -221,6 +251,13 @@ const findNextJob = async (
 	});
 
 	if (acquiredJob) {
+		if (rateLimitCount && rateLimitWindowMs) {
+			recordRateLimitUsage(
+				`ratelimit:${acquiredJob.queue_id}`,
+				rateLimitWindowMs,
+			);
+		}
+
 		setWorkerLastSeen(worker_id, acquiredJob.queue_id);
 		incrementWorkerActiveJobs(worker_id, 1);
 		incrementQueueMetrics(acquiredJob.queue_id, {
