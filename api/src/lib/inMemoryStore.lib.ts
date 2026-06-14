@@ -18,12 +18,6 @@ export type RateLimitEntry = {
 
 export type Entry = ValueEntry | CounterEntry | RateLimitEntry;
 
-export type RateLimitCheckResult = {
-	allowed: boolean;
-	remaining: number;
-	resetAt: number;
-};
-
 let store = new Map<string, Entry>();
 
 const createCounterEntry = (): CounterEntry => ({
@@ -122,51 +116,60 @@ export const getAllAndClear = (prefix?: string): Map<string, Entry> => {
 };
 
 /**
- * Applies fixed-window rate limiting for a queue and increments the current window count.
+ * Returns whether the current fixed window is already at or above the limit.
  *
- * @param queueId - Queue identifier used to derive the rate-limit key.
+ * The entry is intentionally not reset here so callers can do a read-only
+ * decision before deciding whether to record a successful dispatch.
+ *
+ * @param key - Namespaced rate-limit key, such as `ratelimit:<queueId>`.
  * @param limit - Maximum allowed operations within the current window.
  * @param windowMs - Fixed window length in milliseconds.
- * @returns Whether the operation is allowed, remaining capacity, and window reset time.
+ * @returns `true` when the queue is currently rate limited.
  */
-export const checkAndIncrementRateLimit = (
-	queueId: string,
+export const isRateLimited = (
+	key: string,
 	limit: number,
 	windowMs: number,
-): RateLimitCheckResult => {
+): boolean => {
 	const now = Date.now();
-	const key = `ratelimit:${queueId}`;
 	const existingEntry = store.get(key);
 
 	if (
 		existingEntry?.type !== "rateLimit" ||
 		now - existingEntry.windowStart >= windowMs
 	) {
-		const nextEntry: RateLimitEntry = {
+		return false;
+	}
+
+	return existingEntry.count >= limit;
+};
+
+/**
+ * Records one successful dispatch in the current fixed window, creating a new
+ * window when the prior one has expired.
+ *
+ * @param key - Namespaced rate-limit key, such as `ratelimit:<queueId>`.
+ * @param windowMs - Fixed window length in milliseconds.
+ */
+export const recordRateLimitUsage = (key: string, windowMs: number): void => {
+	const now = Date.now();
+	const existingEntry = store.get(key);
+
+	if (
+		existingEntry?.type !== "rateLimit" ||
+		now - existingEntry.windowStart >= windowMs
+	) {
+		store.set(key, {
 			type: "rateLimit",
 			count: 1,
 			windowStart: now,
-		};
-		store.set(key, nextEntry);
-
-		return {
-			allowed: true,
-			remaining: Math.max(limit - 1, 0),
-			resetAt: nextEntry.windowStart + windowMs,
-		};
+		});
+		return;
 	}
 
-	const nextCount = existingEntry.count + 1;
-	const nextEntry: RateLimitEntry = {
+	store.set(key, {
 		type: "rateLimit",
-		count: nextCount,
+		count: existingEntry.count + 1,
 		windowStart: existingEntry.windowStart,
-	};
-	store.set(key, nextEntry);
-
-	return {
-		allowed: nextCount <= limit,
-		remaining: Math.max(limit - nextCount, 0),
-		resetAt: nextEntry.windowStart + windowMs,
-	};
+	});
 };
